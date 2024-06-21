@@ -15,11 +15,13 @@
   },
   "dependencies": {
     "@nuxt/eslint": "^0.3.13",
+    "@nuxt/icon": "^1.0.0",
     "@nuxt/image": "^1.7.0",
     "@nuxtjs/color-mode": "^3.4.1",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/tailwindcss": "^6.12.0",
     "@pinia/nuxt": "^0.5.1",
+    "@vue-final-modal/nuxt": "^1.0.3",
     "consola": "^3.2.3",
     "lint-staged": "^15.2.5",
     "nuxt": "^3.11.2",
@@ -28,6 +30,7 @@
     "prettier-plugin-tailwindcss": "^0.6.2",
     "tailwindcss": "^3.4.4",
     "vue": "^3.4.27",
+    "vue-final-modal": "^4.5.4",
     "vue-router": "^4.3.2"
   },
   "lint-staged": {
