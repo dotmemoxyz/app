@@ -30,7 +30,6 @@
     "@polkadot/types-codec": "^13.1.1",
     "@polkadot/util-crypto": "^13.1.1",
     "@polkadot/vue-identicon": "^3.10.1",
-    "@types/luxon": "^3.4.2",
     "@vee-validate/zod": "^4.13.2",
     "@vue-final-modal/nuxt": "^1.0.3",
     "@vueuse/core": "^10.11.0",
@@ -55,6 +54,7 @@
   "devDependencies": {
     "@histoire/plugin-nuxt": "^0.17.17",
     "@histoire/plugin-vue": "^0.17.17",
+    "@types/luxon": "^3.4.2",
     "histoire": "^0.17.17",
     "husky": "^9.0.11"
   }

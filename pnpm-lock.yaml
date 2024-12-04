@@ -56,9 +56,6 @@ importers:
       '@polkadot/vue-identicon':
         specifier: ^3.10.1
         version: 3.10.1(@polkadot/util-crypto@13.1.1(@polkadot/util@13.1.1))(@polkadot/util@13.1.1)(vue@3.5.6(typescript@5.6.2))
-      '@types/luxon':
-        specifier: ^3.4.2
-        version: 3.4.2
       '@vee-validate/zod':
         specifier: ^4.13.2
         version: 4.13.2(vue@3.5.6(typescript@5.6.2))
@@ -114,6 +111,9 @@ importers:
       '@histoire/plugin-vue':
         specifier: ^0.17.17
         version: 0.17.17(histoire@0.17.17(@types/node@22.5.5)(terser@5.33.0)(vite@5.4.6(@types/node@22.5.5)(terser@5.33.0)))(vite@5.4.6(@types/node@22.5.5)(terser@5.33.0))(vue@3.5.6(typescript@5.6.2))
+      '@types/luxon':
+        specifier: ^3.4.2
+        version: 3.4.2
       histoire:
         specifier: ^0.17.17
         version: 0.17.17(@types/node@22.5.5)(terser@5.33.0)(vite@5.4.6(@types/node@22.5.5)(terser@5.33.0))

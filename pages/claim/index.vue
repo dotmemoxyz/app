@@ -2,12 +2,20 @@
   <div class="mx-auto flex max-w-xl flex-col items-center space-y-10 p-4">
     <h1 class="mt-10 text-center text-4xl font-bold md:mt-20">.claim</h1>
 
-    <div class="flex aspect-square w-2/5 rounded-full border border-black bg-zinc-400 shadow-[4px_4px] shadow-k-shade2">
-      <div v-if="status !== 'success'" class="m-4 flex-1 rounded-full bg-zinc-300" />
-      <img v-else :src="data?.image" alt="poap image" class="flex-1 rounded-full object-cover" />
+    <div class="relative flex h-48 w-full rounded-lg border-2 border-white bg-white/5 p-2 md:h-72">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" class="size-full">
+        <line
+          v-for="n in 30"
+          :key="n"
+          :x1="(n - 10) * 5 + 1"
+          y1="100"
+          :x2="(n - 10) * 5 + 40 + 1"
+          y2="0"
+          stroke="white"
+          stroke-width="0.5"
+        />
+      </svg>
     </div>
-
-    <h3 v-if="status === 'success'">{{ data?.name }}</h3>
 
     <div class="flex flex-col space-y-1 self-stretch">
       <dot-label text="Enter MEMO Code" class="flex-1">
@@ -43,7 +51,12 @@ import { parseClaimString } from "~/utils/scanner";
 const code = ref("");
 const isCodeValid = computed(() => code.value.trim().length > 0);
 
-const { data, status, refresh, error } = await useFetch("/api/code", {
+const {
+  data: _data,
+  status,
+  refresh,
+  error,
+} = await useFetch("/api/code", {
   query: { code },
   immediate: false,
   watch: false,
@@ -58,7 +71,6 @@ const continueClaim = async () => {
 };
 
 const onSubmit = () => continueClaim();
-
 const errorMessage = computed(() => (error.value ? "Couldn't load MEMO" : undefined));
 
 const { open } = useModal({

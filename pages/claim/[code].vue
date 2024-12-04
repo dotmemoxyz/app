@@ -1,15 +1,17 @@
 <template>
   <h1 v-if="claimed" class="my-10 w-full text-center text-4xl !text-white">MEMO claimed successfully 🥳</h1>
-  <div class="mx-auto mb-20 flex max-w-xl flex-col items-center gap-y-5 p-4">
-    <div
-      class="flex aspect-square w-4/5 rounded-full border border-black bg-zinc-400 shadow-[4px_4px] shadow-k-shade2 md:w-3/5"
-    >
-      <div v-if="status !== 'success'" class="m-4 flex-1 rounded-full bg-zinc-300" />
-      <img v-else :src="data?.image" alt="poap image" class="w-full rounded-full object-cover" />
+
+  <div class="mx-auto mt-10 flex max-w-xl flex-col items-center gap-y-5 p-4 md:mt-24">
+    <div class="relative flex h-52 w-full overflow-hidden rounded-lg border-2 border-white bg-white/5 p-2 md:h-72">
+      <img :src="data?.image" alt="poap image" class="absolute size-full object-cover opacity-80 blur-2xl" />
+      <div class="absolute inset-2 flex items-center justify-center">
+        <img :src="data?.image" alt="poap image" class="absolute h-full" />
+      </div>
     </div>
 
     <h1 v-if="status === 'success' && data" class="text-4xl">{{ data?.name }}</h1>
     <h3 v-if="error" class="text-k-red">Couldn't load MEMO</h3>
+
     <template v-if="status === 'success' && data">
       <div class="flex items-center gap-2">
         <Icon name="mdi:calendar" size="24" class="text-k-primary" />
