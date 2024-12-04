@@ -178,6 +178,10 @@ const props = defineProps<{
   chain: Prefix;
 }>();
 
+const emit = defineEmits<{
+  (e: "success"): void;
+}>();
+
 const chainRef = computed(() => props.chain);
 
 const { apiInstance } = useApi(chainRef);
@@ -320,6 +324,7 @@ watch(status, async (status) => {
       logger.error(error);
     } finally {
       isSigning.value = false;
+      emit("success");
       closeModal();
     }
   }
