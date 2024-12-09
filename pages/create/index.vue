@@ -61,14 +61,9 @@
 import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useModal } from "vue-final-modal";
-import SignModal from "@/components/dot/sign-modal.vue";
 import * as zod from "zod";
 import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
-
-const { open: openSuccessModal } = useModal({
-  component: SuccessModal,
-});
 
 const validationSchema = toTypedSchema(
   zod.object({
@@ -123,7 +118,45 @@ const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDat
   if (localStartDateError.value || localEndDateError.value) {
     return;
   }
+
+  // const { open } = useModal({
+  //   component: SignModal,
+  //   attrs: {
+  //     name,
+  //     startDate,
+  //     endDate,
+  //     quantity,
+  //     image,
+  //     secret,
+  //     description,
+  //     chain: preferredChain.value,
+  //   },
+  // });
+
+  // open();
+
+  // logger.success({
+  //   description,
+  //   endDate,
+  //   quantity,
+  //   startDate,
+  //   image,
+  //   name,
+  //   externalUrl,
+  // });
+
+  const { open: openSuccessModal } = useModal({
+    component: SuccessModal,
+    attrs: {
+      quantity,
+      name,
+      image,
+      tx: "",
+    },
+  });
+
   openSuccessModal();
+
   return;
 });
 
