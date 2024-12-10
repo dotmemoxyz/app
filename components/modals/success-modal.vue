@@ -20,10 +20,10 @@
         <icon name="mdi:check" size="24" />
         <span>Confirmed</span>
       </p>
-      <a class="justify-centerg inline-flex items-center gap-2 text-text-color hover:underline" href="#TODO">
+      <!-- <a class="justify-centerg inline-flex items-center gap-2 text-text-color hover:underline" href="#TODO">
         <span>View TX</span>
         <icon name="mdi:arrow-top-right" size="24" />
-      </a>
+      </a> -->
     </div>
 
     <image-preview :src="imagePreviewSrc" />
@@ -72,20 +72,23 @@
           />
         </svg>
       </a>
-      <button class="inline-flex items-center justify-center" @click="copy('TODO')">
-        <icon name="mdi:content-copy" size="20" class="text-black dark:text-white" />
+      <button class="inline-flex items-center justify-center" @click="copyLink">
+        <icon name="mdi:content-copy" class="text-lg text-black md:text-2xl dark:text-white" />
       </button>
     </div>
 
     <div class="flex gap-3">
-      <dot-button variant="tertiary" size="medium">QR Code</dot-button>
-      <dot-button variant="primary" size="medium" class="flex-1">Claim one for you</dot-button>
+      <dot-button variant="tertiary" size="medium" :disabled="!qrButtonEnabled" @click="generateQR()">
+        QR Code
+      </dot-button>
+      <dot-button variant="primary" size="medium" class="flex-1" @click="claim()">Claim one for you</dot-button>
     </div>
   </vue-final-modal>
 </template>
 
 <script setup lang="ts">
 import { useVfm, VueFinalModal } from "vue-final-modal";
+import QRCode from "qrcode";
 
 const props = defineProps<{
   quantity: number;
@@ -93,7 +96,6 @@ const props = defineProps<{
   image: File;
   tx: string;
 }>();
-
 const vfm = useVfm();
 const closeModal = () => vfm.close("success-modal");
 
@@ -104,4 +106,40 @@ onMounted(() => {
   reader.onload = (e) => (imagePreviewSrc.value = e.target?.result as string);
   reader.readAsDataURL(props.image);
 });
+
+const copyLink = async (ev: MouseEvent) => {
+  await copy(`${location.origin}/claim/${props.name}`);
+
+  const el = document.createElement("span");
+  el.innerText = "✅";
+  el.style.fontSize = "32px";
+  el.style.position = "fixed";
+  el.style.top = "0px";
+  el.style.left = "0px";
+  el.style.zIndex = "9999";
+  el.style.pointerEvents = "none";
+  el.style.transform = `translate(${ev.clientX - 10}px, ${ev.clientY - 10}px) scale(0)`;
+  el.style.transition = "transform 1s ease, opacity 2s ease";
+  el.style.opacity = "1";
+
+  document.body.appendChild(el);
+
+  setTimeout(() => el.remove(), 1100);
+  requestAnimationFrame(() => {
+    el.style.transform = `translate(${ev.clientX - 10}px, ${ev.clientY - 10 - 100}px) scale(1)`;
+    el.style.opacity = "0";
+  });
+};
+
+const qrButtonEnabled = ref(true);
+const generateQR = async () => {
+  qrButtonEnabled.value = false;
+  imagePreviewSrc.value = await QRCode.toDataURL(props.name, {
+    margin: 1,
+    scale: 10,
+  });
+};
+
+const router = useRouter();
+const claim = () => (router.push(`/claim/${props.name}`), closeModal());
 </script>
