@@ -9,11 +9,14 @@
     "learnMore": "Learn More",
     "continue": "Continue",
     "searching": "Searching...",
+    "calculating": "Calculating...",
+    "signing": "Signing...",
     "download": "Download",
     "disconnect": "Disconnect",
     "back": "Back",
     "address": "Address",
-    "account": "Account"
+    "account": "Account",
+    "error": "Error"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -66,6 +69,24 @@
       "endDate": "End date",
       "quantity": "Quantity",
       "secret": "MEMO secret"
+    },
+    "dialog": {
+      "confirm": "Confirm creation",
+      "connectedAs": "Connected as",
+      "network": "Network :{name}",
+      "eventStart": "Event start",
+      "eventEnd": "Event end",
+      "code": "MEMO code",
+      "amount": "Amount",
+      "total": "Total deposit + Fees",
+      "breakdown": "Breakdown",
+      "collectionDeposit": "Collection deposit",
+      "freeMintingDeposit": "Free minting deposit",
+      "fees": "Fees",
+      "proceed": "Proceed to signing",
+      "canceled": "Transaction was canceled. Please try again.",
+      "settingUp": "Setting up your MEMO",
+      "txProgress": "Transaction in progress. (Status: {status})"
     }
   },
   "image": {
