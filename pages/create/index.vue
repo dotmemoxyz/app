@@ -24,7 +24,7 @@
           <span
             class="pointer-events-none absolute right-0 top-full z-50 mt-2 w-64 rounded-lg bg-white px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100"
           >
-            Use this if your memo should be linked to extenal domain
+            Use this if your memo should be linked to external domain
           </span>
         </div>
         <dot-text-input v-model="externalUrl" placeholder="Custom domains are supported." :error="externalUrlError" />

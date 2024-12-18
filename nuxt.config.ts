@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@nuxtjs/color-mode",
     "@vue-final-modal/nuxt",
+    "@vite-pwa/nuxt",
   ],
 
   runtimeConfig: {
@@ -29,6 +30,51 @@ export default defineNuxtConfig({
         coingecko: "",
       },
       chain: "ahp",
+    },
+  },
+  pwa: {
+    strategies: "generateSW",
+    registerType: "autoUpdate",
+    manifest: {
+      name: ".MEMO Web App",
+      short_name: ".MEMO",
+      theme_color: "#ffffff",
+      icons: [
+        {
+          src: "icons/192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "icons/256.png",
+          sizes: "256x256",
+          type: "image/png",
+        },
+        {
+          src: "icons/512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/ahk\.gql\.api\.kodadot.xyz\/.*/i,
+          handler: "CacheFirst",
+        },
+      ],
+    },
+    injectManifest: {
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+    },
+    client: {
+      installPrompt: true,
+    },
+    devOptions: {
+      // Enable for development testing
+      enabled: true,
     },
   },
 

@@ -1,5 +1,10 @@
 <template>
-  <main class="flex flex-col bg-bg-persistent">
+  <main class="relative flex flex-col bg-bg-persistent">
+    <section v-if="!networkStatus" class="sticky top-0 z-10">
+      <div class="flex items-center justify-center gap-3 bg-red-500 p-5">
+        <p class="!text-white">You are offline. Please check your internet connection.</p>
+      </div>
+    </section>
     <section
       class="relative flex h-[75vh] flex-col items-center justify-center gap-10 bg-cover bg-left md:bg-center"
       :style="{
@@ -15,12 +20,22 @@
         <dot-button
           size="large"
           variant="primary"
+          :disabled="!networkStatus"
           class="px-10 hover:!bg-white hover:!text-bg-persistent sm:px-20"
           @click="router.push('/claim')"
         >
           Claim
         </dot-button>
-        <dot-button size="large" variant="tertiary-light" class="px-10 sm:px-20" @click="router.push('/create')">
+        <dot-button
+          size="large"
+          :variant="networkStatus ? 'tertiary-light' : 'primary'"
+          :disabled="!networkStatus"
+          class="px-10 sm:px-20"
+          :class="{
+            'hover:!bg-white hover:!text-bg-persistent': !networkStatus,
+          }"
+          @click="router.push('/create')"
+        >
           Create
         </dot-button>
       </div>
@@ -149,4 +164,10 @@ const result = await client.fetch<{ collections: Collection[] }>(query).catch((e
 collections.value = result?.data?.collections ?? [];
 
 const kodaUrl = (id: string) => `https://kodadot.xyz/${prefix.value}/collection/${id}`;
+
+const networkStatus = ref(true);
+onMounted(() => {
+  window.addEventListener("online", () => (networkStatus.value = true));
+  window.addEventListener("offline", () => (networkStatus.value = false));
+});
 </script>
