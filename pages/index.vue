@@ -153,11 +153,11 @@
 </template>
 
 <script lang="ts" setup>
-import polkadotLogo from "@/assets/images/Polkadot.png";
+import polkadotLogo from "@/assets/images/Polkadot.webp";
 import claimIcon from "@/assets/icons/claim.svg";
 import createNewIcon from "@/assets/icons/create-new-from-source.svg";
 import communityIcon from "@/assets/icons/community.svg";
-import landingBackground from "@/assets/images/landing-background-2.png";
+import landingBackground from "@/assets/images/landing-background-2.webp";
 import { getClient } from "@kodadot1/uniquery";
 import { $purifyOne } from "@kodadot1/minipfs";
 definePageMeta({
@@ -201,19 +201,19 @@ const partners = ref([
   {
     id: "1",
     name: "Learning Club",
-    img: "/sponsors/learning-club.png",
+    img: "/sponsors/learning-club.webp",
     url: "https://x.com/gmlearningclub",
   },
   {
     id: "2",
     name: "Dot meetups",
-    img: "/sponsors/dotmeetups.png",
+    img: "/sponsors/dotmeetups.webp",
     url: "https://dotmeetup.notion.site/Meetups-bounty-cd57b5990ba443559413dec3b339ab4a",
   },
   {
     id: "3",
     name: "Kodadot",
-    img: "/sponsors/koda.png",
+    img: "/sponsors/koda.webp",
     url: "https://kodadot.xyz",
   },
 ]);
