@@ -120,7 +120,7 @@ onMounted(() => {
 });
 
 const copyLink = async (ev: MouseEvent) => {
-  await copy(`${location.origin}/claim/${props.name}`);
+  await copy(`${location.origin}/claim/${props.secret}`);
 
   const el = document.createElement("span");
   el.innerText = "✅";
