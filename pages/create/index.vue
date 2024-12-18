@@ -145,6 +145,7 @@ const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDat
         const { open: openSuccessModal } = useModal({
           component: SuccessModal,
           attrs: {
+            chain: preferredChain.value,
             quantity,
             name,
             secret,
