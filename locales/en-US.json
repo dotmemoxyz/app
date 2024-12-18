@@ -87,6 +87,16 @@
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
       "txProgress": "Transaction in progress. (Status: {status})"
+    },
+    "success": {
+      "title": "Purchased",
+      "confirmed": "Confirmed",
+      "viewTx": "View TX",
+      "created1": "Created",
+      "created2": "with",
+      "created3": "pieces!",
+      "qr": "QR Code",
+      "claim": "Claim one for you"
     }
   },
   "image": {
