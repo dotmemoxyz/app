@@ -95,14 +95,13 @@ const props = defineProps<{
   quantity: number;
   name: string;
   secret: string;
+  chain: string;
   image: File;
   tx: string;
 }>();
 
-const config = useRuntimeConfig();
-
 const hashLink = computed(() => {
-  if (config.public.chain === "ahp") {
+  if (props.chain === "ahp") {
     return `https://assethub-polkadot.subscan.io/extrinsic/${props.tx}`;
   }
 
@@ -121,7 +120,7 @@ onMounted(() => {
 });
 
 const copyLink = async (ev: MouseEvent) => {
-  await copy(`${location.origin}/claim/${props.name}`);
+  await copy(`${location.origin}/claim/${props.secret}`);
 
   const el = document.createElement("span");
   el.innerText = "✅";
