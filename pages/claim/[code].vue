@@ -2,15 +2,14 @@
   <h1 v-if="claimed" class="my-10 w-full text-center text-4xl !text-white">MEMO claimed successfully 🥳</h1>
 
   <div class="mx-auto mt-10 flex max-w-xl flex-col items-center gap-y-5 p-4 md:mt-24">
-    <div class="relative flex h-52 w-full overflow-hidden rounded-lg border-2 border-white bg-white/5 p-2 md:h-72">
-      <img :src="data?.image" alt="poap image" class="absolute size-full object-cover opacity-80 blur-2xl" />
-      <div class="absolute inset-2 flex items-center justify-center">
-        <img :src="data?.image" alt="poap image" class="absolute h-full" />
-      </div>
-    </div>
+    <image-preview :src="data?.image" />
 
     <h1 v-if="status === 'success' && data" class="text-4xl">{{ data?.name }}</h1>
-    <h3 v-if="error" class="text-k-red">Couldn't load MEMO</h3>
+
+    <template v-if="error">
+      <h3 class="text-k-red">Couldn't load MEMO</h3>
+      <dot-button variant="tertiary" @click="router.push('/claim')">Try different MEMO ?</dot-button>
+    </template>
 
     <template v-if="status === 'success' && data">
       <div class="flex items-center gap-2">
@@ -32,7 +31,7 @@
       </div>
     </template>
 
-    <div class="flex flex-col space-y-3 self-stretch">
+    <div v-if="!error" class="flex flex-col space-y-3 self-stretch">
       <template v-if="!claimed">
         <div class="mb-6 flex rounded-full border-2 border-border-color p-2 shadow-text-color">
           <button
@@ -152,6 +151,7 @@ import { useModal } from "vue-final-modal";
 const { shareOnTelegram, shareOnX } = useSocials();
 
 const route = useRoute();
+const router = useRouter();
 const accountStore = useAccountStore();
 const manualAddress = ref("");
 const showAddressInput = ref(true);

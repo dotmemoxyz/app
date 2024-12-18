@@ -42,6 +42,12 @@ const props = defineProps<{
   limit?: number;
 }>();
 
+onMounted(() => {
+  if (props.type === "date" && !model.value) {
+    model.value = new Date();
+  }
+});
+
 const wrapperClasses = computed(() => {
   if (props.error) {
     return "border-k-red";
