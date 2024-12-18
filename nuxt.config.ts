@@ -41,17 +41,17 @@ export default defineNuxtConfig({
       theme_color: "#ffffff",
       icons: [
         {
-          src: "icons/192.png",
+          src: "icons/192.webp",
           sizes: "192x192",
           type: "image/png",
         },
         {
-          src: "icons/256.png",
+          src: "icons/256.webp",
           sizes: "256x256",
           type: "image/png",
         },
         {
-          src: "icons/512.png",
+          src: "icons/512.webp",
           sizes: "512x512",
           type: "image/png",
         },

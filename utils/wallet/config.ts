@@ -104,7 +104,7 @@ const buildWalletConfig = (
 export const WalletConfigMap: IWalletConfigMap = {
   [SupportWalletExtension.PolkadotJs]: buildWalletConfig(
     SupportWalletExtension.PolkadotJs,
-    "/wallets/logo-polkadot-js.png",
+    "/wallets/logo-polkadot-js.webp",
     "Polkadot.js",
     "https://polkadot.js.org/extension/",
     "https://www.youtube.com/watch?v=r-fAy7Ta_vY",
@@ -112,7 +112,7 @@ export const WalletConfigMap: IWalletConfigMap = {
   ),
   [SupportWalletExtension.Clover]: buildWalletConfig(
     SupportWalletExtension.Clover,
-    "/wallets/logo-clover.png",
+    "/wallets/logo-clover.webp",
     "CLV Wallet",
     "https://chrome.google.com/webstore/detail/clv-wallet/nhnkbkgjikgcigadomkphalanndcapjk",
     "https://docs.clv.org/use-clv-wallet/clv-extension-wallet",
@@ -127,7 +127,7 @@ export const WalletConfigMap: IWalletConfigMap = {
   ),
   [SupportWalletExtension.Math]: buildWalletConfig(
     SupportWalletExtension.Math,
-    "/wallets/logo-mathwallet.png",
+    "/wallets/logo-mathwallet.webp",
     "Math Wallet",
     "https://mathwallet.org/en-us/",
     "https://blog.mathwallet.org/?p=540",
@@ -136,7 +136,7 @@ export const WalletConfigMap: IWalletConfigMap = {
   ),
   [SupportWalletExtension.Nova]: buildWalletConfig(
     SupportWalletExtension.Nova,
-    "/wallets/logo-nova.png",
+    "/wallets/logo-nova.webp",
     "Nova",
     "https://novawallet.io/",
     "https://novawallet.io/",
@@ -162,7 +162,7 @@ export const WalletConfigMap: IWalletConfigMap = {
   ),
   [SupportWalletExtension.Enkrypt]: buildWalletConfig(
     SupportWalletExtension.Enkrypt,
-    "/wallets/logo-enkrypt.png",
+    "/wallets/logo-enkrypt.webp",
     "Enkrypt",
     "https://www.enkrypt.com/#downloads",
     "https://www.enkrypt.com/",
