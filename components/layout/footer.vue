@@ -1,9 +1,13 @@
 <template>
   <footer
-    class="absolute bottom-0 flex h-16 w-full items-center justify-center border-t border-k-primary bg-bg-persistent text-text-color"
+    class="absolute bottom-0 grid h-16 w-full grid-cols-3 items-center border-t border-k-primary bg-bg-persistent text-text-color"
   >
-    <span class="flex-1 text-center text-white md:pl-32">.MEMO 2024 {{ name }}</span>
-    <div class="flex flex-row items-center gap-5 pr-5 md:gap-10">
+    <a class="flex items-center gap-1 pl-5" target="_blank" href="https://github.com/dotmemoxyz/app/wiki">
+      <p class="text-white">Wiki</p>
+      <Icon name="mdi:open-in-new" class="h-4 w-4 text-white" />
+    </a>
+    <span class="flex-1 text-center text-white">.MEMO 2024 {{ name }}</span>
+    <div class="flex flex-row items-center justify-end gap-5 pr-5 md:gap-10">
       <a target="_blank" href="https://t.me/dotmemoxyz">
         <svg
           style="enable-background: new 0 0 512 512"

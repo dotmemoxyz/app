@@ -98,6 +98,11 @@
       </div>
     </section>
 
+    <p class="text-center !text-white">
+      Wanna learn more? Visit our
+      <a class="!text-k-primary underline" href="https://github.com/dotmemoxyz/app/wiki" target="_blank">wiki!</a>
+    </p>
+
     <section class="m-[10px] flex min-h-[40vh] flex-col gap-7 rounded-2xl bg-white p-10 md:m-10">
       <p class="text-4xl !text-bg-persistent md:text-6xl">Featured</p>
 
