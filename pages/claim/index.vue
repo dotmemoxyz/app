@@ -5,7 +5,7 @@
     <image-preview />
 
     <div class="flex flex-col space-y-1 self-stretch">
-      <dot-label text="Enter MEMO Code" class="flex-1">
+      <dot-label :text="t('claim.enterCode')" class="flex-1">
         <form class="flex space-x-4" @submit.prevent="onSubmit()">
           <dot-text-input v-model="code" :error="errorMessage" placeholder="event2024" />
           <div>
@@ -23,18 +23,18 @@
         size="large"
         @click="continueClaim"
       >
-        {{ status === "pending" ? "Searching ..." : "Continue" }}
+        {{ status === "pending" ? t("common.searching") : t("common.continue") }}
       </dot-button>
     </div>
 
-    <a href="#">How this works ?</a>
+    <a href="https://github.com/dotmemoxyz/app/wiki">{{ t("claim.howThisWorks") }}</a>
   </div>
 </template>
 <script setup lang="ts">
 import QRScannerModal from "~/components/dot/qr-scanner-modal.vue";
 import { useModal } from "vue-final-modal";
 import { parseClaimString } from "~/utils/scanner";
-
+const { t } = useI18n();
 const code = ref("");
 const isCodeValid = computed(() => code.value.trim().length > 0);
 

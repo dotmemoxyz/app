@@ -1,5 +1,5 @@
 <template>
-  <h1 v-if="claimed" class="my-10 w-full text-center text-4xl !text-white">MEMO claimed successfully 🥳</h1>
+  <h1 v-if="claimed" class="my-10 w-full text-center text-4xl !text-white">{{ t("claim.success") }} 🥳</h1>
 
   <div class="mx-auto mt-10 flex max-w-xl flex-col items-center gap-y-5 p-4 md:mt-24">
     <image-preview :src="data?.image" />
@@ -7,8 +7,8 @@
     <h1 v-if="status === 'success' && data" class="text-4xl">{{ data?.name }}</h1>
 
     <template v-if="error">
-      <h3 class="text-k-red">Couldn't load MEMO</h3>
-      <dot-button variant="tertiary" @click="router.push('/claim')">Try different MEMO ?</dot-button>
+      <h3 class="text-k-red">{{ t("claim.cantLoad") }}</h3>
+      <dot-button variant="tertiary" @click="router.push('/claim')">{{ t("claim.tryDifferent") }}</dot-button>
     </template>
 
     <template v-if="status === 'success' && data">
@@ -41,7 +41,7 @@
             }"
             @click="showAddressInput = true"
           >
-            Enter address
+            {{ t("claim.enterAddress") }}
           </button>
           <button
             class="flex-1 rounded-full py-2 text-text-color"
@@ -50,13 +50,13 @@
             }"
             @click="showAddressInput = false"
           >
-            Connect wallet
+            {{ t("claim.connectWallet") }}
           </button>
         </div>
 
-        <dot-label v-if="showAddressInput" text="Enter DOT address">
+        <dot-label v-if="showAddressInput" :text="t('claim.enterDOTAddress')">
           <form class="flex space-x-4" @submit.prevent="onSubmit()">
-            <dot-text-input v-model="manualAddress" :error="addressError" placeholder="Address" />
+            <dot-text-input v-model="manualAddress" :error="addressError" :placeholder="t('common.address')" />
             <div>
               <dot-button variant="tertiary" size="large" @click="open()">
                 <template #icon>
@@ -68,12 +68,12 @@
         </dot-label>
 
         <client-only v-if="!showAddressInput">
-          <dot-label text="Account">
+          <dot-label :text="t('common.account')">
             <dot-connect />
           </dot-label>
         </client-only>
 
-        <p v-if="claimFailed" class="w-full text-center !text-red-500">You already claimed this MEMO</p>
+        <p v-if="claimFailed" class="w-full text-center !text-red-500">{{ t("claim.alreadyClaimed") }}</p>
 
         <div class="relative flex w-full flex-col gap-2">
           <dot-button
@@ -87,7 +87,7 @@
           </dot-button>
 
           <div v-if="data?.chain" class="flex w-full items-center justify-center gap-2">
-            <small class="text-md text-white">Claim for free @{{ getChainName(data.chain) }}</small>
+            <small class="text-md text-white">{{ t("claim.claimFree") }} @{{ getChainName(data.chain) }}</small>
             <img :src="`/chain/${data.chain}.webp`" alt="chain" class="max-h-6 max-w-6 rounded-full" />
           </div>
 
@@ -121,11 +121,15 @@
       <template v-else>
         <a :href="claimed" class="block w-full">
           <dot-button class="w-full" variant="primary" size="large">
-            See {{ data?.name ?? "MEMO" }} in gallery
+            {{
+              t("claim.seeInGallery", {
+                name: data?.name ?? "MEMO",
+              })
+            }}
           </dot-button>
         </a>
         <div class="flex w-full flex-col items-center gap-2">
-          <small class="text-white">Do you want to share?</small>
+          <small class="text-white">{{ t("claim.wantToShare") }}</small>
           <span class="mb-10 flex gap-2">
             <div class="flex cursor-pointer items-center gap-2" @click="shareOnTelegram(SHARE_MESSAGE, claimed)">
               <div class="overflow-hidden rounded-full border border-white">
@@ -155,6 +159,8 @@ const router = useRouter();
 const accountStore = useAccountStore();
 const manualAddress = ref("");
 const showAddressInput = ref(true);
+
+const { t } = useI18n();
 
 watch(showAddressInput, (show) => {
   if (!show) {

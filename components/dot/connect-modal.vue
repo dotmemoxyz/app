@@ -6,7 +6,7 @@
     content-transition="vfm-fade"
   >
     <template v-if="state === 'wallet'">
-      <h1 class="text-2xl font-semibold text-text-color">Select wallet</h1>
+      <h1 class="text-2xl font-semibold text-text-color">{{ t("wallets.selectWallet") }}</h1>
       <div class="flex flex-col gap-2">
         <div class="mb-4 flex flex-col gap-3">
           <dot-button
@@ -27,7 +27,7 @@
           </dot-button>
           <div class="flex flex-col gap-2">
             <button class="flex w-full items-center justify-between" @click="showBreakdown = !showBreakdown">
-              <h2 class="text-lg font-semibold text-text-color">Other wallets</h2>
+              <h2 class="text-lg font-semibold text-text-color">{{ t("wallets.other") }}</h2>
               <Icon
                 :name="`mdi:chevron-${showBreakdown ? 'up' : 'down'}`"
                 size="20"
@@ -50,19 +50,19 @@
                   <div class="flex w-full flex-1 flex-col items-start gap-1 px-4 py-3">
                     <h2 class="font-bold">{{ wallet.name }}</h2>
                   </div>
-                  <a :href="wallet.guideUrl" class="text-text-color hover:text-white">Download</a>
+                  <a :href="wallet.guideUrl" class="text-text-color hover:text-white">{{ t("common.download") }}</a>
                 </div>
               </dot-button>
             </template>
           </div>
 
-          <dot-button variant="tertiary" @click="disconnect"> Disconnect </dot-button>
-          <dot-button variant="tertiary" @click="emit('confirm')"> Cancel </dot-button>
+          <dot-button variant="tertiary" @click="disconnect"> {{ t("common.disconnect") }} </dot-button>
+          <dot-button variant="tertiary" @click="emit('confirm')"> {{ t("common.cancel") }} </dot-button>
         </div>
       </div>
     </template>
     <template v-if="state === 'account'">
-      <h1 class="text-2xl font-semibold text-text-color">Select account</h1>
+      <h1 class="text-2xl font-semibold text-text-color">{{ t("wallets.selectAccount") }}</h1>
       <div class="flex flex-col gap-2">
         <div class="mb-4 flex flex-col gap-3">
           <dot-button
@@ -88,9 +88,9 @@
           </dot-button>
         </div>
         <div class="flex justify-end gap-2">
-          <dot-button class="w-full" variant="tertiary" @click="state = 'wallet'"> Back </dot-button>
+          <dot-button class="w-full" variant="tertiary" @click="state = 'wallet'"> {{ t("common.back") }} </dot-button>
           <dot-button class="w-full" :disabled="!selectedAccount" variant="primary" @click="saveAndClose">
-            Confirm
+            {{ t("common.confirm") }}
           </dot-button>
         </div>
       </div>
@@ -108,6 +108,7 @@ import type { BaseDotsamaWallet, ExtendedDotsamaAccount } from "~/utils/wallet/b
 const emit = defineEmits<{
   (e: "confirm"): void;
 }>();
+const { t } = useI18n();
 
 const state = ref<"wallet" | "account">("wallet");
 const showBreakdown = ref(false);
