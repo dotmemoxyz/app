@@ -20,10 +20,10 @@
         <icon name="mdi:check" size="24" />
         <span>Confirmed</span>
       </p>
-      <!-- <a class="justify-centerg inline-flex items-center gap-2 text-text-color hover:underline" href="#TODO">
+      <a class="justify-centerg inline-flex items-center gap-2 text-text-color hover:underline" :href="hashLink">
         <span>View TX</span>
         <icon name="mdi:arrow-top-right" size="24" />
-      </a> -->
+      </a>
     </div>
 
     <image-preview :src="imagePreviewSrc" />
@@ -78,7 +78,8 @@
     </div>
 
     <div class="flex gap-3">
-      <dot-button variant="tertiary" size="medium" :disabled="!qrButtonEnabled" @click="generateQR()">
+      <dot-button variant="tertiary" size="medium" @click="generateQR()">
+        <Icon name="mdi:download" size="32" class="text-text-color" />
         QR Code
       </dot-button>
       <dot-button variant="primary" size="medium" class="flex-1" @click="claim()">Claim one for you</dot-button>
@@ -93,9 +94,21 @@ import QRCode from "qrcode";
 const props = defineProps<{
   quantity: number;
   name: string;
+  secret: string;
   image: File;
   tx: string;
 }>();
+
+const config = useRuntimeConfig();
+
+const hashLink = computed(() => {
+  if (config.public.chain === "ahp") {
+    return `https://assethub-polkadot.subscan.io/extrinsic/${props.tx}`;
+  }
+
+  return `https://assethub-kusama.subscan.io/extrinsic/${props.tx}`;
+});
+
 const vfm = useVfm();
 const closeModal = () => vfm.close("success-modal");
 
@@ -119,25 +132,32 @@ const copyLink = async (ev: MouseEvent) => {
   el.style.zIndex = "9999";
   el.style.pointerEvents = "none";
   el.style.transform = `translate(${ev.clientX - 10}px, ${ev.clientY - 10}px) scale(0)`;
-  el.style.transition = "transform 1s ease, opacity 2s ease";
+  el.style.transition = "transform 1s ease, opacity 1.5s ease";
   el.style.opacity = "1";
 
   document.body.appendChild(el);
 
   setTimeout(() => el.remove(), 1100);
   requestAnimationFrame(() => {
-    el.style.transform = `translate(${ev.clientX - 10}px, ${ev.clientY - 10 - 100}px) scale(1)`;
+    const offsetX = Math.random() * 20 - 10;
+    el.style.transform = `translate(${ev.clientX - 10 + offsetX * 3}px, ${ev.clientY - 10 - 100}px) scale(1.5)`;
     el.style.opacity = "0";
   });
 };
 
-const qrButtonEnabled = ref(true);
 const generateQR = async () => {
-  qrButtonEnabled.value = false;
-  imagePreviewSrc.value = await QRCode.toDataURL(props.name, {
+  const urlToEncode = `${window.location.origin}/claim/${props.secret}`;
+  const qrcodeDataURI = await QRCode.toDataURL(urlToEncode, {
     margin: 1,
     scale: 10,
   });
+
+  const link = document.createElement("a");
+  link.href = qrcodeDataURI;
+  link.download = `${props.name.replaceAll(" ", "-")}-qrcode`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 const router = useRouter();

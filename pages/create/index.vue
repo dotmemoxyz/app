@@ -64,6 +64,7 @@ import { useModal } from "vue-final-modal";
 import * as zod from "zod";
 import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
+import SignModal from "~/components/dot/sign-modal.vue";
 
 const validationSchema = toTypedSchema(
   zod.object({
@@ -119,43 +120,45 @@ const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDat
     return;
   }
 
-  // const { open } = useModal({
-  //   component: SignModal,
-  //   attrs: {
-  //     name,
-  //     startDate,
-  //     endDate,
-  //     quantity,
-  //     image,
-  //     secret,
-  //     description,
-  //     chain: preferredChain.value,
-  //   },
-  // });
+  logger.success({
+    description,
+    endDate,
+    quantity,
+    startDate,
+    image,
+    name,
+    externalUrl,
+  });
 
-  // open();
-
-  // logger.success({
-  //   description,
-  //   endDate,
-  //   quantity,
-  //   startDate,
-  //   image,
-  //   name,
-  //   externalUrl,
-  // });
-
-  const { open: openSuccessModal } = useModal({
-    component: SuccessModal,
+  const { open } = useModal({
+    component: SignModal,
     attrs: {
-      quantity,
       name,
+      startDate,
+      endDate,
+      quantity,
       image,
-      tx: "",
+      secret,
+      description,
+      chain: preferredChain.value,
+      onSuccess({ txHash }) {
+        const { open: openSuccessModal } = useModal({
+          component: SuccessModal,
+          attrs: {
+            quantity,
+            name,
+            secret,
+            image,
+            tx: txHash,
+          },
+        });
+
+        openSuccessModal();
+      },
     },
   });
 
-  openSuccessModal();
+  open();
 
   return;
 });

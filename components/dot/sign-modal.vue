@@ -179,7 +179,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "success"): void;
+  (e: "success", data: { txHash: string }): void;
 }>();
 
 const chainRef = computed(() => props.chain);
@@ -206,6 +206,7 @@ const totalPayableDeposit = ref(BigInt(0));
 const toMint = ref<string | null>(null);
 const totalDeposit = computed(() => depositPerItem.value * props.quantity + depositForCollection.value);
 const imageCid = ref<string | null>(null);
+const txHash = ref<null | string>("");
 
 const accountStore = useAccountStore();
 const currentAccount = computed(() => accountStore.selected);
@@ -292,7 +293,11 @@ async function sign() {
   ];
 
   initTransactionLoader();
-  await howAboutToExecute(accountId.value, cb, args);
+  await howAboutToExecute(accountId.value, cb, args, {
+    onSuccess(param) {
+      txHash.value = param.txHash;
+    },
+  });
 }
 
 watch(txError, (error) => {
@@ -324,7 +329,11 @@ watch(status, async (status) => {
       logger.error(error);
     } finally {
       isSigning.value = false;
-      emit("success");
+      if (txHash.value) {
+        emit("success", {
+          txHash: txHash.value,
+        });
+      }
       closeModal();
     }
   }
