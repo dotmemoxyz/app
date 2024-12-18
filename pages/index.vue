@@ -123,6 +123,27 @@
         </a>
       </div>
     </section>
+    <section class="m-[10px] flex min-h-[40vh] flex-col gap-7 rounded-2xl bg-bg-card p-10 md:m-10">
+      <p class="text-4xl text-white md:text-6xl">Ecosystem Partners</p>
+
+      <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <a
+          v-for="partner in partners"
+          :key="partner.id"
+          class="relative aspect-square w-full overflow-hidden rounded-xl bg-stone-300"
+          :href="partner.url"
+          target="_blank"
+        >
+          <img :src="partner.img" alt="sponsor image" class="h-full w-full rounded-xl object-cover" />
+
+          <div class="absolute inset-x-0 bottom-0 z-20 h-full bg-gradient-to-t from-black/70 to-transparent"></div>
+
+          <div class="absolute inset-x-0 bottom-0 z-30 overflow-hidden p-7">
+            <p class="line-clamp-2 text-xl font-bold !text-white">{{ partner.name }}</p>
+          </div>
+        </a>
+      </div>
+    </section>
   </main>
 </template>
 
@@ -170,4 +191,25 @@ onMounted(() => {
   window.addEventListener("online", () => (networkStatus.value = true));
   window.addEventListener("offline", () => (networkStatus.value = false));
 });
+
+const partners = ref([
+  {
+    id: "1",
+    name: "Learning Club",
+    img: "/sponsors/learning-club.png",
+    url: "https://x.com/gmlearningclub",
+  },
+  {
+    id: "2",
+    name: "Dot meetups",
+    img: "/sponsors/dotmeetups.png",
+    url: "https://dotmeetup.notion.site/Meetups-bounty-cd57b5990ba443559413dec3b339ab4a",
+  },
+  {
+    id: "3",
+    name: "Kodadot",
+    img: "/sponsors/koda.png",
+    url: "https://kodadot.xyz",
+  },
+]);
 </script>
