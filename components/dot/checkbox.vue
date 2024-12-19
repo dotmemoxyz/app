@@ -7,9 +7,6 @@
     <Icon v-if="model" name="mdi:check" class="text-white" />
   </div>
 </template>
-
 <script lang="ts" setup>
 const model = defineModel<boolean>();
 </script>
-
-<style></style>
