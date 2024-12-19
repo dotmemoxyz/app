@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { createLogger } from "~/utils/create-logger";
+import { createLogger } from "~~/utils/create-logger";
 
 const logger = createLogger("index");
 logger.info("Hello here");

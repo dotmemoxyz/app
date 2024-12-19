@@ -1,5 +1,6 @@
 import type { FetchError } from "ofetch";
 import { $fetch } from "ofetch";
+import { createLogger } from "~~/utils/create-logger";
 
 export type Metadata = {
   name: string;

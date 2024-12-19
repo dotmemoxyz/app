@@ -1,5 +1,6 @@
 import "@polkadot/api-augment";
 import type { ApiPromise } from "@polkadot/api";
+import { createLogger } from "~~/utils/create-logger";
 
 const logger = createLogger("Utils/SDK/Query");
 

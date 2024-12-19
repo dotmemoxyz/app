@@ -1,3 +1,5 @@
+import { createLogger } from "~~/utils/create-logger";
+
 const logger = createLogger("middleware:user.global");
 export default defineNuxtRouteMiddleware(() => {
   if (import.meta.server) return;
