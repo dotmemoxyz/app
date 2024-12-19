@@ -1,7 +1,7 @@
 {
   "common": {
     "memo": "MEMO",
-    "offline": "You are offline. Please check your internet connection.",
+    "offline": "You are offline. Check your internet connection.",
     "claim": "Claim",
     "create": "Create",
     "confirm": "Confirm",
@@ -52,7 +52,7 @@
     "alreadyClaimed": "You already claimed this MEMO",
     "claimFree": "Claim for free",
     "seeInGallery": "See {name} in gallery",
-    "wantToShare": "Do you want to share?"
+    "wantToShare": "Would you like to share it?"
   },
   "create": {
     "title": ".create",
@@ -61,7 +61,7 @@
       "name": "Name",
       "namePlaceholder": "Enter your MEMO name",
       "description": "Description",
-      "descriptionPlaceholder": "Describe your MEMO. These description will be displayed for all MEMO users.",
+      "descriptionPlaceholder": "Describe your MEMO. This description will be displayed for all MEMO users.",
       "website": "Website address",
       "websiteHint": "Use this if your memo should be linked to external domain",
       "websitePlaceholder": "Custom domains are supported.",
