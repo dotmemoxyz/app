@@ -1,4 +1,4 @@
-import type { MemoDTO } from "~/types/memo";
+import type { MemoDTO } from "~~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 

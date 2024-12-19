@@ -1,13 +1,7 @@
 <template>
   <Story title="Dot/Label" auto-props-disabled>
     <Variant title="Default">
-      <dot-label
-        class="w-1/4"
-        text="Switch"
-        :required="state.required"
-        :vertical="state.vertical"
-        :error="state.error"
-      >
+      <dot-label class="w-1/4" text="Switch" :required="state.required" :vertical="state.vertical" :error="state.error">
         <dot-switch />
       </dot-label>
     </Variant>

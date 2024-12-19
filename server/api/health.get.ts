@@ -1,4 +1,4 @@
-import { createLogger } from "~/utils/create-logger";
+import { createLogger } from "~~/utils/create-logger";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 

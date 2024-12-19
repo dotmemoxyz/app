@@ -78,6 +78,7 @@ import * as zod from "zod";
 import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
 import SignModal from "~/components/dot/sign-modal.vue";
+import { createLogger } from "~~/utils/create-logger";
 
 const { t } = useI18n();
 const validationSchema = toTypedSchema(

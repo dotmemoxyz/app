@@ -1,5 +1,5 @@
 import { $purify as purify } from "@kodadot1/minipfs";
-import type { Memo, MemoDTO } from "~/types/memo";
+import type { Memo, MemoDTO } from "~~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 

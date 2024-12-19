@@ -186,6 +186,7 @@ import { pinFileToIPFS, pinJson, type Metadata } from "~/services/nftStorage";
 import Identicon from "@polkadot/vue-identicon";
 import { asyncComputed } from "@vueuse/core";
 import type { Prefix } from "@kodadot1/static";
+import { createLogger } from "~~/utils/create-logger";
 
 const props = defineProps<{
   name: string;

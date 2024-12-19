@@ -7,6 +7,7 @@
 </template>
 <script setup lang="ts">
 import { ModalsContainer } from "vue-final-modal";
+import { createLogger } from "~~/utils/create-logger";
 
 const route = useRoute();
 
