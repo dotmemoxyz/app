@@ -68,7 +68,8 @@
       "startDate": "Start date",
       "endDate": "End date",
       "quantity": "Quantity",
-      "secret": "MEMO secret"
+      "secret": "MEMO secret",
+      "supportEmail": "Support email"
     },
     "dialog": {
       "confirm": "Confirm creation",

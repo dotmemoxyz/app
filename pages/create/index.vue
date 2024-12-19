@@ -62,6 +62,9 @@
       <dot-label :text="t('create.memo.secret')">
         <dot-text-input v-model="secret" placeholder="event2024" :error="secretError" />
       </dot-label>
+      <dot-label vertical :text="t('create.memo.supportEmail')">
+        <dot-checkbox v-model="supportEmail" />
+      </dot-label>
     </div>
     <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
   </form>
@@ -92,6 +95,7 @@ const validationSchema = toTypedSchema(
       .string({ message: "Secret is required" })
       .min(1, { message: "Secret is required" })
       .regex(/^[a-zA-Z_.\-\d]+$/, "Only alphanumeric characters and '-' are allowed"),
+    supportEmail: zod.boolean().optional(),
   }),
 );
 
@@ -112,6 +116,7 @@ const { value: endDate, errorMessage: endDateError } = useField<Date>("endDate")
 const localEndDateError = ref<string>("");
 const { value: quantity, errorMessage: quantityError } = useField<number>("quantity");
 const { value: secret, errorMessage: secretError } = useField<string>("secret");
+const { value: supportEmail } = useField<boolean>("supportEmail");
 
 // As `refine` doesnt work with `toTypedSchema` we need to do this manually
 watch([startDate, endDate], ([startDate, endDate]) => {
