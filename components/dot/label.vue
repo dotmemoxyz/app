@@ -1,11 +1,6 @@
 <template>
-  <div
-    class="flex"
-    :class="vertical ? 'flex-row justify-between' : 'flex-col gap-2'"
-  >
-    <label
-      class="font-bold"
-      :class="{ 'text-k-red': error, 'text-text-color': !error }"
+  <div class="flex" :class="vertical ? 'flex-row items-center justify-between' : 'flex-col gap-2'">
+    <label class="font-bold" :class="{ 'text-k-red': error, 'text-text-color': !error }"
       >{{ text }} <span v-if="required">*</span></label
     >
     <slot />
