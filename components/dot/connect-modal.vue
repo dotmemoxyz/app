@@ -75,7 +75,7 @@
             <div class="flex w-full items-center">
               <div class="rounded-full border-2 border-white">
                 <!-- @vue-ignore -->
-                <Identicon :size="52" theme="polkadot" :value="account.address" />
+                <Identicon :size="52" :theme="'polkadot'" :value="account.address" />
               </div>
 
               <div class="flex flex-1 flex-col items-start gap-1 px-4 py-3">
@@ -102,6 +102,7 @@
 import { VueFinalModal } from "vue-final-modal";
 import { useAccountStore } from "~/stores/account";
 import Identicon from "@polkadot/vue-identicon";
+import { addressShortener } from "~/utils/address-shortener";
 import { getSupportedWallets } from "~/utils/wallet";
 import type { BaseDotsamaWallet, ExtendedDotsamaAccount } from "~/utils/wallet/base_dotsama_wallet";
 

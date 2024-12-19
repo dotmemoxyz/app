@@ -1,24 +1,12 @@
-import { web3Enable, web3FromAddress } from "@polkadot/extension-dapp";
 import { getWalletBySource } from "./wallet";
+import type { InjectedExtension } from "polkadot-api/pjs-signer";
 
-export const enableExtension = async () => await web3Enable("DotMemo");
-
-export const getInjectedExtensions = async () => {
-  const extensions = await web3Enable("DotMemo");
-  return extensions;
-};
-
-export const getAddress = async (address: string) => {
+export const getAddress = async (address: string): Promise<InjectedExtension | null> => {
   try {
     const walletName = useAccountStore().selected?.wallet.source;
     const wallet = getWalletBySource(walletName);
     await wallet?.enable();
-    if (wallet?.extension) {
-      return wallet.extension;
-    }
-
-    const injector = await web3FromAddress(address);
-    return injector;
+    return wallet?.extension ?? null;
   } catch (e) {
     console.warn(`[EXTENSION] No Addr ${address}`);
     return null;

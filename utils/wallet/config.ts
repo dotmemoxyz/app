@@ -1,3 +1,5 @@
+import type { InjectedExtension } from "polkadot-api/pjs-signer";
+
 export enum SupportWalletExtension {
   PolkadotJs = "polkadot-js",
   MetaMask = "metamask",
@@ -36,7 +38,6 @@ export interface WalletAccount {
   source: string;
   name?: string;
   wallet?: Wallet;
-  signer?: unknown;
 }
 
 interface WalletData {
@@ -55,13 +56,8 @@ interface WalletExtension {
 
   // The raw extension object which will have everything a dapp developer needs.
   // Refer to a specific wallet's extension documentation
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  extension: any;
 
-  // The raw signer object for convenience. Usually the implementer can derive this from the extension object.
-  // Refer to a specific wallet's extension documentation
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  signer: any;
+  extension: InjectedExtension | undefined;
 }
 
 interface Signer {
