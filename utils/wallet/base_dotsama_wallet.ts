@@ -1,14 +1,8 @@
-import type {
-  InjectedAccount,
-  InjectedExtension,
-  InjectedMetadata,
-  InjectedProvider,
-  InjectedWindow,
-} from "@polkadot/extension-inject/types";
-import type { Signer as InjectedSigner } from "@polkadot/api/types";
-
 import { formatAccount } from "@/utils/account";
 import type { SubscriptionFn, Wallet, WalletConfig } from "./config";
+import { createLogger } from "~~/utils/create-logger";
+import type { InjectedAccount, InjectedExtension } from "polkadot-api/pjs-signer";
+import { connectInjectedExtension, getInjectedExtensions } from "polkadot-api/pjs-signer";
 
 const DAPP_NAME = ".MEMO";
 
@@ -36,40 +30,17 @@ export class BaseDotsamaWallet implements Wallet {
       this.isBrowserExtension = config.isBrowserExtension;
     }
   }
+  sign?: ((address: string, payload: string) => unknown) | undefined;
 
   _extension: InjectedExtension | undefined;
-  _signer: InjectedSigner | undefined;
-  _metadata: InjectedMetadata | undefined;
-  _provider: InjectedProvider | undefined;
   // API docs: https://polkadot.js.org/docs/extension/
   get extension() {
     return this._extension;
   }
 
-  // API docs: https://polkadot.js.org/docs/extension/
-  get signer() {
-    return this._signer;
-  }
-
-  get metadata() {
-    return this._metadata;
-  }
-
-  get provider() {
-    return this._provider;
-  }
-
   get installed() {
-    const injectedWindow = window as Window & InjectedWindow;
-    const injectedExtension = injectedWindow?.injectedWeb3?.[this.source];
-
-    return Boolean(injectedExtension);
-  }
-
-  get rawExtension() {
-    const injectedWindow = window as Window & InjectedWindow;
-    const injectedExtension = injectedWindow?.injectedWeb3?.[this.source];
-    return injectedExtension;
+    const injectedExtensions = getInjectedExtensions();
+    return injectedExtensions.some((extension) => extension === this.source);
   }
 
   enable = async () => {
@@ -78,23 +49,12 @@ export class BaseDotsamaWallet implements Wallet {
     }
 
     try {
-      const injectedExtension = this.rawExtension;
-      const rawExtension = await injectedExtension.enable?.(DAPP_NAME);
-      if (!rawExtension) {
+      const extension = await connectInjectedExtension(this.source, DAPP_NAME);
+      if (!extension) {
         return;
       }
 
-      const extension: InjectedExtension = {
-        ...rawExtension,
-        // Manually add `InjectedExtensionInfo` so as to have a consistent response.
-        name: this.extensionName,
-        version: injectedExtension.version!,
-      };
-
       this._extension = extension;
-      this._signer = extension.signer;
-      this._metadata = extension.metadata;
-      this._provider = extension.provider;
     } catch (err) {
       logger.error("[ENABLE] Unable to enable :)");
     }
@@ -109,10 +69,10 @@ export class BaseDotsamaWallet implements Wallet {
       callback(undefined);
       return null;
     }
-    if (!this._extension.accounts.subscribe) {
+    if (!this._extension.subscribe) {
       return null;
     }
-    const unsubscribe = this._extension.accounts.subscribe((accounts: InjectedAccount[]) => {
+    const unsubscribe = this._extension.subscribe((accounts) => {
       const accountsWithWallet = this.accountMap(accounts);
       callback(accountsWithWallet);
     });
@@ -128,7 +88,7 @@ export class BaseDotsamaWallet implements Wallet {
       return null;
     }
 
-    const accounts = await this._extension.accounts.get();
+    const accounts = this._extension.getAccounts();
 
     return this.accountMap(accounts);
   };
@@ -144,7 +104,6 @@ export class BaseDotsamaWallet implements Wallet {
         source: this._extension?.name as string,
         // Added extra fields here for convenience
         wallet: this,
-        signer: this._extension?.signer,
       };
     });
 }
@@ -152,5 +111,4 @@ export class BaseDotsamaWallet implements Wallet {
 export type ExtendedDotsamaAccount = InjectedAccount & {
   source: string;
   wallet: BaseDotsamaWallet;
-  signer?: InjectedSigner;
 };

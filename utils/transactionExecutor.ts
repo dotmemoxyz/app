@@ -44,11 +44,10 @@ const exec = async <T>(
     const address = typeof account === "string" ? account : account.address;
     const injector = await getAddress(toDefaultAddress(address));
     const hasCallback = typeof statusCb === "function";
-
-    const options = injector ? { signer: injector.signer } : undefined;
-    const signer: AddressOrPair = address;
-
-    const tx = await transfer.signAsync(signer, options);
+    const accountDetail = injector?.getAccounts().find((acc) => acc.address === address);
+    const options = accountDetail ? { signer: accountDetail.polkadotSigner } : undefined;
+    //TODO: Incompatible signer with polkadot-js
+    const tx = await transfer.signAsync(address, options);
     const hash = await getHash(hasCallback, tx, transfer, statusCb);
     return typeof hash === "function" ? constructCallback(hash, tx.hash.toHex()) : hash.toHex();
   } catch (err) {
