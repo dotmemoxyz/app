@@ -78,6 +78,12 @@
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.secret }}</p>
         <p class="text-sm text-text-color">{{ t("create.dialog.amount") }}</p>
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.quantity }}</p>
+        <template v-if="props.supportEmail">
+          <p class="text-sm text-text-color">{{ t("create.dialog.supportEmail") }}</p>
+          <p class="text-right text-sm font-bold text-text-color/70">
+            {{ props.supportEmail ? t("common.yes") : t("common.no") }}
+          </p>
+        </template>
       </div>
 
       <hr class="-mx-6 my-3" />
@@ -190,6 +196,7 @@ const props = defineProps<{
   secret: string;
   description?: string;
   chain: Prefix;
+  supportEmail?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -301,7 +308,7 @@ async function sign() {
       api.tx.nfts.create(...createArgs),
       api.tx.nfts.setCollectionMetadata(nextId, toMint.value),
       api.tx.nfts.setTeam(nextId, MEMO_BOT, accountId.value, accountId.value),
-      // DEV: this does not cover tx fee, we will sponsor it for a whilegs
+      // DEV: this does not cover tx fee, we will sponsor it for a while
       api.tx.balances.transferKeepAlive(MEMO_BOT, totalPayableDeposit.value),
       // DEV: this is for tracking purposes
       api.tx.system.remarkWithEvent("dotmemo.xyz"),

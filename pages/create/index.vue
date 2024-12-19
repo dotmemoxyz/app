@@ -131,54 +131,58 @@ watch([startDate, endDate], ([startDate, endDate]) => {
 
 const logger = createLogger("CreatePage");
 
-const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDate, name, externalUrl, secret }) => {
-  if (localStartDateError.value || localEndDateError.value) {
-    return;
-  }
+const onSubmit = handleSubmit(
+  ({ description, endDate, image, quantity, startDate, name, externalUrl, secret, supportEmail }) => {
+    if (localStartDateError.value || localEndDateError.value) {
+      return;
+    }
 
-  logger.success({
-    description,
-    endDate,
-    quantity,
-    startDate,
-    image,
-    name,
-    externalUrl,
-  });
-
-  const { open } = useModal({
-    component: SignModal,
-    attrs: {
-      name,
-      startDate,
+    logger.success({
+      description,
       endDate,
       quantity,
+      startDate,
       image,
-      secret,
-      description,
-      chain: preferredChain.value,
-      onSuccess({ txHash }) {
-        const { open: openSuccessModal } = useModal({
-          component: SuccessModal,
-          attrs: {
-            chain: preferredChain.value,
-            quantity,
-            name,
-            secret,
-            image,
-            tx: txHash,
-          },
-        });
+      name,
+      externalUrl,
+      supportEmail,
+    });
 
-        openSuccessModal();
+    const { open } = useModal({
+      component: SignModal,
+      attrs: {
+        name,
+        startDate,
+        endDate,
+        quantity,
+        image,
+        secret,
+        description,
+        supportEmail,
+        chain: preferredChain.value,
+        onSuccess({ txHash }) {
+          const { open: openSuccessModal } = useModal({
+            component: SuccessModal,
+            attrs: {
+              chain: preferredChain.value,
+              quantity,
+              name,
+              secret,
+              image,
+              tx: txHash,
+            },
+          });
+
+          openSuccessModal();
+        },
       },
-    },
-  });
+    });
 
-  open();
+    open();
 
-  return;
-});
+    return;
+  },
+);
 
 const isSubmittable = computed(
   () =>

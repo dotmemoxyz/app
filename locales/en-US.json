@@ -16,7 +16,9 @@
     "back": "Back",
     "address": "Address",
     "account": "Account",
-    "error": "Error"
+    "error": "Error",
+    "yes": "Yes",
+    "no": "No"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -87,7 +89,8 @@
       "proceed": "Proceed to signing",
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
-      "txProgress": "Transaction in progress. (Status: {status})"
+      "txProgress": "Transaction in progress. (Status: {status})",
+      "supportEmail": "Claim by mail?"
     },
     "success": {
       "title": "Purchased",
