@@ -1,6 +1,6 @@
 import { formatAccount } from "@/utils/account";
 import type { SubscriptionFn, Wallet, WalletConfig } from "./config";
-import { createLogger } from "~~/utils/create-logger";
+import { createLogger } from "@/utils/create-logger";
 import type { InjectedAccount, InjectedExtension } from "polkadot-api/pjs-signer";
 import { connectInjectedExtension, getInjectedExtensions } from "polkadot-api/pjs-signer";
 
