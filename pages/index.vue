@@ -2,7 +2,7 @@
   <main class="relative flex flex-col bg-bg-persistent">
     <section v-if="!networkStatus" class="sticky top-0 z-10">
       <div class="flex items-center justify-center gap-3 bg-red-500 p-5">
-        <p class="!text-white">You are offline. Please check your internet connection.</p>
+        <p class="!text-white">{{ t("common.offline") }}</p>
       </div>
     </section>
     <section
@@ -15,7 +15,7 @@
       <div class="absolute inset-x-0 top-0 flex justify-center">
         <h1 class="mt-5 text-3xl !text-white">.MEMO</h1>
       </div>
-      <p class="mt-16 text-4xl !text-white md:text-7xl">Your memories,<br />forever onchain</p>
+      <p class="mt-16 text-4xl !text-white md:text-7xl">{{ t("landing.quote1") }}<br />{{ t("landing.quote2") }}</p>
       <div class="flex flex-row gap-5">
         <dot-button
           size="large"
@@ -24,7 +24,7 @@
           class="px-10 hover:!bg-white hover:!text-bg-persistent sm:px-20"
           @click="router.push('/claim')"
         >
-          Claim
+          {{ t("common.claim") }}
         </dot-button>
         <dot-button
           size="large"
@@ -36,42 +36,45 @@
           }"
           @click="router.push('/create')"
         >
-          Create
+          {{ t("common.create") }}
         </dot-button>
       </div>
       <div class="flex flex-col items-center gap-3">
-        <p class="!text-white">Powered by</p>
+        <p class="!text-white">
+          {{ t("landing.poweredBy") }}
+        </p>
         <img :src="polkadotLogo" alt="polkadot logo" class="h-10" />
       </div>
     </section>
 
     <section class="mx-[10px] flex min-h-[40vh] flex-col justify-between gap-7 rounded-2xl bg-white p-10 md:mx-10">
       <p class="max-w-full text-4xl !text-bg-persistent sm:max-w-[66%] md:text-6xl">
-        Capture your unforgettable moments as digital badges on the Polkadot network.
+        {{ t("landing.captureMoments") }}
       </p>
 
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div class="flex items-center justify-start">
-          <p class="!text-black">Turn milestones into digital memories</p>
+          <p class="!text-black">{{ t("landing.milestonesIntoMemories") }}</p>
         </div>
         <div class="hidden justify-end">
-          <dot-button class="w-full sm:w-auto" variant="tertiary-dark" size="large">Learn more</dot-button>
+          <dot-button class="w-full sm:w-auto" variant="tertiary-dark" size="large">
+            {{ t("common.learnMore") }}
+          </dot-button>
         </div>
       </div>
     </section>
 
     <section class="m-[10px] flex min-h-[50vh] flex-col md:m-10">
-      <p class="m-6 text-3xl !text-white">How Dotmemo Works</p>
+      <p class="m-6 text-3xl !text-white">{{ t("landing.explanation.title") }}</p>
 
       <div class="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
         <div class="flex flex-col gap-2 rounded-3xl bg-bg-card p-8 sm:p-12">
           <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-k-primary">
             <img class="h-8 w-8" :src="claimIcon" />
           </div>
-          <p class="text-2xl font-bold !text-white">Claim</p>
+          <p class="text-2xl font-bold !text-white">{{ t("common.claim") }}</p>
           <p class="!text-white">
-            Receive a digital badge for attending or participating in special events, all securely stored on the
-            Polkadot network.
+            {{ t("landing.explanation.claimDescription") }}
           </p>
         </div>
 
@@ -79,10 +82,9 @@
           <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-k-primary">
             <img class="h-8 w-8" :src="createNewIcon" />
           </div>
-          <p class="text-2xl font-bold !text-white">Create</p>
+          <p class="text-2xl font-bold !text-white">{{ t("common.create") }}</p>
           <p class="!text-white">
-            Organizers can create unique badges to distribute at their events, giving attendees a tangible way to
-            commemorate their experiences.
+            {{ t("landing.explanation.createDescription") }}
           </p>
         </div>
 
@@ -90,21 +92,21 @@
           <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-k-primary">
             <img class="h-8 w-8" :src="communityIcon" />
           </div>
-          <p class="text-2xl font-bold !text-white">Share & Showcase</p>
+          <p class="text-2xl font-bold !text-white">{{ t("landing.explanation.share") }}</p>
           <p class="!text-white">
-            Show off your achievements by sharing your badges on social media or displaying them in your digital wallet.
+            {{ t("landing.explanation.shareDescription") }}
           </p>
         </div>
       </div>
     </section>
 
     <p class="text-center !text-white">
-      Wanna learn more? Visit our
+      {{ t("landing.learnMore") }}
       <a class="!text-k-primary underline" href="https://github.com/dotmemoxyz/app/wiki" target="_blank">wiki!</a>
     </p>
 
     <section class="m-[10px] flex min-h-[40vh] flex-col gap-7 rounded-2xl bg-white p-10 md:m-10">
-      <p class="text-4xl !text-bg-persistent md:text-6xl">Featured</p>
+      <p class="text-4xl !text-bg-persistent md:text-6xl">{{ t("landing.featured") }}</p>
 
       <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <a
@@ -129,7 +131,7 @@
       </div>
     </section>
     <section class="m-[10px] flex min-h-[40vh] flex-col gap-7 rounded-2xl bg-bg-card p-10 md:m-10">
-      <p class="text-4xl text-white md:text-6xl">Ecosystem Partners</p>
+      <p class="text-4xl text-white md:text-6xl">{{ $t("landing.partners") }}</p>
 
       <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <a
@@ -163,6 +165,8 @@ import { $purifyOne } from "@kodadot1/minipfs";
 definePageMeta({
   layout: "landing",
 });
+
+const { t } = useI18n();
 
 type Collection = {
   id: string;

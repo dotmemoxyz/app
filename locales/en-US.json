@@ -1,0 +1,106 @@
+{
+  "common": {
+    "memo": "MEMO",
+    "offline": "You are offline. Check your internet connection.",
+    "claim": "Claim",
+    "create": "Create",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "learnMore": "Learn More",
+    "continue": "Continue",
+    "searching": "Searching...",
+    "calculating": "Calculating...",
+    "signing": "Signing...",
+    "download": "Download",
+    "disconnect": "Disconnect",
+    "back": "Back",
+    "address": "Address",
+    "account": "Account",
+    "error": "Error"
+  },
+  "landing": {
+    "quote1": "Your memories,",
+    "quote2": "forever onchain",
+    "poweredBy": "Powered by",
+    "captureMoments": "Capture your unforgettable moments as digital badges on the Polkadot network.",
+    "milestonesIntoMemories": "Turn milestones into digital memories",
+    "explanation": {
+      "title": "How Dotmemo Works",
+      "claimDescription": "Receive a digital badge for attending or participating in special events, all securely stored on the Polkadot network.",
+      "createDescription": "Organizers can create unique badges to distribute at their events, giving attendees a tangible way to commemorate their experiences.",
+      "share": "Share & Showcase",
+      "shareDescription": "Show off your achievements by sharing your badges on social media or displaying them in your digital wallet."
+    },
+    "learnMore": "Wanna learn more? Visit our",
+    "featured": "Featured",
+    "partners": "Ecosystem Partners"
+  },
+  "wallets": {
+    "selectWallet": "Select Wallet",
+    "selectAccount": "Select Account",
+    "other": "Other Wallets"
+  },
+  "claim": {
+    "enterCode": "Enter MEMO Code",
+    "howThisWorks": "How this works?",
+    "success": "MEMO claimed successfully",
+    "cantLoad": "Couldn't load MEMO",
+    "tryDifferent": "Try a different MEMO?",
+    "enterAddress": "Enter address",
+    "connectWallet": "Connect Wallet",
+    "enterDOTAddress": "Enter DOT address",
+    "alreadyClaimed": "You already claimed this MEMO",
+    "claimFree": "Claim for free",
+    "seeInGallery": "See {name} in gallery",
+    "wantToShare": "Would you like to share it?"
+  },
+  "create": {
+    "title": ".create",
+    "memo": {
+      "chain": "Chain",
+      "name": "Name",
+      "namePlaceholder": "Enter your MEMO name",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe your MEMO. This description will be displayed for all MEMO users.",
+      "website": "Website address",
+      "websiteHint": "Use this if your memo should be linked to external domain",
+      "websitePlaceholder": "Custom domains are supported.",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "quantity": "Quantity",
+      "secret": "MEMO secret"
+    },
+    "dialog": {
+      "confirm": "Confirm creation",
+      "connectedAs": "Connected as",
+      "network": "Network :{name}",
+      "eventStart": "Event start",
+      "eventEnd": "Event end",
+      "code": "MEMO code",
+      "amount": "Amount",
+      "total": "Total deposit + Fees",
+      "breakdown": "Breakdown",
+      "collectionDeposit": "Collection deposit",
+      "freeMintingDeposit": "Free minting deposit",
+      "fees": "Fees",
+      "proceed": "Proceed to signing",
+      "canceled": "Transaction was canceled. Please try again.",
+      "settingUp": "Setting up your MEMO",
+      "txProgress": "Transaction in progress. (Status: {status})"
+    },
+    "success": {
+      "title": "Purchased",
+      "confirmed": "Confirmed",
+      "viewTx": "View TX",
+      "created1": "Created",
+      "created2": "with",
+      "created3": "pieces!",
+      "qr": "QR Code",
+      "claim": "Claim one for you"
+    }
+  },
+  "image": {
+    "chooseArtwork": "Drop your artwork",
+    "chooseDifferent": "Choose a different artwork"
+  }
+}

@@ -7,7 +7,7 @@
     content-transition="vfm-fade"
   >
     <div class="flex items-center justify-between pb-1">
-      <h1 class="text-xl font-semibold text-text-color">Confirm creation</h1>
+      <h1 class="text-xl font-semibold text-text-color">{{ t("create.dialog.confirm") }}</h1>
       <button @click="closeModal()">
         <Icon name="mdi:close" size="32" class="text-text-color" />
       </button>
@@ -16,7 +16,7 @@
     <hr class="-mx-6" />
 
     <template v-if="accountStore.hasSelectedAccount">
-      <p class="mt-2 text-text-color opacity-70">Connected as</p>
+      <p class="mt-2 text-text-color opacity-70">{{ t("create.dialog.connectedAs") }}</p>
 
       <div class="flex items-center gap-3">
         <!-- @vue-ignore -->
@@ -32,21 +32,21 @@
     <hr class="my-3" />
     <template v-if="signError">
       <div class="relative rounded border border-red-200 bg-red-100 px-4 py-3 text-red-700" role="alert">
-        <strong class="font-bold">Error! </strong>
+        <strong class="font-bold">{{ t("common.error") }}!</strong>
         <span class="block sm:inline">{{ signError }}</span>
       </div>
       <hr class="my-3" />
     </template>
     <template v-else-if="txError">
       <div class="relative rounded border border-red-200 bg-red-100 px-4 py-3 text-red-700" role="alert">
-        <strong class="font-bold">Error! </strong>
+        <strong class="font-bold">{{ t("common.error") }}!</strong>
         <span class="block sm:inline">{{ txError }}</span>
       </div>
       <hr class="my-3" />
     </template>
     <template v-else-if="currencyError">
       <div class="relative rounded border border-red-200 bg-red-100 px-4 py-3 text-red-700" role="alert">
-        <strong class="font-bold">Error! </strong>
+        <strong class="font-bold">{{ t("common.error") }}!</strong>
         <span class="block sm:inline">{{ currencyError }}</span>
       </div>
       <hr class="my-3" />
@@ -59,55 +59,63 @@
         </div>
         <div class="flex flex-col gap-2">
           <h1 class="text-xl text-text-color">{{ props.name }}</h1>
-          <p class="text-sm text-text-color opacity-70">Network: {{ chainName }}</p>
+          <p class="text-sm text-text-color opacity-70">
+            {{
+              t("create.dialog.network", {
+                name: chainName,
+              })
+            }}
+          </p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
-        <p class="text-sm text-text-color">Event Start</p>
+        <p class="text-sm text-text-color">{{ t("create.dialog.eventStart") }}</p>
         <p class="text-right text-sm text-text-color/70">{{ props.startDate.toISOString().split("T").at(0) }}</p>
-        <p class="text-sm text-text-color">Event End</p>
+        <p class="text-sm text-text-color">{{ t("create.dialog.eventEnd") }}</p>
         <p class="text-right text-sm text-text-color/70">{{ props.endDate.toISOString().split("T").at(0) }}</p>
-        <p class="text-sm text-text-color">Claim Code</p>
+        <p class="text-sm text-text-color">{{ t("create.dialog.code") }}</p>
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.secret }}</p>
-        <p class="text-sm text-text-color">Amount</p>
+        <p class="text-sm text-text-color">{{ t("create.dialog.amount") }}</p>
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.quantity }}</p>
       </div>
 
       <hr class="-mx-6 my-3" />
 
       <div class="grid grid-cols-2 gap-3">
-        <p class="text-sm text-text-color">Total Deposit + Fees</p>
+        <p class="text-sm text-text-color">{{ t("create.dialog.total") }}</p>
         <p class="text-right text-sm text-text-color">
           <!-- TODO -->
           <span class="ml-2 font-bold text-text-color/70"> {{ symbolValue }} {{ properties.symbol }} </span>
 
-          <span v-if="dollarValue === null" class="animate-pulse text-xs text-text-color/50"> (Calculating...) </span>
+          <span v-if="dollarValue === null" class="animate-pulse text-xs text-text-color/50">
+            ({{ t("common.calculating") }})
+          </span>
           <span v-else-if="!currencyError" class="text-xs text-text-color/50"> ({{ dollarValue.toFixed(2) }}$) </span>
         </p>
 
         <button class="col-span-2 flex items-center gap-2" @click="showBreakdown = !showBreakdown">
-          <p class="text-xs text-text-color opacity-50">Breakdown</p>
+          <p class="text-xs text-text-color opacity-50">{{ t("create.dialog.breakdown") }}</p>
           <Icon :name="`mdi:chevron-${showBreakdown ? 'up' : 'down'}`" size="20" class="text-text-color opacity-50" />
         </button>
 
         <template v-if="showBreakdown">
-          <p class="text-sm text-text-color">Collection Deposit</p>
+          <p class="text-sm text-text-color">{{ t("create.dialog.collectionDeposit") }}</p>
           <p class="text-right text-sm text-text-color/70">{{ depositForCollection }} {{ properties.symbol }}</p>
-          <p class="text-sm text-text-color">Free Minting Deposit</p>
+          <p class="text-sm text-text-color">{{ t("create.dialog.freeMintingDeposit") }}</p>
           <p class="text-right text-sm text-text-color/70">
             {{ props.quantity }} x {{ depositPerItem }} {{ properties.symbol }}
           </p>
-          <p class="text-sm text-text-color">Fees</p>
+          <p class="text-sm text-text-color">{{ t("create.dialog.fees") }}</p>
           <p class="text-right text-sm text-text-color/70">0.02 {{ properties.symbol }}</p>
         </template>
       </div>
 
       <dot-button :disabled="!isLogIn || !!currencyError || isSigning" variant="primary" size="large" @click="sign()">
-        {{ isSigning ? `Signing... (${statusText})` : "Proceed to signing" }}
+        {{ isSigning ? `${t("common.signing")} (${statusText})` : t("create.dialog.proceed") }}
       </dot-button>
       <small v-if="status === TransactionStatus.Cancelled" class="text-center text-sm text-gray-400">
-        Transaction was cancelled. Please try again.
+        {{ t("create.dialog.canceled") }}
       </small>
     </template>
 
@@ -145,8 +153,14 @@
         </svg>
 
         <div>
-          <p class="text-2xl font-bold text-text-color">Setting up MEMO</p>
-          <p class="text-text-color opacity-70">Transaction in progress (Status: {{ statusText }})</p>
+          <p class="text-2xl font-bold text-text-color">{{ t("create.dialog.settingUp") }}</p>
+          <p class="text-text-color opacity-70">
+            {{
+              t("create.dialog.txProgress", {
+                status: statusText,
+              })
+            }}
+          </p>
         </div>
       </div>
     </template>
@@ -177,6 +191,8 @@ const props = defineProps<{
   description?: string;
   chain: Prefix;
 }>();
+
+const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: "success", data: { txHash: string }): void;

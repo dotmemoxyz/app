@@ -1,43 +1,53 @@
 <template>
   <form class="mx-auto flex max-w-md flex-col space-y-7 px-4 pb-20 pt-8" @submit="onSubmit">
-    <h1 class="text-4xl font-extrabold text-text-color">.create</h1>
+    <h1 class="text-4xl font-extrabold text-text-color">{{ t("create.title") }}</h1>
 
     <div class="flex flex-col gap-4">
       <dot-image-input v-model="image" :error="imageError" />
-      <dot-label text="Chain">
+      <dot-label :text="t('create.memo.chain')">
         <dot-select v-model="preferredChain" :options="chainList" />
       </dot-label>
-      <dot-label text="MEMO name">
-        <dot-text-input v-model="name" :limit="150" type="text" placeholder="XYZ Event Collection" :error="nameError" />
+      <dot-label :text="t('create.memo.name')">
+        <dot-text-input
+          v-model="name"
+          :limit="150"
+          type="text"
+          :placeholder="t('create.memo.namePlaceholder')"
+          :error="nameError"
+        />
       </dot-label>
-      <dot-label text="MEMO description">
+      <dot-label :text="t('create.memo.description')">
         <dot-text-area
           v-model="description"
           :limit="500"
-          placeholder="Describe your MEMO. These description will be displayed for all MEMO users."
+          :placeholder="t('create.memo.descriptionPlaceholder')"
           :error="descriptionError"
         />
       </dot-label>
-      <dot-label class="relative" text="Website address">
+      <dot-label class="relative" :text="t('create.memo.website')">
         <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
           <span>?</span>
           <span
             class="pointer-events-none absolute right-0 top-full z-50 mt-2 w-64 rounded-lg bg-white px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100"
           >
-            Use this if your memo should be linked to external domain
+            {{ t("create.memo.websiteHint") }}
           </span>
         </div>
-        <dot-text-input v-model="externalUrl" placeholder="Custom domains are supported." :error="externalUrlError" />
+        <dot-text-input
+          v-model="externalUrl"
+          :placeholder="t('create.memo.websitePlaceholder')"
+          :error="externalUrlError"
+        />
       </dot-label>
       <div class="grid grid-cols-2 gap-8">
-        <dot-label text="Start date">
+        <dot-label :text="t('create.memo.startDate')">
           <dot-text-input v-model="startDate" type="date" :error="startDateError || localStartDateError" />
         </dot-label>
-        <dot-label text="End">
+        <dot-label :text="t('create.memo.endDate')">
           <dot-text-input v-model="endDate" type="date" :error="endDateError || localEndDateError" />
         </dot-label>
       </div>
-      <dot-label text="Quantity">
+      <dot-label :text="t('create.memo.quantity')">
         <dot-text-input v-model.number="quantity" type="number" placeholder="0" :error="quantityError" />
         <div class="hidden gap-2 md:flex">
           <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity -= 100"> -100 </dot-button>
@@ -49,7 +59,7 @@
           <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 100"> +100 </dot-button>
         </div>
       </dot-label>
-      <dot-label text="MEMO Secret">
+      <dot-label :text="t('create.memo.secret')">
         <dot-text-input v-model="secret" placeholder="event2024" :error="secretError" />
       </dot-label>
     </div>
@@ -66,6 +76,7 @@ import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
 import SignModal from "~/components/dot/sign-modal.vue";
 
+const { t } = useI18n();
 const validationSchema = toTypedSchema(
   zod.object({
     image: zod.instanceof(File).refine((value) => value.size < 5 * 1024 * 1024, {

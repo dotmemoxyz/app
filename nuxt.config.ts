@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 export default defineNuxtConfig({
   app: {
     head: {
@@ -8,7 +9,14 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
-
+  vite: {
+    plugins: [
+      VueI18nPlugin({
+        include: ["./locales/**"],
+      }),
+    ],
+  },
+  watch: ["~/locales/**"],
   modules: [
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
@@ -19,8 +27,11 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@vue-final-modal/nuxt",
     "@vite-pwa/nuxt",
+    "@nuxtjs/i18n",
   ],
-
+  i18n: {
+    vueI18n: "./i18n.config.ts",
+  },
   runtimeConfig: {
     apiUrl: "",
     public: {

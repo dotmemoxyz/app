@@ -27,14 +27,15 @@
   </div>
 </template>
 <script setup lang="ts">
-const links = [
-  { name: "Claim", icon: "mdi:hand-back-right", href: "/claim" },
+const { t } = useI18n();
+const links = computed(() => [
+  { name: t("common.claim"), icon: "mdi:hand-back-right", href: "/claim" },
   {
-    name: "Create",
+    name: t("common.create"),
     icon: "mdi:credit-card-edit-outline",
     href: "/create",
   },
-];
+]);
 
 const navOpen = ref(false);
 

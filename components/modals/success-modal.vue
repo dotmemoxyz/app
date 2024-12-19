@@ -7,7 +7,7 @@
     content-transition="vfm-fade"
   >
     <div class="flex items-center justify-between pb-1">
-      <h1 class="text-xl font-semibold text-text-color">Purchased</h1>
+      <h1 class="text-xl font-semibold text-text-color">{{ t("create.success.title") }}</h1>
       <button @click="closeModal()">
         <Icon name="mdi:close" size="32" class="text-text-color" />
       </button>
@@ -18,10 +18,10 @@
     <div class="flex w-full justify-between rounded-xl border border-k-primary bg-emerald-400/10 px-3 py-3">
       <p class="inline-flex items-center justify-center gap-2 font-medium text-k-primary">
         <icon name="mdi:check" size="24" />
-        <span>Confirmed</span>
+        <span>{{ t("create.success.confirmed") }}</span>
       </p>
-      <a class="justify-centerg inline-flex items-center gap-2 text-text-color hover:underline" :href="hashLink">
-        <span>View TX</span>
+      <a class="inline-flex items-center justify-center gap-2 text-text-color hover:underline" :href="hashLink">
+        <span>{{ t("create.success.viewTx") }}</span>
         <icon name="mdi:arrow-top-right" size="24" />
       </a>
     </div>
@@ -29,8 +29,9 @@
     <image-preview :src="imagePreviewSrc" />
 
     <p class="text-center text-text-color">
-      Created <span class="text-k-primary">{{ props.name }}</span> with
-      <span class="text-k-primary">{{ props.quantity }}</span> pieces!
+      {{ t("create.success.created1") }} <span class="text-k-primary">{{ props.name }}</span>
+      {{ t("create.success.created2") }} <span class="text-k-primary">{{ props.quantity }}</span>
+      {{ t("create.success.created3") }}
     </p>
 
     <hr class="mx-6" />
@@ -80,9 +81,11 @@
     <div class="flex gap-3">
       <dot-button variant="tertiary" size="medium" @click="generateQR()">
         <Icon name="mdi:download" size="32" class="text-text-color" />
-        QR Code
+        {{ t("create.success.qr") }}
       </dot-button>
-      <dot-button variant="primary" size="medium" class="flex-1" @click="claim()">Claim one for you</dot-button>
+      <dot-button variant="primary" size="medium" class="flex-1" @click="claim()">
+        {{ t("create.success.claim") }}
+      </dot-button>
     </div>
   </vue-final-modal>
 </template>
@@ -90,6 +93,8 @@
 <script setup lang="ts">
 import { useVfm, VueFinalModal } from "vue-final-modal";
 import QRCode from "qrcode";
+
+const { t } = useI18n();
 
 const props = defineProps<{
   quantity: number;
