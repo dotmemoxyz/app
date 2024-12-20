@@ -1,12 +1,10 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
-import type { Callback, ISubmittableResult } from "@polkadot/types/types";
-import { getAddress } from "@/utils/extension";
 import { toDefaultAddress } from "@/utils/account";
-import type { DispatchError, Hash } from "@polkadot/types/interfaces";
+import { getAddress } from "@/utils/extension";
+import type { SubmittableExtrinsic } from "@polkadot/api/types";
+import type { HexString, Transaction, TxFinalizedPayload, TxEntry } from "polkadot-api";
 import { MEMO_BOT } from "./sdk/constants";
-import type { Extrinsic } from "@kodadot1/sub-api";
 
 export interface KeyringPair$Meta {
   [index: string]: any;
@@ -19,75 +17,91 @@ export interface KeyringAccount {
   type: string;
 }
 
-export type ExecResult = UnsubscribeFn | string;
+export type ExecResult = TxFinalizedPayload | string;
 export type UnsubscribeFn = () => string;
-type ExtrinsicFunction<T> = (...arg: T[]) => Extrinsic;
-export type StatusCb = (result: ISubmittableResult) => void | Promise<void>;
 
-export const execResultValue = (execResult: ExecResult): string => {
-  if (typeof execResult === "function") {
-    return execResult();
-  }
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type ExtrinsicFunction<T extends {} | undefined, Asset> = (
+  ...args: T extends undefined ? [] : [data: T]
+) => Transaction<T, string, string, Asset>;
+export type StatusCb = <T extends TxFinalizedPayload>(result: T) => void | Promise<void>;
+export type ISubmittableResult = TxFinalizedPayload;
 
-  return execResult;
-};
+// export const execResultValue = (execResult: ExecResult): string => {
+//   if (typeof execResult === "function") {
+//     return execResult();
+//   }
 
-const exec = async <T>(
+//   return execResult;
+// };
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+const exec = async <T extends {} | undefined, Asset>(
   account: KeyringAccount | string,
-  password: string | null,
-  callback: ExtrinsicFunction<T>,
-  params: T[],
-  statusCb: Callback<any>,
+  _password: string | null,
+  callback: ExtrinsicFunction<T, Asset>,
+  params: T extends undefined ? [] : [data: T],
+  statusCb: Callback,
 ): Promise<ExecResult> => {
   try {
-    const transfer = await callback(...params);
+    const call = callback(...params);
     const address = typeof account === "string" ? account : account.address;
     const injector = await getAddress(toDefaultAddress(address));
     const hasCallback = typeof statusCb === "function";
     const accountDetail = injector?.getAccounts().find((acc) => acc.address === address);
-    const options = accountDetail ? { signer: accountDetail.polkadotSigner } : undefined;
+    // const options = accountDetail ? { signer: accountDetail.polkadotSigner } : undefined;
+    if (!accountDetail) {
+      throw new Error("Account not found");
+    }
     //TODO: Incompatible signer with polkadot-js
-    const tx = await transfer.signAsync(address, options);
-    const hash = await getHash(hasCallback, tx, transfer, statusCb);
-    return typeof hash === "function" ? constructCallback(hash, tx.hash.toHex()) : hash.toHex();
+    const tx = call.signAndSubmit(accountDetail.polkadotSigner);
+    const hash = await getHash(hasCallback, tx, statusCb);
+    return hash;
   } catch (err) {
     console.warn(err);
     throw err;
   }
 };
 
-const getHash = async (hasCallback: boolean, tx: Extrinsic, transfer: Extrinsic, statusCb: StatusCb) => {
-  return hasCallback ? await tx.send(statusCb) : await transfer.send();
+const getHash = async (hasCallback: boolean, tx: Promise<TxFinalizedPayload>, statusCb: StatusCb) => {
+  return hasCallback
+    ? tx.then((result) => {
+        statusCb(result);
+        return result;
+      })
+    : await tx;
 };
 
-const constructCallback = (cb: () => void, result: string) => {
-  return () => {
-    cb();
-    return result;
-  };
-};
+// const constructCallback = (cb: () => void, result: string) => {
+//   return () => {
+//     cb();
+//     return result;
+//   };
+// };
 
-export type TxCbOnSuccessParams = { blockHash: Hash; txHash: Hash };
+export type TxCbOnSuccessParams = { blockHash: HexString; txHash: HexString };
 
 export const txCb =
-  (
+  <T extends TxFinalizedPayload>(
     onSuccess: (prams: TxCbOnSuccessParams) => void,
-    onError: (err: DispatchError) => void,
-    onResult: (result: ISubmittableResult) => void = console.log,
+    onError: (err: any) => void,
+    onResult: (result: T) => void = console.log,
   ) =>
-  (result: ISubmittableResult): void => {
+  (result: T): void => {
     onResult(result);
-    if (result.dispatchError) {
+    if (result.dispatchError || !result.ok) {
       console.warn("[EXEC] dispatchError", result);
       onError(result.dispatchError);
     }
 
-    if (result.status.isFinalized) {
+    if (result.ok) {
       console.log("[EXEC] Finalized", result);
-      console.log(`[EXEC] blockHash ${result.status.asFinalized}`);
-      onSuccess({ blockHash: result.status.asFinalized, txHash: result.txHash });
+      console.log(`[EXEC] blockHash ${result.block.hash}`);
+      onSuccess({ blockHash: result.block.hash, txHash: result.txHash });
     }
   };
+
+type Callback = ReturnType<typeof txCb>;
 
 export const estimate = async (
   account: KeyringAccount | string,
