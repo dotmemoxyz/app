@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { DispatchError } from "@polkadot/types/interfaces";
-import type { ISubmittableResult } from "@polkadot/types/types";
+// import type { ISubmittableResult } from "@polkadot/types/types";
 import useAPI from "./useApi";
 import useTransactionStatus, { TransactionStatus } from "./useTransactionStatus";
 import exec, { execResultValue, txCb } from "@/utils/transactionExecutor";
-import type { ExecResult, TxCbOnSuccessParams } from "@/utils/transactionExecutor";
+import type {
+  ExecResult,
+  ExtrinsicFunction,
+  TxCbOnSuccessParams,
+  ISubmittableResult,
+} from "@/utils/transactionExecutor";
 import type { Extrinsic } from "@kodadot1/sub-api";
 import type { Prefix } from "@kodadot1/static";
+import type { TxEntry } from "polkadot-api";
 
 export type HowAboutToExecuteOnSuccessParam = {
   txHash: string;
@@ -26,8 +32,8 @@ type HowAboutToExecuteOptions = {
 
 export type HowAboutToExecute = (
   account: string,
-  cb: (...params: any[]) => Extrinsic,
-  args: any[],
+  cb: ExtrinsicFunction<any, any>,
+  args: [data: any],
   options?: HowAboutToExecuteOptions,
 ) => Promise<void>;
 
@@ -57,7 +63,7 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
     async ({ blockHash, txHash }: TxCbOnSuccessParams) => {
       const api = await apiInstance.value;
 
-      tx.value && execResultValue(tx.value);
+      // tx.value && execResultValue(tx.value);
       const header = await api.rpc.chain.getHeader(blockHash);
       const blockNumber = header.number.toString();
 
@@ -70,7 +76,7 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
     };
 
   const errorCb = (onError?: () => void) => (dispatchError: DispatchError) => {
-    tx.value && execResultValue(tx.value);
+    // tx.value && execResultValue(tx.value);
     onTxError(dispatchError);
     isLoading.value = false;
     isError.value = true;
@@ -80,7 +86,7 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
   };
 
   const resultCb = (onResult?: (result: HowAboutToExecuteOnResultParam) => void) => (result: ISubmittableResult) => {
-    resolveStatus(result.status);
+    resolveStatus(result);
     onResult?.({ txHash: result.txHash.toString(), result });
   };
 
