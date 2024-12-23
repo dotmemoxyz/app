@@ -61,7 +61,7 @@
             }"
             @click="inputMode = 'mail'"
           >
-            E-mail
+            {{ t("common.mail") }}
           </button>
         </div>
 
@@ -79,7 +79,7 @@
         </dot-label>
 
         <template v-if="inputMode === 'mail'">
-          <dot-label text="Enter E-mail address">
+          <dot-label :text="t('claim.enterMailAddress')">
             <dot-text-input v-model="manualAddress" :error="addressError" :placeholder="t('common.address')" />
           </dot-label>
         </template>

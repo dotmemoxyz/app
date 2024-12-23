@@ -18,7 +18,8 @@
     "account": "Account",
     "error": "Error",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "mail": "E-mail"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -54,7 +55,8 @@
     "alreadyClaimed": "You already claimed this MEMO",
     "claimFree": "Claim for free",
     "seeInGallery": "See {name} in gallery",
-    "wantToShare": "Would you like to share it?"
+    "wantToShare": "Would you like to share it?",
+    "enterMailAddress": "Enter E-mail address"
   },
   "create": {
     "title": ".create",
