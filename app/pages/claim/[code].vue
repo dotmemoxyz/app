@@ -33,28 +33,39 @@
 
     <div v-if="!error" class="flex flex-col space-y-3 self-stretch">
       <template v-if="!claimed">
-        <div class="mb-6 flex rounded-full border-2 border-border-color p-2 shadow-text-color">
+        <div
+          class="mb-6 flex flex-col rounded-[28px] border-2 border-border-color p-2 shadow-text-color md:flex-row md:rounded-full"
+        >
           <button
             class="flex-1 rounded-full py-2 text-text-color"
             :class="{
-              'bg-background-color-inverse text-text-color-inverse': showAddressInput,
+              'bg-background-color-inverse text-text-color-inverse': inputMode === 'manual-address',
             }"
-            @click="showAddressInput = true"
+            @click="inputMode = 'manual-address'"
           >
             {{ t("claim.enterAddress") }}
           </button>
           <button
             class="flex-1 rounded-full py-2 text-text-color"
             :class="{
-              'bg-background-color-inverse text-text-color-inverse': !showAddressInput,
+              'bg-background-color-inverse text-text-color-inverse': inputMode === 'wallet',
             }"
-            @click="showAddressInput = false"
+            @click="inputMode = 'wallet'"
           >
             {{ t("claim.connectWallet") }}
           </button>
+          <button
+            class="flex-1 rounded-full py-2 text-text-color"
+            :class="{
+              'bg-background-color-inverse text-text-color-inverse': inputMode === 'mail',
+            }"
+            @click="inputMode = 'mail'"
+          >
+            E-mail
+          </button>
         </div>
 
-        <dot-label v-if="showAddressInput" :text="t('claim.enterDOTAddress')">
+        <dot-label v-if="inputMode === 'manual-address'" :text="t('claim.enterDOTAddress')">
           <form class="flex space-x-4" @submit.prevent="onSubmit()">
             <dot-text-input v-model="manualAddress" :error="addressError" :placeholder="t('common.address')" />
             <div>
@@ -67,7 +78,13 @@
           </form>
         </dot-label>
 
-        <client-only v-if="!showAddressInput">
+        <template v-if="inputMode === 'mail'">
+          <dot-label text="Enter E-mail address">
+            <dot-text-input v-model="manualAddress" :error="addressError" :placeholder="t('common.address')" />
+          </dot-label>
+        </template>
+
+        <client-only v-if="inputMode === 'wallet'">
           <dot-label :text="t('common.account')">
             <dot-connect />
           </dot-label>
@@ -158,9 +175,12 @@ const route = useRoute();
 const router = useRouter();
 const accountStore = useAccountStore();
 const manualAddress = ref("");
-const showAddressInput = ref(true);
+
+const inputMode = ref<"mail" | "manual-address" | "wallet">("manual-address");
 
 const { t } = useI18n();
+
+const showAddressInput = computed(() => inputMode.value === "manual-address");
 
 watch(showAddressInput, (show) => {
   if (!show) {
