@@ -51,6 +51,10 @@ export type Memo = {
    * Expires at
    */
   expiresAt: string;
+  /**
+   * Flag to enable / disable claim by mail
+   */
+  supportMail: boolean;
 };
 
 export type CreateMemoDTO = {
@@ -78,4 +82,8 @@ export type CreateMemoDTO = {
    * Image URL
    */
   image: string;
+  /**
+   * Flag to enable / disable claim by mail
+   */
+  supportMail: boolean;
 };
