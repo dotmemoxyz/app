@@ -62,8 +62,8 @@
       <dot-label :text="t('create.memo.secret')">
         <dot-text-input v-model="secret" placeholder="event2024" :error="secretError" />
       </dot-label>
-      <dot-label vertical :text="t('create.memo.supportEmail')">
-        <dot-checkbox v-model="supportEmail" />
+      <dot-label vertical :text="t('create.memo.supportMail')">
+        <dot-checkbox v-model="supportMail" />
       </dot-label>
     </div>
     <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
@@ -96,7 +96,7 @@ const validationSchema = toTypedSchema(
       .string({ message: "Secret is required" })
       .min(1, { message: "Secret is required" })
       .regex(/^[a-zA-Z_.\-\d]+$/, "Only alphanumeric characters and '-' are allowed"),
-    supportEmail: zod.boolean().optional(),
+    supportMail: zod.boolean().optional(),
   }),
 );
 
@@ -117,7 +117,7 @@ const { value: endDate, errorMessage: endDateError } = useField<Date>("endDate")
 const localEndDateError = ref<string>("");
 const { value: quantity, errorMessage: quantityError } = useField<number>("quantity");
 const { value: secret, errorMessage: secretError } = useField<string>("secret");
-const { value: supportEmail } = useField<boolean>("supportEmail");
+const { value: supportMail } = useField<boolean>("supportMail");
 
 // As `refine` doesnt work with `toTypedSchema` we need to do this manually
 watch([startDate, endDate], ([startDate, endDate]) => {
@@ -133,7 +133,7 @@ watch([startDate, endDate], ([startDate, endDate]) => {
 const logger = createLogger("CreatePage");
 
 const onSubmit = handleSubmit(
-  ({ description, endDate, image, quantity, startDate, name, externalUrl, secret, supportEmail }) => {
+  ({ description, endDate, image, quantity, startDate, name, externalUrl, secret, supportMail }) => {
     if (localStartDateError.value || localEndDateError.value) {
       return;
     }
@@ -146,9 +146,8 @@ const onSubmit = handleSubmit(
       image,
       name,
       externalUrl,
-      supportEmail,
+      supportMail,
     });
-
     const { open } = useModal({
       component: SignModal,
       attrs: {
@@ -159,7 +158,7 @@ const onSubmit = handleSubmit(
         image,
         secret,
         description,
-        supportEmail,
+        supportMail,
         chain: preferredChain.value,
         onSuccess({ txHash }) {
           const { open: openSuccessModal } = useModal({

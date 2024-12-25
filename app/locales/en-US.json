@@ -73,7 +73,7 @@
       "endDate": "End date",
       "quantity": "Quantity",
       "secret": "MEMO secret",
-      "supportEmail": "Support email"
+      "supportMail": "Support email"
     },
     "dialog": {
       "confirm": "Confirm creation",
@@ -92,7 +92,7 @@
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
       "txProgress": "Transaction in progress. (Status: {status})",
-      "supportEmail": "Claim by mail?"
+      "supportMail": "Claim by mail?"
     },
     "success": {
       "title": "Purchased",

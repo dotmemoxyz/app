@@ -78,10 +78,10 @@
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.secret }}</p>
         <p class="text-sm text-text-color">{{ t("create.dialog.amount") }}</p>
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.quantity }}</p>
-        <template v-if="props.supportEmail">
-          <p class="text-sm text-text-color">{{ t("create.dialog.supportEmail") }}</p>
+        <template v-if="props.supportMail">
+          <p class="text-sm text-text-color">{{ t("create.dialog.supportMail") }}</p>
           <p class="text-right text-sm font-bold text-text-color/70">
-            {{ props.supportEmail ? t("common.yes") : t("common.no") }}
+            {{ props.supportMail ? t("common.yes") : t("common.no") }}
           </p>
         </template>
       </div>
@@ -197,7 +197,7 @@ const props = defineProps<{
   secret: string;
   description?: string;
   chain: Prefix;
-  supportEmail?: boolean;
+  supportMail?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -347,6 +347,7 @@ watch(status, async (status) => {
           mint: toMint.value,
           name: props.name,
           image: imageCid.value,
+          supportMail: Boolean(props.supportMail),
         },
       });
     } catch (error) {
