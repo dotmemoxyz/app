@@ -1,5 +1,5 @@
 import { $purify as purify } from "@kodadot1/minipfs";
-import type { Memo, MemoDTO } from "~/types/memo";
+import type { Memo, MemoDTO } from "~~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
@@ -27,6 +27,7 @@ export default defineEventHandler(async (event) => {
     description: rawData.description,
     image,
     mint: rawData.mint,
+    supportMail: rawData.support_mail,
     createdAt: rawData.created_at,
     expiresAt: rawData.expires_at,
   };

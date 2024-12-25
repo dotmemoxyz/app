@@ -62,6 +62,9 @@
       <dot-label :text="t('create.memo.secret')">
         <dot-text-input v-model="secret" placeholder="event2024" :error="secretError" />
       </dot-label>
+      <dot-label vertical :text="t('create.memo.supportMail')">
+        <dot-checkbox v-model="supportMail" />
+      </dot-label>
     </div>
     <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
   </form>
@@ -75,6 +78,7 @@ import * as zod from "zod";
 import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
 import SignModal from "~/components/dot/sign-modal.vue";
+import { createLogger } from "~~/utils/create-logger";
 
 const { t } = useI18n();
 const validationSchema = toTypedSchema(
@@ -92,6 +96,7 @@ const validationSchema = toTypedSchema(
       .string({ message: "Secret is required" })
       .min(1, { message: "Secret is required" })
       .regex(/^[a-zA-Z_.\-\d]+$/, "Only alphanumeric characters and '-' are allowed"),
+    supportMail: zod.boolean().optional(),
   }),
 );
 
@@ -112,6 +117,7 @@ const { value: endDate, errorMessage: endDateError } = useField<Date>("endDate")
 const localEndDateError = ref<string>("");
 const { value: quantity, errorMessage: quantityError } = useField<number>("quantity");
 const { value: secret, errorMessage: secretError } = useField<string>("secret");
+const { value: supportMail } = useField<boolean>("supportMail");
 
 // As `refine` doesnt work with `toTypedSchema` we need to do this manually
 watch([startDate, endDate], ([startDate, endDate]) => {
@@ -126,54 +132,57 @@ watch([startDate, endDate], ([startDate, endDate]) => {
 
 const logger = createLogger("CreatePage");
 
-const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDate, name, externalUrl, secret }) => {
-  if (localStartDateError.value || localEndDateError.value) {
-    return;
-  }
+const onSubmit = handleSubmit(
+  ({ description, endDate, image, quantity, startDate, name, externalUrl, secret, supportMail }) => {
+    if (localStartDateError.value || localEndDateError.value) {
+      return;
+    }
 
-  logger.success({
-    description,
-    endDate,
-    quantity,
-    startDate,
-    image,
-    name,
-    externalUrl,
-  });
-
-  const { open } = useModal({
-    component: SignModal,
-    attrs: {
-      name,
-      startDate,
+    logger.success({
+      description,
       endDate,
       quantity,
+      startDate,
       image,
-      secret,
-      description,
-      chain: preferredChain.value,
-      onSuccess({ txHash }) {
-        const { open: openSuccessModal } = useModal({
-          component: SuccessModal,
-          attrs: {
-            chain: preferredChain.value,
-            quantity,
-            name,
-            secret,
-            image,
-            tx: txHash,
-          },
-        });
+      name,
+      externalUrl,
+      supportMail,
+    });
+    const { open } = useModal({
+      component: SignModal,
+      attrs: {
+        name,
+        startDate,
+        endDate,
+        quantity,
+        image,
+        secret,
+        description,
+        supportMail,
+        chain: preferredChain.value,
+        onSuccess({ txHash }) {
+          const { open: openSuccessModal } = useModal({
+            component: SuccessModal,
+            attrs: {
+              chain: preferredChain.value,
+              quantity,
+              name,
+              secret,
+              image,
+              tx: txHash,
+            },
+          });
 
-        openSuccessModal();
+          openSuccessModal();
+        },
       },
-    },
-  });
+    });
 
-  open();
+    open();
 
-  return;
-});
+    return;
+  },
+);
 
 const isSubmittable = computed(
   () =>

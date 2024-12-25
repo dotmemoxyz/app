@@ -33,30 +33,45 @@
 
     <div v-if="!error" class="flex flex-col space-y-3 self-stretch">
       <template v-if="!claimed">
-        <div class="mb-6 flex rounded-full border-2 border-border-color p-2 shadow-text-color">
+        <div
+          class="mb-6 flex flex-col rounded-[28px] border-2 border-border-color p-2 shadow-text-color md:flex-row md:rounded-full"
+        >
           <button
             class="flex-1 rounded-full py-2 text-text-color"
             :class="{
-              'bg-background-color-inverse text-text-color-inverse': showAddressInput,
+              'bg-background-color-inverse text-text-color-inverse': inputMode === 'manual-address',
             }"
-            @click="showAddressInput = true"
+            @click="inputMode = 'manual-address'"
           >
             {{ t("claim.enterAddress") }}
           </button>
           <button
             class="flex-1 rounded-full py-2 text-text-color"
             :class="{
-              'bg-background-color-inverse text-text-color-inverse': !showAddressInput,
+              'bg-background-color-inverse text-text-color-inverse': inputMode === 'wallet-address',
             }"
-            @click="showAddressInput = false"
+            @click="inputMode = 'wallet-address'"
           >
             {{ t("claim.connectWallet") }}
           </button>
+          <button
+            class="flex-1 rounded-full py-2 text-text-color"
+            :class="{
+              'bg-background-color-inverse text-text-color-inverse': inputMode === 'mail',
+            }"
+            @click="inputMode = 'mail'"
+          >
+            {{ t("common.mail") }}
+          </button>
         </div>
 
-        <dot-label v-if="showAddressInput" :text="t('claim.enterDOTAddress')">
+        <dot-label v-if="inputMode === 'manual-address'" :text="t('claim.enterDOTAddress')">
           <form class="flex space-x-4" @submit.prevent="onSubmit()">
-            <dot-text-input v-model="manualAddress" :error="addressError" :placeholder="t('common.address')" />
+            <dot-text-input
+              v-model="manualWalletAddress"
+              :error="walletAddressError"
+              :placeholder="t('common.address')"
+            />
             <div>
               <dot-button variant="tertiary" size="large" @click="open()">
                 <template #icon>
@@ -67,7 +82,13 @@
           </form>
         </dot-label>
 
-        <client-only v-if="!showAddressInput">
+        <template v-if="inputMode === 'mail'">
+          <dot-label :text="t('claim.enterMailAddress')">
+            <dot-text-input v-model="mailAddress" :error="mailAddressError" :placeholder="t('common.mail')" />
+          </dot-label>
+        </template>
+
+        <client-only v-if="inputMode === 'wallet-address'">
           <dot-label :text="t('common.account')">
             <dot-connect />
           </dot-label>
@@ -151,36 +172,50 @@
 import QRScannerModal from "~/components/dot/qr-scanner-modal.vue";
 import { DateTime } from "luxon";
 import { useModal } from "vue-final-modal";
+import { isValidEmail } from "~/utils/mail";
 
 const { shareOnTelegram, shareOnX } = useSocials();
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const accountStore = useAccountStore();
-const manualAddress = ref("");
-const showAddressInput = ref(true);
 
-const { t } = useI18n();
+const inputMode = ref<"mail" | "manual-address" | "wallet-address">("manual-address");
 
-watch(showAddressInput, (show) => {
+const mailAddress = ref("");
+const mailAddressError = ref("");
+watch(mailAddress, (mail) => {
+  if (!isValidEmail(mail)) {
+    mailAddressError.value = "E-mail address is not valid";
+  } else {
+    mailAddressError.value = "";
+  }
+});
+
+const manualWalletAddress = ref("");
+const showWalletAddressInput = computed(() => inputMode.value === "manual-address");
+watch(showWalletAddressInput, (show) => {
   if (!show) {
     claimFailed.value = false;
   }
 });
 
-const address = computed(() => (showAddressInput.value ? manualAddress.value : accountStore.selected?.address));
+const walletAddress = computed(() =>
+  showWalletAddressInput.value ? manualWalletAddress.value : accountStore.selected?.address,
+);
 
-const addressError = ref("");
-watch(address, (address) => {
+const walletAddressError = ref("");
+watch(walletAddress, (address) => {
   claimFailed.value = false;
   if (!address) {
-    addressError.value = "Address is required";
+    walletAddressError.value = "Address is required";
     return;
   }
-  addressError.value = isValidSubstrateAddress(address ?? "") ? "" : "Invalid address";
+  walletAddressError.value = isValidSubstrateAddress(address ?? "") ? "" : "Invalid address";
 });
 
-const canClaim = computed(() => address.value && !addressError.value);
+const canClaim = computed(() => walletAddress.value && !walletAddressError.value);
 
 const { data, status, error } = await useFetch("/api/code", {
   query: { code: route.params.code },
@@ -199,7 +234,7 @@ const { open } = useModal({
   component: QRScannerModal,
   attrs: {
     onScan(data: string) {
-      manualAddress.value = data;
+      manualWalletAddress.value = data;
     },
   },
 });
@@ -207,7 +242,7 @@ const { open } = useModal({
 const SHARE_MESSAGE = "I just claimed a new MEMO on dotmemo.xyz! 🎉";
 
 const claim = async () => {
-  if (!address.value) return;
+  if (!walletAddress.value) return;
   if (!canClaim.value) return;
 
   try {
@@ -218,7 +253,7 @@ const claim = async () => {
       method: "POST",
       body: {
         code: route.params.code,
-        address: address.value,
+        ...(inputMode.value === "mail" ? { email: mailAddress.value } : { address: walletAddress.value }),
       },
     });
 

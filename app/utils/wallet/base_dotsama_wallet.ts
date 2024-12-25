@@ -9,6 +9,7 @@ import type { Signer as InjectedSigner } from "@polkadot/api/types";
 
 import { formatAccount } from "@/utils/account";
 import type { SubscriptionFn, Wallet, WalletConfig } from "./config";
+import { createLogger } from "~~/utils/create-logger";
 
 const DAPP_NAME = ".MEMO";
 

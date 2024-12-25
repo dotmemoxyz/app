@@ -6,17 +6,19 @@ export default defineNuxtConfig({
       title: ".MEMO",
     },
   },
-
+  future: {
+    compatibilityVersion: 4,
+  },
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
   vite: {
     plugins: [
       VueI18nPlugin({
-        include: ["./locales/**"],
+        include: ["./app/locales/**"],
       }),
     ],
   },
-  watch: ["~/locales/**"],
+  watch: ["./locales/**"],
   modules: [
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",

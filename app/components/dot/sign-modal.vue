@@ -78,6 +78,12 @@
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.secret }}</p>
         <p class="text-sm text-text-color">{{ t("create.dialog.amount") }}</p>
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.quantity }}</p>
+        <template v-if="props.supportMail">
+          <p class="text-sm text-text-color">{{ t("create.dialog.supportMail") }}</p>
+          <p class="text-right text-sm font-bold text-text-color/70">
+            {{ props.supportMail ? t("common.yes") : t("common.no") }}
+          </p>
+        </template>
       </div>
 
       <hr class="-mx-6 my-3" />
@@ -180,6 +186,7 @@ import { pinFileToIPFS, pinJson, type Metadata } from "~/services/nftStorage";
 import Identicon from "@polkadot/vue-identicon";
 import { asyncComputed } from "@vueuse/core";
 import type { Prefix } from "@kodadot1/static";
+import { createLogger } from "~~/utils/create-logger";
 
 const props = defineProps<{
   name: string;
@@ -190,6 +197,7 @@ const props = defineProps<{
   secret: string;
   description?: string;
   chain: Prefix;
+  supportMail?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -301,7 +309,7 @@ async function sign() {
       api.tx.nfts.create(...createArgs),
       api.tx.nfts.setCollectionMetadata(nextId, toMint.value),
       api.tx.nfts.setTeam(nextId, MEMO_BOT, accountId.value, accountId.value),
-      // DEV: this does not cover tx fee, we will sponsor it for a whilegs
+      // DEV: this does not cover tx fee, we will sponsor it for a while
       api.tx.balances.transferKeepAlive(MEMO_BOT, totalPayableDeposit.value),
       // DEV: this is for tracking purposes
       api.tx.system.remarkWithEvent("dotmemo.xyz"),
@@ -339,6 +347,7 @@ watch(status, async (status) => {
           mint: toMint.value,
           name: props.name,
           image: imageCid.value,
+          supportMail: Boolean(props.supportMail),
         },
       });
     } catch (error) {

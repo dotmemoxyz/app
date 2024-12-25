@@ -16,7 +16,10 @@
     "back": "Back",
     "address": "Address",
     "account": "Account",
-    "error": "Error"
+    "error": "Error",
+    "yes": "Yes",
+    "no": "No",
+    "mail": "E-mail"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -52,7 +55,8 @@
     "alreadyClaimed": "You already claimed this MEMO",
     "claimFree": "Claim for free",
     "seeInGallery": "See {name} in gallery",
-    "wantToShare": "Would you like to share it?"
+    "wantToShare": "Would you like to share it?",
+    "enterMailAddress": "Enter E-mail address"
   },
   "create": {
     "title": ".create",
@@ -68,7 +72,8 @@
       "startDate": "Start date",
       "endDate": "End date",
       "quantity": "Quantity",
-      "secret": "MEMO secret"
+      "secret": "MEMO secret",
+      "supportMail": "Support email"
     },
     "dialog": {
       "confirm": "Confirm creation",
@@ -86,7 +91,8 @@
       "proceed": "Proceed to signing",
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
-      "txProgress": "Transaction in progress. (Status: {status})"
+      "txProgress": "Transaction in progress. (Status: {status})",
+      "supportMail": "Claim by mail?"
     },
     "success": {
       "title": "Purchased",
