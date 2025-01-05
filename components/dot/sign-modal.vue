@@ -75,7 +75,20 @@
         <p class="text-sm text-text-color">{{ t("create.dialog.eventEnd") }}</p>
         <p class="text-right text-sm text-text-color/70">{{ props.endDate.toISOString().split("T").at(0) }}</p>
         <p class="text-sm text-text-color">{{ t("create.dialog.code") }}</p>
-        <p class="text-right text-sm font-bold text-text-color/70">{{ props.secret }}</p>
+        <span class="flex items-center justify-end gap-2">
+          <p
+            class="text-sm font-bold text-text-color/70 transition-all"
+            :class="{ '[&:not(:hover)]:blur-sm': !displaySecret }"
+          >
+            {{ props.secret }}
+          </p>
+
+          <Icon
+            :name="displaySecret ? 'mdi:eye' : 'mdi:eye-off'"
+            class="cursor-pointer text-text-color/70"
+            @click="displaySecret = !displaySecret"
+          />
+        </span>
         <p class="text-sm text-text-color">{{ t("create.dialog.amount") }}</p>
         <p class="text-right text-sm font-bold text-text-color/70">{{ props.quantity }}</p>
       </div>
@@ -223,6 +236,8 @@ const toMint = ref<string | null>(null);
 const totalDeposit = computed(() => depositPerItem.value * props.quantity + depositForCollection.value);
 const imageCid = ref<string | null>(null);
 const txHash = ref<null | string>("");
+
+const displaySecret = ref(false);
 
 const accountStore = useAccountStore();
 const currentAccount = computed(() => accountStore.selected);
