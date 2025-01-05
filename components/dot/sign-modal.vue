@@ -77,9 +77,8 @@
         <p class="text-sm text-text-color">{{ t("create.dialog.code") }}</p>
         <span class="flex items-center justify-end gap-2">
           <p
-            class="cursor-copy text-sm font-bold text-text-color/70 transition-all"
+            class="text-sm font-bold text-text-color/70 transition-all"
             :class="{ '[&:not(:hover)]:blur-sm': !displaySecret }"
-            @click="copySecret"
           >
             {{ props.secret }}
           </p>
@@ -239,9 +238,6 @@ const imageCid = ref<string | null>(null);
 const txHash = ref<null | string>("");
 
 const displaySecret = ref(false);
-const copySecret = () => {
-  navigator.clipboard.writeText(props.secret);
-};
 
 const accountStore = useAccountStore();
 const currentAccount = computed(() => accountStore.selected);
