@@ -205,38 +205,51 @@ const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDat
     externalUrl,
   });
 
-  const { open } = useModal({
-    component: SignModal,
-    attrs: {
-      name,
-      startDate,
-      endDate,
-      quantity,
-      image,
-      secret,
-      description,
-      chain: preferredChain.value,
-      onSuccess({ txHash }) {
-        const { open: openSuccessModal } = useModal({
-          component: SuccessModal,
-          attrs: {
-            chain: preferredChain.value,
-            quantity,
-            name,
-            secret,
-            image,
-            tx: txHash,
-          },
-        });
+  // const { open } = useModal({
+  //   component: SignModal,
+  //   attrs: {
+  //     name,
+  //     startDate,
+  //     endDate,
+  //     quantity,
+  //     image,
+  //     secret,
+  //     description,
+  //     chain: preferredChain.value,
+  //     onSuccess({ txHash }) {
+  //       const { open: openSuccessModal } = useModal({
+  //         component: SuccessModal,
+  //         attrs: {
+  //           chain: preferredChain.value,
+  //           quantity,
+  //           name,
+  //           secret,
+  //           image,
+  //           tx: txHash,
+  //         },
+  //       });
 
-        openSuccessModal();
-      },
+  //       openSuccessModal();
+  //     },
+  //   },
+  const { open: openSuccessModal } = useModal({
+    component: SuccessModal,
+    attrs: {
+      chain: preferredChain.value,
+      quantity,
+      name,
+      secret,
+      image,
+      tx: "asfasfasf",
     },
   });
 
-  open();
+  openSuccessModal();
+  // });
 
-  return;
+  // open();
+
+  // return;
 });
 
 const isSubmittable = computed(
