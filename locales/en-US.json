@@ -74,7 +74,7 @@
     "dialog": {
       "confirm": "Confirm creation",
       "connectedAs": "Connected as",
-      "network": "Network :{name}",
+      "network": "Network: {name}",
       "eventStart": "Event start",
       "eventEnd": "Event end",
       "code": "MEMO code",
@@ -87,7 +87,8 @@
       "proceed": "Proceed to signing",
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
-      "txProgress": "Transaction in progress. (Status: {status})"
+      "txProgress": "Transaction in progress. (Status: {status})",
+      "rememberCode": "Please, write down the MEMO secret code. You will need it to claim the MEMO!"
     },
     "success": {
       "title": "Purchased",

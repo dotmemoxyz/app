@@ -123,7 +123,9 @@
           <p class="text-right text-sm text-text-color/70">0.02 {{ properties.symbol }}</p>
         </template>
       </div>
-
+      <span class="w-full rounded-lg border border-black bg-yellow-300 p-4">
+        <small class="text-center text-sm text-black">{{ $t("create.dialog.rememberCode") }}</small>
+      </span>
       <dot-button :disabled="!isLogIn || !!currencyError || isSigning" variant="primary" size="large" @click="sign()">
         {{ isSigning ? `${t("common.signing")} (${statusText})` : t("create.dialog.proceed") }}
       </dot-button>

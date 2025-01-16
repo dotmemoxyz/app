@@ -68,7 +68,11 @@
             {{ t("create.memo.secretHint") }}
           </span>
         </div>
-        <dot-text-input v-model="secret" placeholder="event2024" :error="secretError || existingCodeError" />
+        <dot-text-input v-model="secret" placeholder="event2024" :error="secretError || existingCodeError">
+          <template #suffix>
+            <Icon v-if="checkingCode" name="mdi:loading" class="animate-spin" size="24" />
+          </template>
+        </dot-text-input>
       </dot-label>
     </div>
     <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
