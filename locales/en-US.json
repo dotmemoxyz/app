@@ -90,7 +90,7 @@
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
       "txProgress": "Transaction in progress. (Status: {status})",
-      "rememberCode": "Please, write down the MEMO secret code. You will need it to claim the MEMO!"
+      "rememberCode": "I have written down the MEMO secret code and understand that it is required to claim my MEMO."
     },
     "success": {
       "title": "Purchased",

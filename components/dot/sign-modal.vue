@@ -123,10 +123,16 @@
           <p class="text-right text-sm text-text-color/70">0.02 {{ properties.symbol }}</p>
         </template>
       </div>
-      <span class="w-full rounded-lg border border-black bg-yellow-300 p-4">
-        <small class="text-center text-sm text-black">{{ $t("create.dialog.rememberCode") }}</small>
+      <span class="flex w-full items-center justify-between gap-2 rounded-lg border border-black bg-yellow-300 p-4">
+        <small class="text-sm text-black">{{ $t("create.dialog.rememberCode") }}</small>
+        <dot-checkbox v-model="codeWroteDown" />
       </span>
-      <dot-button :disabled="!isLogIn || !!currencyError || isSigning" variant="primary" size="large" @click="sign()">
+      <dot-button
+        :disabled="!isLogIn || !!currencyError || isSigning || !codeWroteDown"
+        variant="primary"
+        size="large"
+        @click="sign()"
+      >
         {{ isSigning ? `${t("common.signing")} (${statusText})` : t("create.dialog.proceed") }}
       </dot-button>
       <small v-if="status === TransactionStatus.Cancelled" class="text-center text-sm text-gray-400">
@@ -214,6 +220,8 @@ const emit = defineEmits<{
 }>();
 
 const chainRef = computed(() => props.chain);
+
+const codeWroteDown = ref(false);
 
 const { apiInstance } = useApi(chainRef);
 
