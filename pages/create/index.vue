@@ -68,7 +68,7 @@
             {{ t("create.memo.secretHint") }}
           </span>
         </div>
-        <dot-text-input v-model="secret" placeholder="event2024" :error="secretError" />
+        <dot-text-input v-model="secret" placeholder="event2024" :error="secretError || existingCodeError" />
       </dot-label>
     </div>
     <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
@@ -83,6 +83,7 @@ import * as zod from "zod";
 import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
 import SignModal from "~/components/dot/sign-modal.vue";
+import { debouncedWatch } from "@vueuse/core";
 
 const { t } = useI18n();
 const validationSchema = toTypedSchema(
@@ -98,7 +99,7 @@ const validationSchema = toTypedSchema(
     quantity: zod.number({ message: "Quantity is required" }).positive({ message: "Quantity must be positive" }),
     secret: zod
       .string({ message: "Secret is required" })
-      .min(1, { message: "Secret is required" })
+      .min(5, { message: "Must be at least 5 characters" })
       .regex(/^[a-zA-Z_.\-\d]+$/, "Only alphanumeric characters and '-' are allowed"),
   }),
 );
@@ -121,6 +122,41 @@ const localEndDateError = ref<string>("");
 const { value: quantity, errorMessage: quantityError } = useField<number>("quantity");
 const { value: secret, errorMessage: secretError } = useField<string>("secret");
 
+const {
+  status,
+  refresh,
+  error: loadCodeError,
+} = await useFetch("/api/code", {
+  query: { code: secret },
+  immediate: false,
+  watch: false,
+});
+
+const existingCodeError = ref("");
+const checkingCode = ref(false);
+
+watch(secret, () => {
+  checkingCode.value = true;
+});
+
+debouncedWatch(
+  secret,
+  async () => {
+    await refresh();
+    if (loadCodeError.value && loadCodeError.value.statusCode !== 404) {
+      existingCodeError.value = "Checking existence error!";
+    } else if (status.value === "success") {
+      existingCodeError.value = "Code already exists!";
+    } else {
+      existingCodeError.value = "";
+    }
+    checkingCode.value = false;
+  },
+  {
+    debounce: 500,
+  },
+);
+
 // As `refine` doesnt work with `toTypedSchema` we need to do this manually
 watch([startDate, endDate], ([startDate, endDate]) => {
   if (startDate > endDate) {
@@ -135,7 +171,7 @@ watch([startDate, endDate], ([startDate, endDate]) => {
 const logger = createLogger("CreatePage");
 
 const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDate, name, externalUrl, secret }) => {
-  if (localStartDateError.value || localEndDateError.value) {
+  if (localStartDateError.value || localEndDateError.value || existingCodeError.value) {
     return;
   }
 
@@ -191,6 +227,8 @@ const isSubmittable = computed(
     endDate.value &&
     secret.value &&
     quantity.value &&
+    !checkingCode.value &&
+    !existingCodeError.value &&
     !localStartDateError.value &&
     !localEndDateError.value &&
     !Object.keys(errors.value).length,

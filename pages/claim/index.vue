@@ -38,12 +38,7 @@ const { t } = useI18n();
 const code = ref("");
 const isCodeValid = computed(() => code.value.trim().length > 0);
 
-const {
-  data: _data,
-  status,
-  refresh,
-  error,
-} = await useFetch("/api/code", {
+const { status, refresh, error } = await useFetch("/api/code", {
   query: { code },
   immediate: false,
   watch: false,
