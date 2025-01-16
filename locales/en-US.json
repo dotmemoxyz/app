@@ -67,7 +67,9 @@
       "websitePlaceholder": "Custom domains are supported.",
       "startDate": "Start date",
       "endDate": "End date",
+      "dateHint": "This is the date range when the MEMO will be available for claiming.",
       "quantity": "Quantity",
+      "quantityHint": "This is the total number of MEMO pieces that will be available for claiming.",
       "secret": "Secret code",
       "secretHint": "This is a secret code that will be used to claim the MEMO. It should be shared with the attendees."
     },
