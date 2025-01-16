@@ -28,7 +28,7 @@
         <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute right-0 top-full z-50 mt-2 w-64 rounded-lg bg-white px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.websiteHint") }}
           </span>
@@ -39,7 +39,15 @@
           :error="externalUrlError"
         />
       </dot-label>
-      <div class="grid grid-cols-2 gap-8">
+      <div class="relative grid grid-cols-2 gap-8">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+          <span>?</span>
+          <span
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+          >
+            {{ t("create.memo.dateHint") }}
+          </span>
+        </div>
         <dot-label :text="t('create.memo.startDate')">
           <dot-text-input v-model="startDate" type="date" :error="startDateError || localStartDateError" />
         </dot-label>
@@ -47,7 +55,15 @@
           <dot-text-input v-model="endDate" type="date" :error="endDateError || localEndDateError" />
         </dot-label>
       </div>
-      <dot-label :text="t('create.memo.quantity')">
+      <dot-label class="relative" :text="t('create.memo.quantity')">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+          <span>?</span>
+          <span
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+          >
+            {{ t("create.memo.quantityHint") }}
+          </span>
+        </div>
         <dot-text-input v-model.number="quantity" type="number" placeholder="0" :error="quantityError" />
         <div class="hidden gap-2 md:flex">
           <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity -= 100"> -100 </dot-button>
@@ -59,8 +75,20 @@
           <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 100"> +100 </dot-button>
         </div>
       </dot-label>
-      <dot-label :text="t('create.memo.secret')">
-        <dot-text-input v-model="secret" placeholder="event2024" :error="secretError" />
+      <dot-label class="relative" :text="t('create.memo.secret')">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+          <span>?</span>
+          <span
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+          >
+            {{ t("create.memo.secretHint") }}
+          </span>
+        </div>
+        <dot-text-input v-model="secret" placeholder="event2024" :error="secretError || existingCodeError">
+          <template #suffix>
+            <Icon v-if="checkingCode" name="mdi:loading" class="animate-spin" size="24" />
+          </template>
+        </dot-text-input>
       </dot-label>
     </div>
     <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
@@ -75,6 +103,7 @@ import * as zod from "zod";
 import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
 import SignModal from "~/components/dot/sign-modal.vue";
+import { debouncedWatch } from "@vueuse/core";
 
 const { t } = useI18n();
 const validationSchema = toTypedSchema(
@@ -90,7 +119,7 @@ const validationSchema = toTypedSchema(
     quantity: zod.number({ message: "Quantity is required" }).positive({ message: "Quantity must be positive" }),
     secret: zod
       .string({ message: "Secret is required" })
-      .min(1, { message: "Secret is required" })
+      .min(5, { message: "Must be at least 5 characters" })
       .regex(/^[a-zA-Z_.\-\d]+$/, "Only alphanumeric characters and '-' are allowed"),
   }),
 );
@@ -113,6 +142,41 @@ const localEndDateError = ref<string>("");
 const { value: quantity, errorMessage: quantityError } = useField<number>("quantity");
 const { value: secret, errorMessage: secretError } = useField<string>("secret");
 
+const {
+  status,
+  refresh,
+  error: loadCodeError,
+} = await useFetch("/api/code", {
+  query: { code: secret },
+  immediate: false,
+  watch: false,
+});
+
+const existingCodeError = ref("");
+const checkingCode = ref(false);
+
+watch(secret, () => {
+  checkingCode.value = true;
+});
+
+debouncedWatch(
+  secret,
+  async () => {
+    await refresh();
+    if (loadCodeError.value && loadCodeError.value.statusCode !== 404) {
+      existingCodeError.value = "Checking existence error!";
+    } else if (status.value === "success") {
+      existingCodeError.value = "Code already exists!";
+    } else {
+      existingCodeError.value = "";
+    }
+    checkingCode.value = false;
+  },
+  {
+    debounce: 500,
+  },
+);
+
 // As `refine` doesnt work with `toTypedSchema` we need to do this manually
 watch([startDate, endDate], ([startDate, endDate]) => {
   if (startDate > endDate) {
@@ -127,7 +191,7 @@ watch([startDate, endDate], ([startDate, endDate]) => {
 const logger = createLogger("CreatePage");
 
 const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDate, name, externalUrl, secret }) => {
-  if (localStartDateError.value || localEndDateError.value) {
+  if (localStartDateError.value || localEndDateError.value || existingCodeError.value) {
     return;
   }
 
@@ -183,6 +247,8 @@ const isSubmittable = computed(
     endDate.value &&
     secret.value &&
     quantity.value &&
+    !checkingCode.value &&
+    !existingCodeError.value &&
     !localStartDateError.value &&
     !localEndDateError.value &&
     !Object.keys(errors.value).length,

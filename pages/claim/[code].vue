@@ -1,5 +1,7 @@
 <template>
-  <h1 v-if="claimed" class="my-10 w-full text-center text-4xl !text-white">{{ t("claim.success") }} 🥳</h1>
+  <h1 v-if="claimed" class="!dark:text-white my-10 w-full text-center text-4xl text-k-primary">
+    {{ t("claim.success") }} 🥳
+  </h1>
 
   <div class="mx-auto mt-10 flex max-w-xl flex-col items-center gap-y-5 p-4 md:mt-24">
     <image-preview :src="data?.image" />
@@ -86,11 +88,6 @@
             {{ claimButtonLabel }}
           </dot-button>
 
-          <div v-if="data?.chain" class="flex w-full items-center justify-center gap-2">
-            <small class="text-md text-white">{{ t("claim.claimFree") }} @{{ getChainName(data.chain) }}</small>
-            <img :src="`/chain/${data.chain}.webp`" alt="chain" class="max-h-6 max-w-6 rounded-full" />
-          </div>
-
           <div
             class="pointer-events-none absolute inset-0 top-0 flex rounded-full p-1 transition-all duration-700"
             :class="{
@@ -116,6 +113,11 @@
             </div>
           </div>
         </div>
+
+        <div v-if="data?.chain" class="flex w-full items-center justify-center gap-2">
+          <small class="text-md dark:text-white">{{ t("claim.claimFree") }} @{{ getChainName(data.chain) }}</small>
+          <img :src="`/chain/${data.chain}.webp`" alt="chain" class="max-h-6 max-w-6 rounded-full" />
+        </div>
       </template>
 
       <template v-else>
@@ -129,7 +131,7 @@
           </dot-button>
         </a>
         <div class="flex w-full flex-col items-center gap-2">
-          <small class="text-white">{{ t("claim.wantToShare") }}</small>
+          <small class="dark:text-white">{{ t("claim.wantToShare") }}</small>
           <span class="mb-10 flex gap-2">
             <div class="flex cursor-pointer items-center gap-2" @click="shareOnTelegram(SHARE_MESSAGE, claimed)">
               <div class="overflow-hidden rounded-full border border-white">

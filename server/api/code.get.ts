@@ -14,6 +14,13 @@ export default defineEventHandler(async (event) => {
     throw new Error("An unknown error has occoured");
   }
 
+  if (!rawData) {
+    throw createError({
+      statusCode: 404,
+      message: "Memo not found",
+    });
+  }
+
   const image = purify(rawData?.image).at(0);
   if (!image) {
     throw new Error("Image not found");

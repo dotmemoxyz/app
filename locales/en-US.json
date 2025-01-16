@@ -67,13 +67,16 @@
       "websitePlaceholder": "Custom domains are supported.",
       "startDate": "Start date",
       "endDate": "End date",
+      "dateHint": "This is the date range when the MEMO will be available for claiming.",
       "quantity": "Quantity",
-      "secret": "MEMO secret"
+      "quantityHint": "This is the total number of MEMO pieces that will be available for claiming.",
+      "secret": "Secret code",
+      "secretHint": "This is a secret code that will be used to claim the MEMO. It should be shared with the attendees."
     },
     "dialog": {
       "confirm": "Confirm creation",
       "connectedAs": "Connected as",
-      "network": "Network :{name}",
+      "network": "Network: {name}",
       "eventStart": "Event start",
       "eventEnd": "Event end",
       "code": "MEMO code",
@@ -86,7 +89,8 @@
       "proceed": "Proceed to signing",
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
-      "txProgress": "Transaction in progress. (Status: {status})"
+      "txProgress": "Transaction in progress. (Status: {status})",
+      "rememberCode": "I have written down the MEMO secret code and understand that it is required to claim my MEMO."
     },
     "success": {
       "title": "Purchased",
