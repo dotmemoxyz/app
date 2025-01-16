@@ -28,7 +28,7 @@
         <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute right-0 top-full z-50 mt-2 w-64 rounded-lg bg-white px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.websiteHint") }}
           </span>
@@ -59,7 +59,15 @@
           <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 100"> +100 </dot-button>
         </div>
       </dot-label>
-      <dot-label :text="t('create.memo.secret')">
+      <dot-label class="relative" :text="t('create.memo.secret')">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+          <span>?</span>
+          <span
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+          >
+            {{ t("create.memo.secretHint") }}
+          </span>
+        </div>
         <dot-text-input v-model="secret" placeholder="event2024" :error="secretError" />
       </dot-label>
     </div>

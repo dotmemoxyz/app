@@ -1,14 +1,19 @@
 <template>
-  <div class="cursor-pointer rounded-md border-2 border-white bg-transparent p-4 text-k-primary" @click="displaySelect">
+  <div class="relative">
     <select
       ref="selectInput"
       v-model="model"
-      class="h-full w-full cursor-pointer bg-transparent text-white focus:outline-none"
+      class="h-full w-full cursor-pointer appearance-none rounded-lg border-2 border-black bg-transparent px-4 py-3 text-black focus:outline-none dark:border-white dark:text-white"
     >
       <option v-for="option in options" :key="option.value" :value="option.value" :selected="option.value === model">
         {{ option.text }}
       </option>
     </select>
+    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+      <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -18,14 +23,4 @@ const model = defineModel<string>({ required: true });
 defineProps<{
   options: Option[];
 }>();
-
-const selectInput = ref<HTMLSelectElement | null>(null);
-
-const displaySelect = () => {
-  if (selectInput.value) {
-    selectInput.value.click();
-  }
-};
 </script>
-
-<style></style>

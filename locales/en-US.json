@@ -68,7 +68,8 @@
       "startDate": "Start date",
       "endDate": "End date",
       "quantity": "Quantity",
-      "secret": "MEMO secret"
+      "secret": "Secret code",
+      "secretHint": "This is a secret code that will be used to claim the MEMO. It should be shared with the attendees."
     },
     "dialog": {
       "confirm": "Confirm creation",
