@@ -131,7 +131,7 @@
       </div>
     </section>
     <section class="m-[10px] flex min-h-[40vh] flex-col gap-7 rounded-2xl bg-bg-card p-10 md:m-10">
-      <p class="text-4xl text-white md:text-6xl">{{ $t("landing.partners") }}</p>
+      <p class="text-4xl !text-white md:text-6xl">{{ $t("landing.partners") }}</p>
 
       <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <a
