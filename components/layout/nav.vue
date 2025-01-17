@@ -21,6 +21,14 @@
               <dot-connect class="w-full md:w-auto" size="small">Connect</dot-connect>
             </client-only>
           </li>
+          <li>
+            <Icon
+              :name="colorMode.value === 'light' ? 'mdi:weather-sunny' : 'mdi:weather-night'"
+              class="cursor-pointer"
+              size="24"
+              @click="switchMode"
+            />
+          </li>
         </ul>
       </nav>
     </transition>
@@ -36,6 +44,12 @@ const links = computed(() => [
     href: "/create",
   },
 ]);
+
+const colorMode = useColorMode();
+
+const switchMode = () => {
+  colorMode.value = colorMode.value === "light" ? "dark" : "light";
+};
 
 const navOpen = ref(false);
 
