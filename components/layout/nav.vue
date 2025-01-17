@@ -21,12 +21,12 @@
               <dot-connect class="w-full md:w-auto" size="small">Connect</dot-connect>
             </client-only>
           </li>
-          <li>
+          <li class="flex items-center gap-2" @click="switchMode">
+            <p class="block md:hidden">Color mode</p>
             <Icon
               :name="colorMode.value === 'light' ? 'mdi:weather-sunny' : 'mdi:weather-night'"
               class="cursor-pointer"
               size="24"
-              @click="switchMode"
             />
           </li>
         </ul>
@@ -93,7 +93,7 @@ const closeNav = () => {
     ul {
       @apply flex w-full flex-col items-center justify-center md:flex-row md:justify-end;
       li {
-        @apply box-border flex h-[80px] w-full items-center justify-start border-b border-white px-2 md:w-auto md:border-none;
+        @apply box-border flex h-[80px] w-full cursor-pointer items-center justify-start border-b px-2 md:w-auto md:cursor-auto md:border-none dark:border-white;
         a {
           @apply w-full text-background-color-inverse hover:!border-white md:w-auto;
 
