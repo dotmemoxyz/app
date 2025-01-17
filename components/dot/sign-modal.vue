@@ -124,8 +124,8 @@
         </template>
       </div>
       <span class="flex w-full items-center justify-between gap-2 rounded-lg border border-black bg-yellow-300 p-4">
+        <dot-checkbox v-model="codeWroteDown" black />
         <small class="text-sm text-black">{{ $t("create.dialog.rememberCode") }}</small>
-        <dot-checkbox v-model="codeWroteDown" />
       </span>
       <dot-button
         :disabled="!isLogIn || !!currencyError || isSigning || !codeWroteDown"
