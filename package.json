@@ -39,6 +39,7 @@
     "@vueuse/core": "^10.11.0",
     "consola": "^3.2.3",
     "lint-staged": "^15.2.5",
+    "lodash": "^4.17.21",
     "luxon": "^3.5.0",
     "nuxt": "^3.12.1",
     "prettier": "^3.3.1",
@@ -59,6 +60,7 @@
   "devDependencies": {
     "@histoire/plugin-nuxt": "^0.17.17",
     "@histoire/plugin-vue": "^0.17.17",
+    "@types/lodash": "^4.17.14",
     "@types/luxon": "^3.4.2",
     "@types/qrcode": "^1.5.5",
     "histoire": "^0.17.17",

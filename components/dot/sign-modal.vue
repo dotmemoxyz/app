@@ -201,6 +201,7 @@ import { pinFileToIPFS, pinJson, type Metadata } from "~/services/nftStorage";
 import Identicon from "@polkadot/vue-identicon";
 import { asyncComputed } from "@vueuse/core";
 import type { Prefix } from "@kodadot1/static";
+import type { SignError } from "~/composables/useMetaTransaction";
 
 const props = defineProps<{
   name: string;
@@ -217,6 +218,7 @@ const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: "success", data: { txHash: string }): void;
+  (e: "error", err: SignError): void;
 }>();
 
 const chainRef = computed(() => props.chain);
@@ -337,6 +339,9 @@ async function sign() {
   await howAboutToExecute(accountId.value, cb, args, {
     onSuccess(param) {
       txHash.value = param.txHash;
+    },
+    onError(err) {
+      emit("error", err);
     },
   });
 }
