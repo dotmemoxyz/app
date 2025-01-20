@@ -217,6 +217,7 @@ const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: "success", data: { txHash: string }): void;
+  (e: "error"): void;
 }>();
 
 const chainRef = computed(() => props.chain);
@@ -337,6 +338,9 @@ async function sign() {
   await howAboutToExecute(accountId.value, cb, args, {
     onSuccess(param) {
       txHash.value = param.txHash;
+    },
+    onError() {
+      emit("error");
     },
   });
 }

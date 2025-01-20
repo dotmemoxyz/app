@@ -101,6 +101,10 @@
       "created3": "pieces!",
       "qr": "QR Code",
       "claim": "Claim one for you"
+    },
+    "error": {
+      "title": "Insufficient Balance",
+      "issue": "You don't have enough funds to create this collection. Please top up your account and try again."
     }
   },
   "image": {
