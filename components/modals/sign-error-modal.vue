@@ -7,7 +7,7 @@
     content-transition="vfm-fade"
   >
     <div class="flex items-center justify-between pb-1">
-      <h1 class="text-xl font-semibold text-text-color">{{ t("create.error.title") }}</h1>
+      <h1 class="text-xl font-semibold text-text-color">{{ props.signError.title }}</h1>
       <button @click="closeModal()">
         <Icon name="mdi:close" size="32" class="text-text-color" />
       </button>
@@ -15,14 +15,17 @@
 
     <hr class="-mx-6" />
 
-    <h1 class="text-text-color">{{ t("create.error.issue") }}</h1>
+    <h1 class="text-text-color">{{ props.signError.message }}</h1>
   </vue-final-modal>
 </template>
 
 <script setup lang="ts">
 import { useVfm, VueFinalModal } from "vue-final-modal";
+import type { SignError } from "~/composables/useMetaTransaction";
 
-const { t } = useI18n();
+const props = defineProps<{
+  signError: SignError;
+}>();
 
 const vfm = useVfm();
 const closeModal = () => vfm.close("no-funds-modal");

@@ -23,12 +23,12 @@
             <div
               class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 backdrop-blur-lg transition-opacity group-hover:opacity-100"
             >
-              <h1 class="px-4 text-center text-k-primary">{{ t("image.chooseDifferent") }}</h1>
+              <h1 class="px-4 text-center text-k-primary">{{ t("create.image.chooseDifferent") }}</h1>
             </div>
           </template>
 
           <template v-else>
-            <p class="mt-2 text-center font-bold">{{ t("image.chooseArtwork") }}</p>
+            <p class="mt-2 text-center font-bold">{{ t("create.image.chooseArtwork") }}</p>
           </template>
         </div>
       </div>
