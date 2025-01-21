@@ -121,7 +121,7 @@ const validationSchema = toTypedSchema(
     secret: zod
       .string({ message: "Secret is required" })
       .min(5, { message: "Must be at least 5 characters" })
-      .regex(/^[a-zA-Z_.\-\d]+$/, "Only alphanumeric characters and '-' are allowed"),
+      .regex(/^[a-z_.\-\d]+$/, "Only lowercase alphanumeric characters and '-', '_' and '.' are allowed"),
   }),
 );
 
