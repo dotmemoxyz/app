@@ -213,14 +213,6 @@ watch(status, async (status) => {
   }
 });
 
-// Image loading
-const imagePreview = ref("");
-onMounted(() => {
-  const reader = new FileReader();
-  reader.onload = (e) => (imagePreview.value = e.target?.result as string);
-  reader.readAsDataURL(props.image);
-});
-
 // Price
 const totalDeposit = computed(() => depositPerItem.value * props.quantity + depositForCollection.value);
 const { dollarValue, priceError, symbolValue } = usePriceApi(totalDeposit, properties);
