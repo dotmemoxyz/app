@@ -6,6 +6,7 @@
     overlay-transition="vfm-fade"
     content-transition="vfm-fade"
   >
+    <!-- Modal header -->
     <div class="flex items-center justify-between pb-1">
       <h1 class="text-xl font-semibold text-text-color">{{ t("create.dialog.confirm") }}</h1>
       <button @click="closeModal()">
@@ -14,7 +15,7 @@
     </div>
 
     <hr class="-mx-6" />
-
+    <!-- User Account -->
     <template v-if="accountStore.hasSelectedAccount">
       <p class="mt-2 text-text-color opacity-70">{{ t("create.dialog.connectedAs") }}</p>
 
@@ -24,12 +25,12 @@
         <p class="text-text-color">{{ currentAccount?.name }}</p>
       </div>
     </template>
-
     <client-only v-else>
       <dot-connect />
     </client-only>
 
     <hr class="my-3" />
+    <!-- Display errors -->
     <template v-if="signError">
       <div class="relative rounded border border-red-200 bg-red-100 px-4 py-3 text-red-700" role="alert">
         <strong class="font-bold">{{ t("common.error") }}!</strong>
@@ -44,94 +45,39 @@
       </div>
       <hr class="my-3" />
     </template>
-    <template v-else-if="currencyError">
+    <template v-else-if="priceError">
       <div class="relative rounded border border-red-200 bg-red-100 px-4 py-3 text-red-700" role="alert">
         <strong class="font-bold">{{ t("common.error") }}!</strong>
-        <span class="block sm:inline">{{ currencyError }}</span>
+        <span class="block sm:inline">{{ priceError }}</span>
       </div>
       <hr class="my-3" />
     </template>
-
+    <!-- Signing process -->
     <template v-if="!isLoading">
-      <div class="flex items-center gap-5">
-        <div class="flex max-h-20 max-w-20 overflow-hidden rounded-full border-2 border-border-color">
-          <img :src="imagePreview" class="flex-1 rounded-full object-cover" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <h1 class="text-xl text-text-color">{{ props.name }}</h1>
-          <p class="text-sm text-text-color opacity-70">
-            {{
-              t("create.dialog.network", {
-                name: chainName,
-              })
-            }}
-          </p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <p class="text-sm text-text-color">{{ t("create.dialog.eventStart") }}</p>
-        <p class="text-right text-sm text-text-color/70">{{ props.startDate.toISOString().split("T").at(0) }}</p>
-        <p class="text-sm text-text-color">{{ t("create.dialog.eventEnd") }}</p>
-        <p class="text-right text-sm text-text-color/70">{{ props.endDate.toISOString().split("T").at(0) }}</p>
-        <p class="text-sm text-text-color">{{ t("create.dialog.code") }}</p>
-        <span class="flex items-center justify-end gap-2">
-          <p
-            class="text-sm font-bold text-text-color/70 transition-all"
-            :class="{ '[&:not(:hover)]:blur-sm': !displaySecret }"
-          >
-            {{ props.secret }}
-          </p>
-
-          <Icon
-            :name="displaySecret ? 'mdi:eye' : 'mdi:eye-off'"
-            class="cursor-pointer text-text-color/70"
-            @click="displaySecret = !displaySecret"
-          />
-        </span>
-        <p class="text-sm text-text-color">{{ t("create.dialog.amount") }}</p>
-        <p class="text-right text-sm font-bold text-text-color/70">{{ props.quantity }}</p>
-      </div>
-
-      <hr class="-mx-6 my-3" />
-
-      <div class="grid grid-cols-2 gap-3">
-        <p class="text-sm text-text-color">{{ t("create.dialog.total") }}</p>
-        <p class="text-right text-sm text-text-color">
-          <!-- TODO -->
-          <span class="ml-2 font-bold text-text-color/70"> {{ symbolValue }} {{ properties.symbol }} </span>
-
-          <span v-if="dollarValue === null" class="animate-pulse text-xs text-text-color/50">
-            ({{ t("common.calculating") }})
-          </span>
-          <span v-else-if="!currencyError" class="text-xs text-text-color/50"> ({{ dollarValue.toFixed(2) }}$) </span>
-        </p>
-
-        <button class="col-span-2 flex items-center gap-2" @click="showBreakdown = !showBreakdown">
-          <p class="text-xs text-text-color opacity-50">{{ t("create.dialog.breakdown") }}</p>
-          <Icon :name="`mdi:chevron-${showBreakdown ? 'up' : 'down'}`" size="20" class="text-text-color opacity-50" />
-        </button>
-
-        <template v-if="showBreakdown">
-          <p class="text-sm text-text-color">{{ t("create.dialog.collectionDeposit") }}</p>
-          <p class="text-right text-sm text-text-color/70">{{ depositForCollection }} {{ properties.symbol }}</p>
-          <p class="text-sm text-text-color">{{ t("create.dialog.freeMintingDeposit") }}</p>
-          <p class="text-right text-sm text-text-color/70">
-            {{ props.quantity }} x {{ depositPerItem }} {{ properties.symbol }}
-          </p>
-          <p class="text-sm text-text-color">{{ t("create.dialog.fees") }}</p>
-          <p class="text-right text-sm text-text-color/70">0.02 {{ properties.symbol }}</p>
-        </template>
-      </div>
+      <signing-detail
+        :name="props.name"
+        :image="props.image"
+        :start-date="props.startDate"
+        :end-date="props.endDate"
+        :quantity="props.quantity"
+        :secret="props.secret"
+        :description="props.description"
+        :chain="props.chain"
+        :symbol-value="symbolValue"
+        :dollar-value="dollarValue"
+        :price-error="priceError"
+        :deposit-per-item="depositPerItem"
+        :deposit-for-collection="depositForCollection"
+      />
       <span class="flex w-full items-center justify-between gap-2 rounded-lg border border-black bg-yellow-300 p-4">
         <dot-checkbox v-model="codeWroteDown" black />
         <small class="text-sm text-black">{{ $t("create.dialog.rememberCode") }}</small>
       </span>
       <dot-button
-        :disabled="!isLogIn || !!currencyError || isSigning || !codeWroteDown"
+        :disabled="!canSign"
         variant="primary"
         size="large"
-        @click="sign()"
+        @click="sign(image, props.name, props.quantity, props.description)"
       >
         {{ isSigning ? `${t("common.signing")} (${statusText})` : t("create.dialog.proceed") }}
       </dot-button>
@@ -139,40 +85,10 @@
         {{ t("create.dialog.canceled") }}
       </small>
     </template>
-
+    <!-- Signing loading -->
     <template v-else>
       <div class="flex h-64 flex-row items-center justify-center gap-4 rounded-2xl bg-stone-600/15">
-        <svg
-          class="animate-spin"
-          width="75"
-          height="75"
-          viewBox="-17.375 -17.375 173.75 173.75"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle
-            class="stroke-stone-700/20"
-            r="59.5"
-            cx="69.5"
-            cy="69.5"
-            fill="transparent"
-            stroke-width="11"
-            stroke-dasharray="373.66px"
-            stroke-dashoffset="0"
-          ></circle>
-          <circle
-            class="stroke-text-color"
-            r="59.5"
-            cx="69.5"
-            cy="69.5"
-            stroke-width="16"
-            stroke-linecap="round"
-            stroke-dashoffset="280px"
-            fill="transparent"
-            stroke-dasharray="373.66px"
-          ></circle>
-        </svg>
-
+        <signing-loader />
         <div>
           <p class="text-2xl font-bold text-text-color">{{ t("create.dialog.settingUp") }}</p>
           <p class="text-text-color opacity-70">
@@ -191,16 +107,15 @@
 <script lang="ts" setup>
 import { VueFinalModal, useVfm } from "vue-final-modal";
 import { useAccountStore } from "@/stores/account";
-import { createArgsForNftPallet } from "@/utils/sdk/create";
 import useAuth from "~/composables/useAuth";
-import { nextCollectionId } from "~/utils/sdk/query";
-import { collectionDeposit, itemDeposit, MEMO_BOT, metadataDeposit } from "~/utils/sdk/constants";
+import { collectionDeposit, itemDeposit, metadataDeposit } from "~/utils/sdk/constants";
 import { onApiConnect } from "@kodadot1/sub-api";
-import { getChainName } from "~/utils/chain.config";
-import { pinFileToIPFS, pinJson, type Metadata } from "~/services/nftStorage";
 import Identicon from "@polkadot/vue-identicon";
-import { asyncComputed } from "@vueuse/core";
 import type { Prefix } from "@kodadot1/static";
+import { useMemoSign } from "~/composables/useMemoSign";
+
+const { t } = useI18n();
+const logger = createLogger("SignModal");
 
 const props = defineProps<{
   name: string;
@@ -213,46 +128,30 @@ const props = defineProps<{
   chain: Prefix;
 }>();
 
-const { t } = useI18n();
-
 const emit = defineEmits<{
   (e: "success", data: { txHash: string }): void;
   (e: "error"): void;
 }>();
 
-const chainRef = computed(() => props.chain);
+// Modal ref
+const vfm = useVfm();
+const closeModal = () => vfm.close("sign-modal");
 
-const codeWroteDown = ref(false);
-
-const { apiInstance } = useApi(chainRef);
-
-const {
-  howAboutToExecute,
-  initTransactionLoader,
-  status,
-  statusText,
-  isError: _isError,
-  isLoading,
-  error: txError,
-} = useMetaTransaction(chainRef);
-const { accountId, isLogIn } = useAuth();
-
-const properties = computed(() => chainAssetOf(props.chain));
-const chainName = getChainName(props.chain);
-const depositPerItem = ref(0);
-const depositForCollection = ref(0);
-const futureCollection = ref(0);
-const totalPayableDeposit = ref(BigInt(0));
-const toMint = ref<string | null>(null);
-const totalDeposit = computed(() => depositPerItem.value * props.quantity + depositForCollection.value);
-const imageCid = ref<string | null>(null);
-const txHash = ref<null | string>("");
-
-const displaySecret = ref(false);
-
+// Current user account
 const accountStore = useAccountStore();
 const currentAccount = computed(() => accountStore.selected);
 
+// Remember code check
+const codeWroteDown = ref(false);
+
+// Chain properties
+const chainRef = computed(() => props.chain);
+const properties = computed(() => chainAssetOf(props.chain));
+const depositPerItem = ref(0);
+const depositForCollection = ref(0);
+const totalPayableDeposit = ref(BigInt(0));
+
+// Hook to load chain data
 onApiConnect(props.chain, async (api) => {
   const collectionFee = collectionDeposit(api);
   const itemFee = itemDeposit(api);
@@ -263,100 +162,30 @@ onApiConnect(props.chain, async (api) => {
   totalPayableDeposit.value = BigInt(itemFee + metadataFee) * BigInt(props.quantity);
 });
 
-const showBreakdown = ref(false);
+// Transaction composables
+const { apiInstance } = useApi(chainRef);
+const { accountId, isLogIn } = useAuth();
+const {
+  sign,
+  status,
+  statusText,
+  isLoading,
+  error: txError,
+  isSigning,
+  signError,
+  futureCollection,
+  toMint,
+  imageCid,
+  txHash,
+} = useMemoSign(chainRef, apiInstance, totalPayableDeposit, accountId, () => emit("error"));
 
-const logger = createLogger("SignModal");
-
-async function pinAll() {
-  const imageHash = await pinFileToIPFS(props.image);
-  const metadata: Metadata = {
-    name: props.name,
-    image: `ipfs://${imageHash}`,
-    banner: `ipfs://${imageHash}`,
-    kind: "poap",
-    description: props.description || "",
-    external_url: "",
-    type: props.image.type,
-  };
-  const metadataHash = await pinJson(metadata);
-  return {
-    image: `ipfs://${imageHash}`,
-    metadata: `ipfs://${metadataHash}`,
-  };
-}
-const signError = ref<string | null>(null);
-const isSigning = ref(false);
-async function sign() {
-  if (!accountId.value) {
-    logger.error("No account selected");
-    return;
-  }
-  isSigning.value = true;
-  txError.value = null;
-  signError.value = null;
-
-  if (!toMint.value) {
-    try {
-      const { image, metadata } = await pinAll();
-      imageCid.value = image;
-      toMint.value = metadata;
-    } catch (e) {
-      logger.error("Failed to pin image and metadata. Reason: %s", (e as Error).message);
-      signError.value = "Failed to pin image and metadata. Try again later or contact support.";
-      isSigning.value = false;
-      return;
-    }
-  }
-
-  const api = await apiInstance.value;
-
-  const createArgs = createArgsForNftPallet(accountId.value, props.quantity);
-  logger.info("Creating collection with args: %O", createArgs);
-  const nextId = await nextCollectionId(api);
-  if (!nextId) {
-    signError.value = "Failed to get next collection id. Try again later or contact support.";
-    isSigning.value = false;
-    return;
-  }
-
-  futureCollection.value = nextId;
-
-  const cb = api.tx.utility.batchAll;
-  const args = [
-    [
-      api.tx.nfts.create(...createArgs),
-      api.tx.nfts.setCollectionMetadata(nextId, toMint.value),
-      api.tx.nfts.setTeam(nextId, MEMO_BOT, accountId.value, accountId.value),
-      // DEV: this does not cover tx fee, we will sponsor it for a whilegs
-      api.tx.balances.transferKeepAlive(MEMO_BOT, totalPayableDeposit.value),
-      // DEV: this is for tracking purposes
-      api.tx.system.remarkWithEvent("dotmemo.xyz"),
-    ],
-  ];
-
-  initTransactionLoader();
-  await howAboutToExecute(accountId.value, cb, args, {
-    onSuccess(param) {
-      txHash.value = param.txHash;
-    },
-    onError() {
-      emit("error");
-    },
-  });
-}
-
-watch(txError, (error) => {
-  if (error) {
-    isSigning.value = false;
-  }
-});
-
+// Handle transaction status
 watch(status, async (status) => {
-  // eslint-disable-next-line no-console
-  console.log("TransactionStatus", status);
+  logger.info("TransactionStatus", status);
   if (status === TransactionStatus.Cancelled) {
     isSigning.value = false;
   }
+  // Save transaction data
   if (status === TransactionStatus.Finalized) {
     try {
       const _data = await $fetch("/api/create", {
@@ -384,34 +213,17 @@ watch(status, async (status) => {
   }
 });
 
+// Image loading
 const imagePreview = ref("");
-
 onMounted(() => {
   const reader = new FileReader();
   reader.onload = (e) => (imagePreview.value = e.target?.result as string);
   reader.readAsDataURL(props.image);
 });
 
-const vfm = useVfm();
-const closeModal = () => vfm.close("sign-modal");
-const { getPrice, getSymbolName } = usePriceApi();
+// Price
+const totalDeposit = computed(() => depositPerItem.value * props.quantity + depositForCollection.value);
+const { dollarValue, priceError, symbolValue } = usePriceApi(totalDeposit, properties);
 
-const symbolValue = computed(() => Math.round(totalDeposit.value * 10000) / 10000);
-const currencyError = ref<string | null>(null);
-const dollarValue = asyncComputed(async () => {
-  try {
-    const name = getSymbolName(properties.value.symbol);
-    const prices = await getPrice(name);
-    if (prices[name]?.usd === undefined) {
-      logger.error("Failed to get symbol price. Data: %O", prices);
-      currencyError.value = "Failed to fetch currency data. Try again later or contact support.";
-      return null;
-    }
-    return prices[name].usd * symbolValue.value;
-  } catch (e) {
-    currencyError.value = "Failed to fetch currency data. Try again later or contact support.";
-    logger.error("Failed to fetch currency data. Reason: %s", (e as Error).message);
-    return null;
-  }
-}, null);
+const canSign = computed(() => isLogIn.value && !priceError.value && !isSigning.value && codeWroteDown.value);
 </script>
