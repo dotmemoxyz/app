@@ -165,5 +165,5 @@ const generateQR = async () => {
 };
 
 const router = useRouter();
-const claim = () => (router.push(`/claim/${props.name}`), closeModal());
+const claim = () => (router.push(`/claim/${props.secret}`), closeModal());
 </script>
