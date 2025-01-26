@@ -130,7 +130,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "success", data: { txHash: string }): void;
-  (e: "error"): void;
+  (e: "error", err: SignError): void;
 }>();
 
 // Modal ref
@@ -177,7 +177,7 @@ const {
   toMint,
   imageCid,
   txHash,
-} = useMemoSign(chainRef, apiInstance, totalPayableDeposit, accountId, () => emit("error"));
+} = useMemoSign(chainRef, apiInstance, totalPayableDeposit, accountId, (err) => emit("error", err));
 
 // Handle transaction status
 watch(status, async (status) => {

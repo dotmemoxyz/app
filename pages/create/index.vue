@@ -104,7 +104,7 @@ import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
 import SignModal from "~/components/modals/sign-modal.vue";
 import { debouncedWatch } from "@vueuse/core";
-import NoFundsModal from "~/components/modals/no-funds-modal.vue";
+import SignErrorModal from "~/components/modals/sign-error-modal.vue";
 
 const { t } = useI18n();
 const validationSchema = toTypedSchema(
@@ -121,7 +121,7 @@ const validationSchema = toTypedSchema(
     secret: zod
       .string({ message: "Secret is required" })
       .min(5, { message: "Must be at least 5 characters" })
-      .regex(/^[a-zA-Z_.\-\d]+$/, "Only alphanumeric characters and '-' are allowed"),
+      .regex(/^[a-z_.\-\d]+$/, "Please use only lowercase letters, numbers, and these symbols: '-', '_', or '.'"),
   }),
 );
 
@@ -217,10 +217,13 @@ const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDat
       secret,
       description,
       chain: preferredChain.value,
-      onError() {
+      onError(err) {
         closeSignModal();
         const { open: openErrorModal } = useModal({
-          component: NoFundsModal,
+          component: SignErrorModal,
+          attrs: {
+            signError: err,
+          },
         });
 
         openErrorModal();

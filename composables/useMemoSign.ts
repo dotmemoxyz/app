@@ -11,7 +11,7 @@ export const useMemoSign = (
   apiInstance: Ref<Promise<ApiPromise>>,
   totalPayableDeposit: Ref<bigint>,
   accountId: Ref<string | undefined>,
-  onError?: (error: string) => void,
+  onError?: (err: SignError) => void,
 ) => {
   const {
     howAboutToExecute,
@@ -110,8 +110,8 @@ export const useMemoSign = (
       onSuccess(param) {
         txHash.value = param.txHash;
       },
-      onError() {
-        onError?.("error");
+      onError(error) {
+        onError?.(error);
       },
     });
   }

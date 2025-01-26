@@ -16,11 +16,6 @@
               </span>
             </nuxt-link>
           </li>
-          <li>
-            <client-only>
-              <dot-connect class="w-full md:w-auto" size="small">Connect</dot-connect>
-            </client-only>
-          </li>
           <li class="flex items-center gap-2" @click="switchMode">
             <p class="block md:hidden">Color mode</p>
             <Icon
@@ -28,6 +23,11 @@
               class="cursor-pointer"
               size="24"
             />
+          </li>
+          <li>
+            <client-only>
+              <dot-connect class="w-full md:w-auto" size="small">Connect</dot-connect>
+            </client-only>
           </li>
         </ul>
       </nav>
