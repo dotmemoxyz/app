@@ -102,7 +102,7 @@ import { useModal } from "vue-final-modal";
 import * as zod from "zod";
 import type { Option } from "~/types/components";
 import SuccessModal from "~/components/modals/success-modal.vue";
-import SignModal from "~/components/dot/sign-modal.vue";
+import SignModal from "~/components/modals/sign-modal.vue";
 import { debouncedWatch } from "@vueuse/core";
 import NoFundsModal from "~/components/modals/no-funds-modal.vue";
 

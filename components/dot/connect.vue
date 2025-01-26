@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { useModal } from "vue-final-modal";
-import ConnectModal from "./connect-modal.vue";
+import ConnectModal from "~/components/modals/connect-modal.vue";
 
 const accountStore = useAccountStore();
 
