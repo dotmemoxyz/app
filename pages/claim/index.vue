@@ -31,7 +31,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import QRScannerModal from "~/components/dot/qr-scanner-modal.vue";
+import QRScannerModal from "~/components/modals/qr-scanner-modal.vue";
 import { useModal } from "vue-final-modal";
 import { parseClaimString } from "~/utils/scanner";
 const { t } = useI18n();

@@ -1,6 +1,7 @@
 import { CHAINS, NAMES } from "@kodadot1/static";
 
 import type { ChainProperties, ChainVM, Prefix } from "@kodadot1/static";
+import type { AssetItem } from "~/types/web3";
 
 export const chainPropListOf = (prefix: Prefix): ChainProperties => {
   return CHAINS[prefix];
@@ -24,13 +25,6 @@ export const getChainName = (prefix: Prefix) => {
 
 export const getTransactionFee = (prefix: Extract<Prefix, "ahp" | "ahk">) => {
   return prefix === "ahp" ? 0.002 : 0.0002;
-};
-
-type AssetItem = {
-  id: string;
-  name: string;
-  symbol: string;
-  decimals: number;
 };
 
 export const chainAssetOf = (prefix: Prefix): AssetItem => {

@@ -150,7 +150,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import QRScannerModal from "~/components/dot/qr-scanner-modal.vue";
+import QRScannerModal from "~/components/modals/qr-scanner-modal.vue";
 import { DateTime } from "luxon";
 import { useModal } from "vue-final-modal";
 
