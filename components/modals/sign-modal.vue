@@ -113,6 +113,8 @@ import { onApiConnect } from "@kodadot1/sub-api";
 import Identicon from "@polkadot/vue-identicon";
 import type { Prefix } from "@kodadot1/static";
 import { useMemoSign } from "~/composables/useMemoSign";
+import type { CreateMemoDTO } from "~/types/memo";
+import { DateTime } from "luxon";
 
 const { t } = useI18n();
 const logger = createLogger("SignModal");
@@ -197,7 +199,9 @@ watch(status, async (status) => {
           mint: toMint.value,
           name: props.name,
           image: imageCid.value,
-        },
+          expiresAt: DateTime.fromJSDate(props.endDate).toSQL(),
+          createdAt: DateTime.fromJSDate(props.startDate).toSQL(),
+        } as CreateMemoDTO,
       });
     } catch (error) {
       logger.error(error);

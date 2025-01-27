@@ -65,7 +65,7 @@ export type CreateMemoDTO = {
   /**
    * Collection ID of the memo
    */
-  collection: string;
+  collection: number;
   /**
    * Chain of the memo
    */
@@ -78,4 +78,12 @@ export type CreateMemoDTO = {
    * Image URL
    */
   image: string;
+  /**
+   * Expires at
+   */
+  expiresAt: string;
+  /**
+   * Created at
+   */
+  createdAt: string;
 };
