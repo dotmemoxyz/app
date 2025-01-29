@@ -150,7 +150,7 @@ const copyLink = async (ev: MouseEvent) => {
 };
 
 const generateQR = async () => {
-  const urlToEncode = `${window.location.origin}/claim/${props.secret}`;
+  const urlToEncode = `https://app.novawallet.io/open/dapp?url=${window.location.origin}/claim/${props.secret}`;
   const qrcodeDataURI = await QRCode.toDataURL(urlToEncode, {
     margin: 1,
     scale: 10,
