@@ -65,6 +65,7 @@
         :chain="props.chain"
         :symbol-value="symbolValue"
         :dollar-value="dollarValue"
+        :price-loading="priceLoading || loadingApi"
         :price-error="priceError"
         :deposit-per-item="depositPerItem"
         :deposit-for-collection="depositForCollection"
@@ -152,7 +153,7 @@ const properties = computed(() => chainAssetOf(props.chain));
 const depositPerItem = ref(0);
 const depositForCollection = ref(0);
 const totalPayableDeposit = ref(BigInt(0));
-
+const loadingApi = ref(true);
 // Hook to load chain data
 onApiConnect(props.chain, async (api) => {
   const collectionFee = collectionDeposit(api);
@@ -162,6 +163,7 @@ onApiConnect(props.chain, async (api) => {
   depositForCollection.value = (collectionFee + metadataFee) / decimals;
   depositPerItem.value = (itemFee + metadataFee) / decimals;
   totalPayableDeposit.value = BigInt(itemFee + metadataFee) * BigInt(props.quantity);
+  loadingApi.value = false;
 });
 
 // Transaction composables
@@ -219,7 +221,7 @@ watch(status, async (status) => {
 
 // Price
 const totalDeposit = computed(() => depositPerItem.value * props.quantity + depositForCollection.value);
-const { dollarValue, priceError, symbolValue } = usePriceApi(totalDeposit, properties);
+const { dollarValue, priceError, symbolValue, priceLoading } = usePriceApi(totalDeposit, properties);
 
 const canSign = computed(() => isLogIn.value && !priceError.value && !isSigning.value && codeWroteDown.value);
 </script>

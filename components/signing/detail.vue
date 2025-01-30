@@ -45,7 +45,7 @@
     <p class="text-sm text-text-color">{{ $t("create.dialog.total") }}</p>
     <p class="text-right text-sm text-text-color">
       <span class="ml-2 font-bold text-text-color/70"> {{ symbolValue }} {{ properties.symbol }} </span>
-      <span v-if="dollarValue === null" class="animate-pulse text-xs text-text-color/50">
+      <span v-if="dollarValue === null || priceLoading" class="animate-pulse text-xs text-text-color/50">
         ({{ $t("common.calculating") }})
       </span>
       <span v-else-if="!priceError" class="text-xs text-text-color/50"> ({{ dollarValue.toFixed(2) }}$) </span>
@@ -83,6 +83,7 @@ const props = defineProps<{
   chain: Prefix;
   symbolValue: number;
   dollarValue: number | null;
+  priceLoading: boolean;
   priceError: string | null;
   depositPerItem: number;
   depositForCollection: number;
