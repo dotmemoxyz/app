@@ -61,15 +61,17 @@ export const usePriceApi = (totalDeposit: Ref<number>, properties: Ref<AssetItem
   const priceLoading = ref(false);
   const dollarValue = asyncComputed(
     async () => {
+      const name = getSymbolName(properties.value.symbol);
+      // We need to make reference before await as dependency tracker does not track asynchronous definitions
+      const symbolPrice = symbolValue.value;
       try {
-        const name = getSymbolName(properties.value.symbol);
         const prices = await getPrice(name);
         if (prices[name]?.usd === undefined) {
           logger.error("Failed to get symbol price. Data: %O", prices);
           priceError.value = "Failed to fetch currency data. Try again later or contact support.";
           return null;
         }
-        return prices[name].usd * symbolValue.value;
+        return prices[name].usd * symbolPrice;
       } catch (e) {
         priceError.value = "Failed to fetch currency data. Try again later or contact support.";
         logger.error("Failed to fetch currency data. Reason: %s", (e as Error).message);
