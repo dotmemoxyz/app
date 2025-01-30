@@ -58,22 +58,27 @@ export const usePriceApi = (totalDeposit: Ref<number>, properties: Ref<AssetItem
   };
   const symbolValue = computed(() => Math.round(totalDeposit.value * 10000) / 10000);
   const priceError = ref<string | null>(null);
-  const dollarValue = asyncComputed(async () => {
-    try {
-      const name = getSymbolName(properties.value.symbol);
-      const prices = await getPrice(name);
-      if (prices[name]?.usd === undefined) {
-        logger.error("Failed to get symbol price. Data: %O", prices);
+  const priceLoading = ref(false);
+  const dollarValue = asyncComputed(
+    async () => {
+      try {
+        const name = getSymbolName(properties.value.symbol);
+        const prices = await getPrice(name);
+        if (prices[name]?.usd === undefined) {
+          logger.error("Failed to get symbol price. Data: %O", prices);
+          priceError.value = "Failed to fetch currency data. Try again later or contact support.";
+          return null;
+        }
+        return prices[name].usd * symbolValue.value;
+      } catch (e) {
         priceError.value = "Failed to fetch currency data. Try again later or contact support.";
+        logger.error("Failed to fetch currency data. Reason: %s", (e as Error).message);
         return null;
       }
-      return prices[name].usd * symbolValue.value;
-    } catch (e) {
-      priceError.value = "Failed to fetch currency data. Try again later or contact support.";
-      logger.error("Failed to fetch currency data. Reason: %s", (e as Error).message);
-      return null;
-    }
-  }, null);
+    },
+    null,
+    priceLoading,
+  );
 
-  return { getPrice, getSymbolName, symbolValue, priceError, dollarValue };
+  return { getPrice, getSymbolName, symbolValue, priceError, dollarValue, priceLoading };
 };
