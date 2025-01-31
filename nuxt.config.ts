@@ -43,6 +43,10 @@ export default defineNuxtConfig({
       chain: "ahp",
     },
   },
+  colorMode: {
+    storage: "localStorage",
+    storageKey: "color-mode",
+  },
   pwa: {
     strategies: "generateSW",
     registerType: "autoUpdate",
