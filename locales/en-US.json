@@ -52,7 +52,13 @@
     "alreadyClaimed": "You already claimed this MEMO",
     "claimFree": "Claim for free",
     "seeInGallery": "See {name} in gallery",
-    "wantToShare": "Would you like to share it?"
+    "wantToShare": "Would you like to share it?",
+    "allClaimed": "All MEMOs have been claimed",
+    "tooLate": "It's too late to claim this MEMO",
+    "claiming": "Claiming MEMO...",
+    "claim": "Claim MEMO",
+    "loading": "Loading info...",
+    "remaining": "Remaining claims: {free} / {total}"
   },
   "create": {
     "title": ".create",
