@@ -45,7 +45,7 @@
 
     <div v-if="!error" class="flex flex-col space-y-3 self-stretch">
       <template v-if="!claimed">
-        <template v-if="!allClaimed">
+        <template v-if="!allClaimed && !tooLate">
           <div class="mb-6 flex rounded-full border-2 border-border-color p-2 shadow-text-color">
             <button
               class="flex-1 rounded-full py-2 text-text-color"
