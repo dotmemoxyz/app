@@ -19,7 +19,7 @@
           <li class="flex items-center gap-2" @click="switchMode">
             <p class="block md:hidden">Color mode</p>
             <Icon
-              :name="colorMode.value === 'light' ? 'mdi:weather-sunny' : 'mdi:weather-night'"
+              :name="colorMode.preference === 'light' ? 'mdi:weather-sunny' : 'mdi:weather-night'"
               class="cursor-pointer"
               size="24"
             />
@@ -48,7 +48,7 @@ const links = computed(() => [
 const colorMode = useColorMode();
 
 const switchMode = () => {
-  colorMode.value = colorMode.value === "light" ? "dark" : "light";
+  colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
 };
 
 const navOpen = ref(false);
