@@ -124,7 +124,10 @@ onMounted(async () => {
   availableWallets.value = wallets.filter((wallet) => !wallet.installed);
 });
 
+const selectedWallet = ref<BaseDotsamaWallet | null>(null);
+
 const selectWallet = async (wallet: BaseDotsamaWallet) => {
+  selectedWallet.value = wallet;
   const accounts = await wallet.getAccounts();
   accountStore.setAccounts(accounts ?? []);
   state.value = "account";
@@ -133,9 +136,11 @@ const selectWallet = async (wallet: BaseDotsamaWallet) => {
 const selectedAccount = ref<ExtendedDotsamaAccount | null>(null);
 
 const saveAndClose = () => {
-  if (selectedAccount.value) {
+  if (selectedAccount.value && selectedWallet.value) {
     accountStore.selectAccount(selectedAccount.value);
-    localStorage.setItem("account", JSON.stringify(selectedAccount.value));
+    localStorage.setItem("account-address", selectedAccount.value.address);
+    localStorage.setItem("account-wallet", selectedWallet.value.name);
+
     emit("confirm");
   }
 };
