@@ -114,7 +114,11 @@ const validationSchema = toTypedSchema(
     }),
     name: zod.string({ message: "Name is required" }).min(1, { message: "Name is required" }),
     description: zod.string().optional(),
-    externalUrl: zod.string().url({ message: "URL has invalid format" }).optional(),
+    externalUrl: zod
+      .string()
+      .url({ message: "URL has invalid format" })
+      .optional()
+      .or(zod.literal("").transform(() => undefined)),
     startDate: zod.date({ message: "Start date is required" }),
     endDate: zod.date({ message: "End date is required" }),
     quantity: zod.number({ message: "Quantity is required" }).positive({ message: "Quantity must be positive" }),
