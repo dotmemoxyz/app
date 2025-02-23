@@ -6,7 +6,8 @@ export default defineEventHandler(async (event) => {
   // const { image, name, description, externalUrl, startDate, endDate, quantity, secret, chain, collection } =
   //   await readBody(event);
 
-  const { secret, mint, collection, chain, name, image, expiresAt, createdAt } = await readBody<CreateMemoDTO>(event);
+  const { secret, mint, collection, chain, name, image, expiresAt, createdAt, supportEmail } =
+    await readBody<CreateMemoDTO>(event);
 
   const [data, err] = await $fetch(`${RUNTIME_CONFIG.apiUrl}/poaps`, {
     method: "POST",
@@ -18,6 +19,7 @@ export default defineEventHandler(async (event) => {
       mint,
       name,
       image,
+      support_mail: Number(supportEmail ?? false),
       expires_at: expiresAt,
       created_at: createdAt,
     },

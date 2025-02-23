@@ -34,6 +34,7 @@ export default defineEventHandler(async (event) => {
     description: rawData.description,
     image,
     mint: rawData.mint,
+    supportMail: Boolean(rawData.support_mail),
     createdAt: rawData.created_at,
     expiresAt: rawData.expires_at,
   };

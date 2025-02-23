@@ -16,7 +16,10 @@
     "back": "Back",
     "address": "Address",
     "account": "Account",
-    "error": "Error"
+    "error": "Error",
+    "yes": "Yes",
+    "no": "No",
+    "email": "E-mail"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -44,11 +47,13 @@
     "enterCode": "Enter MEMO Code",
     "howThisWorks": "How this works?",
     "success": "MEMO claimed successfully",
+    "reservationSuccess": "MEMO claimed successfully. Check your inbox",
     "cantLoad": "Couldn't load MEMO",
     "tryDifferent": "Try a different MEMO?",
     "enterAddress": "Enter address",
     "connectWallet": "Connect Wallet",
     "enterDOTAddress": "Enter DOT address",
+    "enterEmailAddress": "Enter E-mail address",
     "alreadyClaimed": "You already claimed this MEMO",
     "claimFree": "Claim for free",
     "seeInGallery": "See {name} in gallery",
@@ -58,7 +63,8 @@
     "claiming": "Claiming MEMO...",
     "claim": "Claim MEMO",
     "loading": "Loading info...",
-    "remaining": "Remaining claims: {free} / {total}"
+    "remaining": "Remaining claims: {free} / {total}",
+    "email": "E-mail"
   },
   "create": {
     "title": ".create",
@@ -77,7 +83,8 @@
       "quantity": "Quantity",
       "quantityHint": "This is the total number of MEMO pieces that will be available for claiming.",
       "secret": "Secret code",
-      "secretHint": "This is a secret code that will be used to claim the MEMO. It should be shared with the attendees."
+      "secretHint": "This is a secret code that will be used to claim the MEMO. It should be shared with the attendees.",
+      "supportEmail": "Support mail"
     },
     "dialog": {
       "confirm": "Confirm creation",
@@ -96,7 +103,8 @@
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
       "txProgress": "Transaction in progress. (Status: {status})",
-      "rememberCode": "I have written down the MEMO secret code and understand that it is required to claim my MEMO."
+      "rememberCode": "I have written down the MEMO secret code and understand that it is required to claim my MEMO.",
+      "supportEmail": "Claim by mail"
     },
     "success": {
       "title": "Purchased",
@@ -298,5 +306,9 @@
       "chooseArtwork": "Drop your artwork",
       "chooseDifferent": "Choose a different artwork"
     }
+  },
+  "redirectMessages": {
+    "verifyEmail": "Your E-mail was successfuly verified",
+    "verifyEmailError": "E-mail verification was not successful"
   }
 }

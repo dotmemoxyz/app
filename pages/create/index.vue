@@ -91,6 +91,9 @@
         </dot-text-input>
       </dot-label>
     </div>
+    <dot-label vertical :text="t('create.memo.supportEmail')">
+      <dot-checkbox v-model="supportEmail" />
+    </dot-label>
     <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
   </form>
 </template>
@@ -126,6 +129,7 @@ const validationSchema = toTypedSchema(
       .string({ message: "Secret is required" })
       .min(5, { message: "Must be at least 5 characters" })
       .regex(/^[a-z_.\-\d]+$/, "Please use only lowercase letters, numbers, and these symbols: '-', '_', or '.'"),
+    supportEmail: zod.boolean().optional(),
   }),
 );
 
@@ -146,6 +150,7 @@ const { value: endDate, errorMessage: endDateError } = useField<Date>("endDate")
 const localEndDateError = ref<string>("");
 const { value: quantity, errorMessage: quantityError } = useField<number>("quantity");
 const { value: secret, errorMessage: secretError } = useField<string>("secret");
+const { value: supportEmail } = useField<boolean>("supportEmail");
 
 const {
   status,
@@ -195,65 +200,69 @@ watch([startDate, endDate], ([startDate, endDate]) => {
 
 const logger = createLogger("CreatePage");
 
-const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDate, name, externalUrl, secret }) => {
-  if (localStartDateError.value || localEndDateError.value || existingCodeError.value) {
-    return;
-  }
+const onSubmit = handleSubmit(
+  ({ description, endDate, image, quantity, startDate, name, externalUrl, secret, supportEmail }) => {
+    if (localStartDateError.value || localEndDateError.value || existingCodeError.value) {
+      return;
+    }
 
-  logger.success({
-    description,
-    endDate,
-    quantity,
-    startDate,
-    image,
-    name,
-    externalUrl,
-  });
-
-  const { open, close: closeSignModal } = useModal({
-    component: SignModal,
-    attrs: {
-      name,
-      startDate,
+    logger.success({
+      description,
       endDate,
       quantity,
+      startDate,
       image,
-      secret,
-      description,
-      chain: preferredChain.value,
-      onError(err) {
-        closeSignModal();
-        const { open: openErrorModal } = useModal({
-          component: SignErrorModal,
-          attrs: {
-            signError: err,
-          },
-        });
+      name,
+      externalUrl,
+      supportEmail,
+    });
 
-        openErrorModal();
+    const { open, close: closeSignModal } = useModal({
+      component: SignModal,
+      attrs: {
+        name,
+        startDate,
+        endDate,
+        quantity,
+        image,
+        secret,
+        description,
+        supportEmail,
+        chain: preferredChain.value,
+        onError(err) {
+          closeSignModal();
+          const { open: openErrorModal } = useModal({
+            component: SignErrorModal,
+            attrs: {
+              signError: err,
+            },
+          });
+
+          openErrorModal();
+        },
+        onSuccess({ txHash }) {
+          const { open: openSuccessModal } = useModal({
+            component: SuccessModal,
+            attrs: {
+              chain: preferredChain.value,
+              quantity,
+              name,
+              secret,
+              image,
+              tx: txHash,
+            },
+          });
+
+          openSuccessModal();
+        },
       },
-      onSuccess({ txHash }) {
-        const { open: openSuccessModal } = useModal({
-          component: SuccessModal,
-          attrs: {
-            chain: preferredChain.value,
-            quantity,
-            name,
-            secret,
-            image,
-            tx: txHash,
-          },
-        });
+    });
 
-        openSuccessModal();
-      },
-    },
-  });
+    open();
 
-  open();
-
-  return;
-});
+    return;
+  },
+);
 
 const isSubmittable = computed(
   () =>
