@@ -14,6 +14,12 @@ export type MemoDTO = {
   expires_at: string;
 };
 
+export type ReservationDTO = {
+  id: string;
+  memo_id: string;
+  email: string;
+};
+
 export type Memo = {
   /**
    * Code of the memo
@@ -43,6 +49,10 @@ export type Memo = {
    * IPFS Mint of the memo
    */
   mint: string;
+  /**
+   * Created at
+   */
+  supportMail: boolean;
   /**
    * Created at
    */
@@ -78,6 +88,10 @@ export type CreateMemoDTO = {
    * Image URL
    */
   image: string;
+  /**
+   * Support E-mail
+   */
+  supportEmail: boolean;
   /**
    * Expires at
    */

@@ -69,6 +69,7 @@
         :price-error="priceError"
         :deposit-per-item="depositPerItem"
         :deposit-for-collection="depositForCollection"
+        :support-email="supportEmail"
       />
       <span class="flex w-full items-center justify-between gap-2 rounded-lg border border-black bg-yellow-300 p-4">
         <dot-checkbox v-model="codeWroteDown" black />
@@ -128,6 +129,7 @@ const props = defineProps<{
   quantity: number;
   secret: string;
   description?: string;
+  supportEmail?: boolean;
   chain: Prefix;
 }>();
 
@@ -201,6 +203,7 @@ watch(status, async (status) => {
           mint: toMint.value,
           name: props.name,
           image: imageCid.value,
+          supportEmail: props.supportEmail,
           expiresAt: DateTime.fromJSDate(props.endDate).toSQL(),
           createdAt: DateTime.fromJSDate(props.startDate).toSQL(),
         } as CreateMemoDTO,

@@ -37,6 +37,13 @@
     </span>
     <p class="text-sm text-text-color">{{ $t("create.dialog.amount") }}</p>
     <p class="text-right text-sm font-bold text-text-color/70">{{ props.quantity }}</p>
+
+    <template v-if="props.supportEmail">
+      <p class="text-sm text-text-color">{{ t("create.dialog.supportEmail") }}</p>
+      <p class="text-right text-sm font-bold text-text-color/70">
+        {{ props.supportEmail ? t("common.yes") : t("common.no") }}
+      </p>
+    </template>
   </div>
 
   <hr class="-mx-6 my-3" />
@@ -78,6 +85,7 @@ const props = defineProps<{
   startDate: Date;
   endDate: Date;
   quantity: number;
+  supportEmail?: boolean;
   secret: string;
   description?: string;
   chain: Prefix;
@@ -88,6 +96,8 @@ const props = defineProps<{
   depositPerItem: number;
   depositForCollection: number;
 }>();
+
+const { t } = useI18n();
 
 const showBreakdown = ref(false);
 const displaySecret = ref(false);

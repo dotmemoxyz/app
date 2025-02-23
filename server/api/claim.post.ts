@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
   if (err) {
     console.error(err);
-    throw new Error("An unknown error has occoured");
+    throw createError({ statusMessage: "An unknown error has occoured" });
   }
 
   return data;
