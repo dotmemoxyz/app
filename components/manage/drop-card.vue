@@ -43,6 +43,13 @@
         />
       </div>
     </div>
+    <div
+      class="flex w-full cursor-pointer items-center justify-between rounded-xl border border-[#DEDEDE] bg-white p-4 hover:opacity-70"
+      @click="navigateTo(`/manage/${props.drop.id}`)"
+    >
+      <p class="text-[14px] font-normal !text-black">{{ $t("manage.drop.manageDrop") }}</p>
+      <Icon name="mdi:arrow-right" class="size-[20px] text-black" />
+    </div>
   </div>
 </template>
 

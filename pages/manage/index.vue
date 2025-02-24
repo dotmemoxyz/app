@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full w-full flex-col gap-8 px-8 py-10">
-    <h1 class="text-[40px] !text-black">{{ $t("manage.title") }}</h1>
+    <h1 class="text-[40px] !text-black dark:!text-white">{{ $t("manage.title") }}</h1>
     <div class="flex w-full justify-between">
       <!-- Statistics -->
       <div class="flex gap-4">
@@ -10,7 +10,7 @@
             <Icon name="memo:bar-chart" class="size-[34px] text-[#00AD40]" />
           </div>
           <div class="flex flex-col gap-2">
-            <p class="text-[14px] !text-black/40">{{ $t("manage.activeDrops") }}</p>
+            <p class="text-[14px] !text-black/40 dark:!text-white/70">{{ $t("manage.activeDrops") }}</p>
             <p class="text-[20px] text-black">3</p>
           </div>
         </div>
@@ -20,7 +20,7 @@
             <Icon name="memo:people" class="size-[34px] text-[#007BDF]" />
           </div>
           <div class="flex flex-col gap-2">
-            <p class="text-[14px] !text-black/40">{{ $t("manage.totalClaims") }}</p>
+            <p class="text-[14px] !text-black/40 dark:!text-white/70">{{ $t("manage.totalClaims") }}</p>
             <p class="text-[20px] text-black">14 000</p>
           </div>
         </div>
@@ -33,7 +33,7 @@
         </dot-button>
       </div>
     </div>
-    <div class="grid w-full grid-cols-3 gap-4">
+    <div class="grid w-full grid-cols-4 gap-4">
       <template v-if="drops">
         <manage-drop-card v-for="drop in drops" :key="drop.id" :drop="drop" />
       </template>
