@@ -313,7 +313,15 @@
       "claimed": "{part}/{total} claimed",
       "manageDrop": "Manage Drop",
       "expired": "Expired",
-      "backToDrops": "Back to Drops"
+      "backToDrops": "Back to Drops",
+      "viewClaimPage": "View Claim Page",
+      "copyLink": "Copy Link",
+      "pause": "Pause",
+      "tabs": {
+        "analytics": "Analytics",
+        "customize": "Customize",
+        "settings": "Settings"
+      }
     }
   }
 }

@@ -9,44 +9,27 @@
         <p class="text-[14px] font-normal !text-black">{{ $t("manage.drop.backToDrops") }}</p>
       </div>
     </div>
+    <manage-drop-detail v-if="data" :drop="data" />
+    <div v-else class="w-full rounded-xl bg-[#F9F9F9] p-10" />
     <div v-if="status === 'pending'">
       <Spinner />
     </div>
     <div v-else-if="status === 'error'">
       <p>{{ error }}</p>
     </div>
-    <div v-else-if="status === 'success'">
-      <div v-if="!data">
-        <p>No drops found</p>
-      </div>
-      <div v-else class="flex w-full flex-col items-center">
-        <div class="flex items-center gap-2">
-          <Icon name="mdi:calendar" size="24" class="text-k-primary" />
-          <p>
-            {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_FULL) }}
-          </p>
-          <p>-</p>
-          <Icon name="mdi:calendar" size="24" class="text-k-primary" />
-          <p>
-            {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_FULL) }}
-          </p>
-        </div>
-        <div v-if="data.description" class="flex items-center gap-2">
-          <Icon name="mdi:text" size="24" class="text-k-primary" />
-          <p>
-            {{ data.description }}
-          </p>
-        </div>
-        <div class="flex w-full justify-center">
-          <small class="text-gray-400 dark:text-white">
-            {{
-              $t("claim.remaining", {
-                free: remaining,
-                total: maxMints,
-              })
-            }}
-          </small>
-        </div>
+    <!-- Tabs -->
+    <div class="flex w-fit gap-[6px] rounded-[18px] bg-[#F9F9F9] p-2">
+      <div
+        v-for="tab in TABS"
+        :key="tab.key"
+        class="cursor-pointer items-center justify-center rounded-xl border px-[16px] py-[14px]"
+        :class="{
+          'border-black/15 bg-white': selectedTab === tab.key,
+          'border-transparent': selectedTab !== tab.key,
+        }"
+        @click="selectedTab = tab.key"
+      >
+        <p class="text-[14px] !text-black">{{ tab.label }}</p>
       </div>
     </div>
   </div>
@@ -54,8 +37,16 @@
 
 <script lang="ts" setup>
 import type { Prefix } from "@kodadot1/static";
-import { DateTime } from "luxon";
 import { getFreeMints } from "~/utils/sdk/query";
+
+const { t } = useI18n();
+const TABS = [
+  { key: "analytics", label: t("manage.drop.tabs.analytics") },
+  { key: "customize", label: t("manage.drop.tabs.customize") },
+  { key: "settings", label: t("manage.drop.tabs.settings") },
+];
+
+const selectedTab = ref(TABS[0].key);
 
 const route = useRoute();
 const { data, status, error } = await useFetch("/api/code", {
@@ -73,6 +64,7 @@ watch(
     if (data) {
       loadingLimitInfo.value = true;
       const api = await apiInstanceByPrefix(data.chain);
+
       const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.collection);
       maxMints.value = maxTokens;
       minted.value = mintedTokens;
@@ -86,5 +78,3 @@ watch(
   },
 );
 </script>
-
-<style></style>
