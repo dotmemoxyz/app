@@ -4,6 +4,7 @@
     "offline": "You are offline. Check your internet connection.",
     "claim": "Claim",
     "create": "Create",
+    "manage": "Manage",
     "confirm": "Confirm",
     "cancel": "Cancel",
     "learnMore": "Learn More",
@@ -297,6 +298,21 @@
     "image": {
       "chooseArtwork": "Drop your artwork",
       "chooseDifferent": "Choose a different artwork"
+    }
+  },
+  "manage": {
+    "title": "Your MEMOs",
+    "activeDrops": "Active Drops",
+    "totalClaims": "Total Claims",
+    "createDrop": "+ Create MEMO",
+    "drop": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "left": "{time} left",
+      "progress": "Progress",
+      "claimed": "{part}/{total} claimed",
+      "manageDrop": "Manage Drop",
+      "expired": "Expired"
     }
   }
 }

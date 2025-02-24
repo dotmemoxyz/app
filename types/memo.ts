@@ -1,5 +1,8 @@
 import type { Prefix } from "@kodadot1/static";
 
+/**
+ * Memo DTO from hewers API
+ */
 export type MemoDTO = {
   id: string;
   chain: Prefix;
@@ -14,6 +17,22 @@ export type MemoDTO = {
   expires_at: string;
 };
 
+/**
+ * Uniquery collection format
+ */
+export type UniqCollection = {
+  id: string;
+  name: string;
+  image: string;
+  issuer: string;
+  metadata: string;
+  currentOwner: string;
+  createdAt: string;
+};
+
+/**
+ * Local MEMO object
+ */
 export type Memo = {
   /**
    * Code of the memo

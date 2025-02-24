@@ -36,14 +36,21 @@
 </template>
 <script setup lang="ts">
 const { t } = useI18n();
-const links = computed(() => [
-  { name: t("common.claim"), icon: "mdi:hand-back-right", href: "/claim" },
-  {
-    name: t("common.create"),
-    icon: "mdi:credit-card-edit-outline",
-    href: "/create",
-  },
-]);
+const accountStore = useAccountStore();
+const links = computed(() => {
+  const availableLinks = [
+    { name: t("common.claim"), icon: "mdi:hand-back-right", href: "/claim" },
+    {
+      name: t("common.create"),
+      icon: "mdi:credit-card-edit-outline",
+      href: "/create",
+    },
+  ];
+  if (accountStore.hasSelectedAccount) {
+    availableLinks.push({ name: t("common.manage"), icon: "mdi:account-cog", href: "/manage" });
+  }
+  return availableLinks;
+});
 
 const colorMode = useColorMode();
 

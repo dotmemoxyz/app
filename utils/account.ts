@@ -21,6 +21,8 @@ export const formatAccount = (account: KeyringAccount | string, format?: Prefix)
   return encodeAddress(decodeAddress(address), ss58Format);
 };
 
+export const reencodeAddress = (address: string, format: Prefix) => encodeAddress(decodeAddress(address), format);
+
 export const isValidSubstrateAddress = (address: string): boolean => {
   try {
     encodeAddress(decodeAddress(address));

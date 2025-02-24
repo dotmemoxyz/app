@@ -23,6 +23,7 @@ const props = withDefaults(
     disabled?: boolean;
     variant?: BtnVariant;
     size?: BtnSize;
+    squared?: boolean;
     submit?: boolean;
   }>(),
   {
@@ -40,23 +41,23 @@ const SIZE_CLASSES: Record<BtnSize, string> = {
 
 const VARIANT_CLASSES: Record<BtnVariant, string> = {
   primary: `
-      bg-k-primary hover:bg-background-color-inverse border-2 border-transparent text-black hover:text-text-color-inverse rounded-full
+      bg-k-primary hover:bg-background-color-inverse border-2 border-transparent text-black hover:text-text-color-inverse
       disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
     `,
   secondary: `
-      bg-transparent text-k-primary border-2 border-k-primary hover:bg-k-primary hover:text-black/90 rounded-full
+      bg-transparent text-k-primary border-2 border-k-primary hover:bg-k-primary hover:text-black/90
       disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
     `,
   tertiary: `
-    bg-transparent text-background-color-inverse border-2 border-background-color-inverse hover:bg-background-color-inverse hover:text-text-color-inverse rounded-full
+    bg-transparent text-background-color-inverse border-2 border-background-color-inverse hover:bg-background-color-inverse hover:text-text-color-inverse
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
   "tertiary-light": `
-    bg-transparent text-white border-2 border-white hover:bg-white hover:text-black rounded-full
+    bg-transparent text-white border-2 border-white hover:bg-white hover:text-black
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
   "tertiary-dark": `
-    bg-transparent text-black border-2 border-black hover:bg-black hover:text-white rounded-full
+    bg-transparent text-black border-2 border-black hover:bg-black hover:text-white
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
 };
@@ -68,7 +69,9 @@ const btnClasses = computed(() => {
 
   const variant = VARIANT_CLASSES[props.variant];
 
-  return `${baseClasses} ${size} ${variant}`;
+  const squareClasses = props.squared ? "rounded-xl" : "rounded-full";
+
+  return [baseClasses, size, variant, squareClasses];
 });
 </script>
 
