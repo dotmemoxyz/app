@@ -1,5 +1,14 @@
 <template>
-  <div class="flex h-full flex-col items-center justify-center">
+  <div class="flex h-full w-full flex-col gap-8 px-8 py-10">
+    <div class="w-full">
+      <div
+        class="flex w-fit cursor-pointer items-center justify-between rounded-xl border border-black bg-white p-4 hover:opacity-70"
+        @click="navigateTo('/manage')"
+      >
+        <Icon name="mdi:arrow-left" class="size-[20px] text-black" />
+        <p class="text-[14px] font-normal !text-black">{{ $t("manage.drop.backToDrops") }}</p>
+      </div>
+    </div>
     <div v-if="status === 'pending'">
       <Spinner />
     </div>

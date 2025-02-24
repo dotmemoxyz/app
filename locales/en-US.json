@@ -312,7 +312,8 @@
       "progress": "Progress",
       "claimed": "{part}/{total} claimed",
       "manageDrop": "Manage Drop",
-      "expired": "Expired"
+      "expired": "Expired",
+      "backToDrops": "Back to Drops"
     }
   }
 }

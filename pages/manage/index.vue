@@ -27,7 +27,7 @@
       </div>
       <div class="flex gap-2">
         <!-- Chain select -->
-        <dot-select v-model="currentChain" class="w-[250px]" :options="chainList" />
+        <dot-select v-model="urlParams.chain" class="w-[250px]" :options="chainList" />
         <dot-button variant="tertiary" squared @click="navigateTo('/create')">
           {{ $t("manage.createDrop") }}
         </dot-button>
@@ -48,9 +48,17 @@ import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import type { Memo, UniqCollection } from "~/types/memo";
 import { $purify as purify } from "@kodadot1/minipfs";
 import type { Option } from "~/types/components";
+import { useUrlSearchParams } from "@vueuse/core";
 
 const accountStore = useAccountStore();
-const currentChain = ref<Prefix>("ahp");
+
+const urlParams = useUrlSearchParams<{
+  chain: Prefix;
+}>("history", {
+  initialValue: {
+    chain: "ahp",
+  },
+});
 
 const selectedAccount = computed(() => accountStore.selected);
 
@@ -69,13 +77,13 @@ const { data: drops, error: dropsError } = useAsyncData(
     if (!accountStore.selected) {
       throw new Error("No account selected");
     }
-    const client = getClient(currentChain.value);
-    const address = encodeAddress(decodeAddress(selectedAccount.value?.address), currentChain.value === "ahp" ? 0 : 2);
+    const client = getClient(urlParams.chain);
+    const address = encodeAddress(decodeAddress(selectedAccount.value?.address), urlParams.chain === "ahp" ? 0 : 2);
     const query = client.collectionListByOwner(address);
     const resp = await client.fetch<QueryResponse>(query);
     const memos: Memo[] = [];
     for (const collection of resp.data.collections) {
-      const data = await $fetch(`/api/drop/${currentChain.value}/${collection.id}`);
+      const data = await $fetch(`/api/drop/${urlParams.chain}/${collection.id}`);
       const image = purify(collection.image).at(0);
       if (!image) {
         throw new Error("No image found");
@@ -89,7 +97,7 @@ const { data: drops, error: dropsError } = useAsyncData(
     return memos;
   },
   {
-    watch: [currentChain, selectedAccount],
+    watch: [urlParams, selectedAccount],
     immediate: true,
   },
 );
