@@ -322,6 +322,10 @@
         "customize": "Customize",
         "settings": "Settings"
       }
+    },
+    "analytics": {
+      "totalClaims": "Total Claims",
+      "uniqueAddresses": "Unique Addresses"
     }
   }
 }

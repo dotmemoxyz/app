@@ -11,10 +11,7 @@
     </div>
     <manage-drop-detail v-if="data" :drop="data" />
     <div v-else class="w-full rounded-xl bg-[#F9F9F9] p-10" />
-    <div v-if="status === 'pending'">
-      <Spinner />
-    </div>
-    <div v-else-if="status === 'error'">
+    <div v-if="status === 'error'">
       <p>{{ error }}</p>
     </div>
     <!-- Tabs -->
@@ -32,6 +29,9 @@
         <p class="text-[14px] !text-black">{{ tab.label }}</p>
       </div>
     </div>
+    <hr class="w-full" />
+    <!-- Sub containers -->
+    <manage-drop-analytics v-if="selectedTab === 'analytics'" />
   </div>
 </template>
 

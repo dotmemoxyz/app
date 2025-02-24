@@ -10,11 +10,11 @@
     <div class="flex flex-1 flex-col justify-between py-4">
       <h2 class="text-[24px] !text-black">{{ props.drop.name }}</h2>
       <span class="flex items-center gap-8">
-        <div v-if="isExpired" class="flex items-center justify-center rounded-full bg-[#c5c4c4] p-2">
+        <div v-if="isExpired" class="flex items-center justify-center rounded-full bg-[#c5c4c4] px-4 py-2">
           <p class="text-[14px] !text-[#898989]">{{ $t("manage.drop.inactive") }}</p>
         </div>
         <div v-else class="flex items-center justify-center rounded-full bg-[#94FFBB] p-2">
-          <p class="text-[14px] !text-[#49DE80]">{{ $t("manage.drop.active") }}</p>
+          <p class="text-[14px] !text-[#00AD40]">{{ $t("manage.drop.active") }}</p>
         </div>
         <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
       </span>
