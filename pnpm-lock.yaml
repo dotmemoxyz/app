@@ -80,6 +80,9 @@ importers:
       consola:
         specifier: ^3.2.3
         version: 3.2.3
+      emoji-blast:
+        specifier: ^0.10.2
+        version: 0.10.2
       lint-staged:
         specifier: ^15.2.5
         version: 15.2.10
@@ -3259,6 +3262,10 @@ packages:
 
   electron-to-chromium@1.5.71:
     resolution: {integrity: sha512-dB68l59BI75W1BUGVTAEJy45CEVuEGy9qPVVQ8pnHyHMn36PLPPoE1mjLH+lo9rKulO3HC2OhbACI/8tCqJBcA==}
+
+  emoji-blast@0.10.2:
+    resolution: {integrity: sha512-3VrqajirPj8QeQxQeMHUfD+03H64XTEVPGRjxP5rjDCVEC5NGF3FgutMpU5scIOhcuzG23Qvs32k0Pnj+hRzGA==}
+    engines: {node: '>=18'}
 
   emoji-regex@10.4.0:
     resolution: {integrity: sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==}
@@ -10405,6 +10412,8 @@ snapshots:
   electron-to-chromium@1.5.26: {}
 
   electron-to-chromium@1.5.71: {}
+
+  emoji-blast@0.10.2: {}
 
   emoji-regex@10.4.0: {}
 

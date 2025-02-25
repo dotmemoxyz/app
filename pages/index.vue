@@ -1,5 +1,5 @@
 <template>
-  <main class="relative flex flex-col bg-bg-persistent">
+  <main class="relative flex flex-col bg-[#0D2919]">
     <section v-if="!networkStatus" class="sticky top-0 z-10">
       <div class="flex items-center justify-center gap-3 bg-red-500 p-5">
         <p class="!text-white">{{ t("common.offline") }}</p>
@@ -21,10 +21,10 @@
           size="large"
           variant="primary"
           :disabled="!networkStatus"
-          class="px-10 hover:!bg-white hover:!text-bg-persistent sm:px-20"
+          class="px-10 sm:px-20"
           @click="router.push('/claim')"
         >
-          {{ t("common.claim") }}
+          {{ t("common.claim").toUpperCase() }}
         </dot-button>
         <dot-button
           size="large"
@@ -32,11 +32,11 @@
           :disabled="!networkStatus"
           class="px-10 sm:px-20"
           :class="{
-            'hover:!bg-white hover:!text-bg-persistent': !networkStatus,
+            'hover:!text-bg-persistent hover:!bg-white': !networkStatus,
           }"
           @click="router.push('/create')"
         >
-          {{ t("common.create") }}
+          {{ t("common.create").toUpperCase() }}
         </dot-button>
       </div>
       <div class="flex flex-col items-center gap-3">
@@ -48,15 +48,15 @@
     </section>
 
     <section class="mx-[10px] flex min-h-[40vh] flex-col justify-between gap-7 rounded-2xl bg-white p-10 md:mx-10">
-      <p class="max-w-full text-4xl !text-bg-persistent sm:max-w-[66%] md:text-6xl">
+      <p class="max-w-full text-4xl !text-surface-white sm:max-w-[66%] md:text-6xl">
         {{ t("landing.captureMoments") }}
       </p>
 
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div class="flex items-center justify-start">
-          <p class="!text-black">{{ t("landing.milestonesIntoMemories") }}</p>
+          <p class="!text-surface-white">{{ t("landing.milestonesIntoMemories") }}</p>
         </div>
-        <div class="hidden justify-end">
+        <div class="justify-end">
           <dot-button class="w-full sm:w-auto" variant="tertiary-dark" size="large">
             {{ t("common.learnMore") }}
           </dot-button>
@@ -68,8 +68,8 @@
       <p class="m-6 text-3xl !text-white">{{ t("landing.explanation.title") }}</p>
 
       <div class="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="flex flex-col gap-2 rounded-3xl bg-bg-card p-8 sm:p-12">
-          <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-k-primary">
+        <div class="flex flex-col gap-2 rounded-3xl bg-[#0C3F22] p-8 sm:p-12">
+          <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-accent-primary">
             <img class="h-8 w-8" :src="claimIcon" />
           </div>
           <p class="text-2xl font-bold !text-white">{{ t("common.claim") }}</p>
@@ -78,8 +78,8 @@
           </p>
         </div>
 
-        <div class="flex flex-col gap-2 rounded-3xl bg-bg-card p-8 sm:p-12">
-          <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-k-primary">
+        <div class="flex flex-col gap-2 rounded-3xl bg-[#0C3F22] p-8 sm:p-12">
+          <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-accent-primary">
             <img class="h-8 w-8" :src="createNewIcon" />
           </div>
           <p class="text-2xl font-bold !text-white">{{ t("common.create") }}</p>
@@ -88,8 +88,8 @@
           </p>
         </div>
 
-        <div class="flex flex-col gap-2 rounded-3xl bg-bg-card p-8 sm:p-12">
-          <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-k-primary">
+        <div class="flex flex-col gap-2 rounded-3xl bg-[#0C3F22] p-8 sm:p-12">
+          <div class="mb-16 flex h-16 w-16 items-center justify-center rounded-full bg-accent-primary">
             <img class="h-8 w-8" :src="communityIcon" />
           </div>
           <p class="text-2xl font-bold !text-white">{{ t("landing.explanation.share") }}</p>
@@ -102,11 +102,11 @@
 
     <p class="text-center !text-white">
       {{ t("landing.learnMore") }}
-      <a class="!text-k-primary underline" href="https://github.com/dotmemoxyz/app/wiki" target="_blank">wiki!</a>
+      <a class="!text-accent-primary underline" href="https://github.com/dotmemoxyz/app/wiki" target="_blank">wiki!</a>
     </p>
 
     <section class="m-[10px] flex min-h-[40vh] flex-col gap-7 rounded-2xl bg-white p-10 md:m-10">
-      <p class="text-4xl !text-bg-persistent md:text-6xl">{{ t("landing.featured") }}</p>
+      <p class="!text-bg-persistent text-4xl md:text-6xl">{{ t("landing.featured") }}</p>
 
       <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <a
@@ -130,7 +130,7 @@
         </a>
       </div>
     </section>
-    <section class="m-[10px] flex min-h-[40vh] flex-col gap-7 rounded-2xl bg-bg-card p-10 md:m-10">
+    <section class="m-[10px] flex min-h-[40vh] flex-col gap-7 rounded-2xl bg-[#0C3F22] p-10 md:m-10">
       <p class="text-4xl !text-white md:text-6xl">{{ $t("landing.partners") }}</p>
 
       <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -164,6 +164,7 @@ import { getClient } from "@kodadot1/uniquery";
 import { $purifyOne } from "@kodadot1/minipfs";
 definePageMeta({
   layout: "landing",
+  colorMode: "dark",
 });
 
 const { t } = useI18n();

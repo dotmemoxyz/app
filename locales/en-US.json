@@ -17,7 +17,8 @@
     "back": "Back",
     "address": "Address",
     "account": "Account",
-    "error": "Error"
+    "error": "Error",
+    "timeAgo": "{time} ago"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -331,7 +332,7 @@
       "table": {
         "claimId": "Claim #",
         "address": "Address",
-        "claimedAt": "Claimed At",
+        "time": "Time",
         "transaction": "Transaction"
       }
     }

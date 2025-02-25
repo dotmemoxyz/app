@@ -3,7 +3,7 @@
     <select
       ref="selectInput"
       v-model="model"
-      class="h-full w-full cursor-pointer appearance-none rounded-lg border-2 border-black bg-transparent px-4 py-3 text-black focus:outline-none dark:border-white dark:text-white"
+      class="h-full w-full cursor-pointer appearance-none rounded-lg border-2 border-border bg-transparent px-4 py-3 text-black focus:outline-none dark:border-white dark:text-white"
     >
       <option v-for="option in options" :key="option.value" :value="option.value" :selected="option.value === model">
         {{ option.text }}

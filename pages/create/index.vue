@@ -1,6 +1,6 @@
 <template>
   <form class="mx-auto flex max-w-md flex-col space-y-7 px-4 pb-20 pt-8" @submit="onSubmit">
-    <h1 class="text-4xl font-extrabold text-text-color">{{ t("create.title") }}</h1>
+    <h1 class="text-text-color text-4xl font-extrabold">{{ t("create.title") }}</h1>
 
     <div class="flex flex-col gap-4">
       <dot-image-input v-model="image" :error="imageError" />
@@ -25,10 +25,10 @@
         />
       </dot-label>
       <dot-label class="relative" :text="t('create.memo.website')">
-        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.websiteHint") }}
           </span>
@@ -40,10 +40,10 @@
         />
       </dot-label>
       <div class="relative grid grid-cols-2 gap-8">
-        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.dateHint") }}
           </span>
@@ -56,10 +56,10 @@
         </dot-label>
       </div>
       <dot-label class="relative" :text="t('create.memo.quantity')">
-        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.quantityHint") }}
           </span>
@@ -76,10 +76,10 @@
         </div>
       </dot-label>
       <dot-label class="relative" :text="t('create.memo.secret')">
-        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.secretHint") }}
           </span>

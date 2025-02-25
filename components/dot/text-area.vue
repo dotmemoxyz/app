@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-1 flex-col">
     <span
-      class="relative flex w-full items-center justify-between gap-2 rounded-lg border-2 focus-within:border-k-primary"
+      class="relative flex w-full items-center justify-between gap-2 rounded-lg border-2 focus-within:border-accent-primary"
       :class="wrapperClasses"
     >
       <textarea
@@ -10,13 +10,13 @@
         :placeholder="placeholder"
         :class="inputClasses"
         :maxlength="limit"
-        class="min-h-20 min-w-0 flex-1 resize-y bg-transparent p-3 text-text-color focus:outline-none focus:ring-0"
+        class="min-h-20 min-w-0 flex-1 resize-y bg-transparent p-3 focus:outline-none focus:ring-0"
       />
-      <span v-if="Number.isInteger(limit)" class="absolute -top-5 right-0 text-xs text-text-color">
+      <span v-if="Number.isInteger(limit)" class="absolute -top-7 right-0 text-xs text-text-primary">
         {{ model?.length ?? 0 }} / {{ limit }}
       </span>
     </span>
-    <span class="mt-0.5 text-xs font-semibold text-red-500">
+    <span class="text-red mt-0.5 text-xs font-semibold">
       {{ error ?? "&nbsp;" }}
     </span>
   </div>
@@ -37,15 +37,15 @@ const props = defineProps<{
 
 const wrapperClasses = computed(() => {
   if (props.error) {
-    return "border-k-red";
+    return "border-red-500";
   }
-  return "border-border-color";
+  return "border-border";
 });
 
 const inputClasses = computed(() => {
   if (props.error) {
-    return "placeholder:text-k-red";
+    return "placeholder:text-red";
   }
-  return "placeholder:text-text-color/60";
+  return "placeholder:text-text-primary/60";
 });
 </script>

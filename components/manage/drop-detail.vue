@@ -19,15 +19,17 @@
         <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
       </span>
       <span class="flex items-center gap-4">
-        <div
-          class="flex h-fit cursor-pointer items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
-          @click="navigateTo(`/claim/${props.drop.id}`)"
+        <a
+          class="flex h-fit cursor-pointer select-none items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
+          :href="`/claim/${props.drop.id}`"
+          target="_blank"
         >
           <p class="text-[14px] !text-black">{{ $t("manage.drop.viewClaimPage") }}</p>
           <Icon name="mdi:arrow-top-right" class="size-[16px] text-black" />
-        </div>
+        </a>
         <div
-          class="flex h-fit cursor-pointer items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
+          id="copy-link"
+          class="flex h-fit cursor-pointer select-none items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
           @click="copyLink"
         >
           <Icon name="mdi:content-copy" class="size-[16px] text-black" />
@@ -53,6 +55,7 @@ import type { Prefix } from "@kodadot1/static";
 import { DateTime, Duration } from "luxon";
 import type { Memo } from "~/types/memo";
 import { getFreeMints } from "~/utils/sdk/query";
+import { emojiBlast } from "emoji-blast";
 const props = defineProps<{
   drop: Memo;
 }>();
@@ -112,5 +115,16 @@ watch(
 const copyLink = () => {
   const url = `${window.location.origin}/claim/${props.drop.id}`;
   navigator.clipboard.writeText(url);
+  const element = document.getElementById("copy-link");
+  if (!element) return;
+  emojiBlast({
+    emojiCount: 10,
+    position() {
+      return {
+        x: element.offsetLeft + element.clientWidth / 2,
+        y: element.offsetTop + element.clientHeight / 2,
+      };
+    },
+  });
 };
 </script>

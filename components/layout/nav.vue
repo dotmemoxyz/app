@@ -8,7 +8,7 @@
     <transition name="fade">
       <nav v-if="navOpen" class="backdrop-blur-sm">
         <ul>
-          <li v-for="link in links" :key="link.name" class="hover:bg-primary/10 cursor-pointer transition ease-in-out">
+          <li v-for="link in links" :key="link.name" class="cursor-pointer transition ease-in-out">
             <nuxt-link :to="link.href" @click="closeNav">
               <span class="flex items-center gap-2">
                 {{ link.name }}
@@ -20,7 +20,7 @@
             <p class="block md:hidden">Color mode</p>
             <Icon
               :name="colorMode.preference === 'light' ? 'mdi:weather-sunny' : 'mdi:weather-night'"
-              class="cursor-pointer"
+              class="cursor-pointer text-text-primary"
               size="24"
             />
           </li>
@@ -95,17 +95,17 @@ const closeNav = () => {
 
 #side-menu {
   nav {
-    @apply fixed left-0 top-[60px] z-10 flex w-full flex-col items-center gap-10 bg-background-color md:relative md:top-0 md:flex-row md:justify-between md:bg-transparent;
+    @apply fixed left-0 top-[60px] z-10 flex w-full flex-col items-center gap-10 bg-surface-white md:relative md:top-0 md:flex-row md:justify-between md:bg-transparent;
 
     ul {
       @apply flex w-full flex-col items-center justify-center md:flex-row md:justify-end;
       li {
         @apply box-border flex h-[80px] w-full cursor-pointer items-center justify-start border-b px-2 md:w-auto md:cursor-auto md:border-none dark:border-white;
         a {
-          @apply w-full text-background-color-inverse hover:!border-white md:w-auto;
+          @apply w-full hover:!border-white md:w-auto;
 
           &.router-link-exact-active {
-            @apply !text-k-primary;
+            @apply !text-accent-primary;
           }
         }
       }
@@ -115,7 +115,7 @@ const closeNav = () => {
     @apply relative z-[100] block h-[30px] w-[30px] cursor-pointer appearance-none border-none outline-none md:hidden;
 
     span {
-      @apply absolute bottom-0 left-0 right-0 top-0 m-auto block h-[2px] w-[20px] bg-background-color-inverse transition-all duration-300 ease-in-out;
+      @apply absolute bottom-0 left-0 right-0 top-0 m-auto block h-[2px] w-[20px] bg-text-primary transition-all duration-300 ease-in-out;
 
       &.top {
         transform: translateY(-8px);

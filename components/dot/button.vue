@@ -41,15 +41,15 @@ const SIZE_CLASSES: Record<BtnSize, string> = {
 
 const VARIANT_CLASSES: Record<BtnVariant, string> = {
   primary: `
-      bg-k-primary hover:bg-background-color-inverse border-2 border-transparent text-black hover:text-text-color-inverse
+      bg-accent-primary hover:bg-accent-primary-hover border-2 border-transparent text-primary
       disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
     `,
   secondary: `
-      bg-transparent text-k-primary border-2 border-k-primary hover:bg-k-primary hover:text-black/90
+      bg-transparent text-accent-primary border-2 border-accent-primary hover:bg-accent-primary hover:text-black/90
       disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
     `,
   tertiary: `
-    bg-transparent text-background-color-inverse border-2 border-background-color-inverse hover:bg-background-color-inverse hover:text-text-color-inverse
+    bg-transparent text-text-primary border-2 border-border hover:bg-text-primary hover:text-text-color-inverse
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
   "tertiary-light": `

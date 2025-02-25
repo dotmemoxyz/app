@@ -7,7 +7,7 @@
     <input v-model="model" class="peer sr-only" type="checkbox" />
 
     <span
-      class="peer h-6 w-6 rounded-full border border-black bg-k-grey transition-transform peer-checked:translate-x-full peer-checked:bg-white"
+      class="bg-k-grey peer h-6 w-6 rounded-full border border-black transition-transform peer-checked:translate-x-full peer-checked:bg-white"
     ></span>
   </span>
 </template>
@@ -21,8 +21,8 @@ const props = defineProps<{
 }>();
 
 const COLOR_CLASSES = [
-  "bg-background-color", // disabled 0 checked 0
-  "bg-k-primary", // disabled 0 checked 1
+  "bg-surface-white", // disabled 0 checked 0
+  "bg-accent-primary", // disabled 0 checked 1
   "bg-k-shade/50", // disabled 1 checked 0
   "bg-k-accent-hover", // disabled 1 checked 1
 ];

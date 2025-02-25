@@ -35,6 +35,7 @@
     "@vue-final-modal/nuxt": "^1.0.3",
     "@vueuse/core": "^10.11.0",
     "consola": "^3.2.3",
+    "emoji-blast": "^0.10.2",
     "lint-staged": "^15.2.5",
     "lodash": "^4.17.21",
     "luxon": "^3.5.0",

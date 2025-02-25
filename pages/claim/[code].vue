@@ -1,5 +1,5 @@
 <template>
-  <h1 v-if="claimed" class="!dark:text-white my-10 w-full text-center text-4xl text-k-primary">
+  <h1 v-if="claimed" class="!dark:text-white my-10 w-full text-center text-4xl text-accent-primary">
     {{ t("claim.success") }} 🥳
   </h1>
 
@@ -15,18 +15,18 @@
 
     <template v-if="status === 'success' && data">
       <div class="flex items-center gap-2">
-        <Icon name="mdi:calendar" size="24" class="text-k-primary" />
+        <Icon name="mdi:calendar" size="24" class="text-accent-primary" />
         <p>
           {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_FULL) }}
         </p>
         <p>-</p>
-        <Icon name="mdi:calendar" size="24" class="text-k-primary" />
+        <Icon name="mdi:calendar" size="24" class="text-accent-primary" />
         <p>
           {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_FULL) }}
         </p>
       </div>
       <div v-if="data.description" class="flex items-center gap-2">
-        <Icon name="mdi:text" size="24" class="text-k-primary" />
+        <Icon name="mdi:text" size="24" class="text-accent-primary" />
         <p>
           {{ data.description }}
         </p>
@@ -46,20 +46,20 @@
     <div v-if="!error" class="flex flex-col space-y-3 self-stretch">
       <template v-if="!claimed">
         <template v-if="!allClaimed && !tooLate">
-          <div class="mb-6 flex rounded-full border-2 border-border-color p-2 shadow-text-color">
+          <div class="border-border-color shadow-text-color mb-6 flex rounded-full border-2 p-2">
             <button
-              class="flex-1 rounded-full py-2 text-text-color"
+              class="text-text-color flex-1 rounded-full py-2"
               :class="{
-                'bg-background-color-inverse text-text-color-inverse': showAddressInput,
+                'text-text-color-inverse bg-text-primary': showAddressInput,
               }"
               @click="showAddressInput = true"
             >
               {{ t("claim.enterAddress") }}
             </button>
             <button
-              class="flex-1 rounded-full py-2 text-text-color"
+              class="text-text-color flex-1 rounded-full py-2"
               :class="{
-                'bg-background-color-inverse text-text-color-inverse': !showAddressInput,
+                'text-text-color-inverse bg-text-primary': !showAddressInput,
               }"
               @click="showAddressInput = false"
             >
@@ -107,7 +107,7 @@
             }"
           >
             <div
-              class="flex items-center justify-end rounded-full bg-k-primary transition-all duration-[60000ms] ease-linear"
+              class="flex items-center justify-end rounded-full bg-accent-primary transition-all duration-[60000ms] ease-linear"
               :style="`width: ${isClaiming ? '100%' : '17%'};`"
             >
               <Icon name="mdi:chevron-right" class="animate-pulse text-white animate-duration-[1200ms]" size="28" />
