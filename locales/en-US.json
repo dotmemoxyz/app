@@ -325,7 +325,15 @@
     },
     "analytics": {
       "totalClaims": "Total Claims",
-      "uniqueAddresses": "Unique Addresses"
+      "uniqueAddresses": "Unique Addresses",
+      "recentClaims": "Recent Claims",
+      "exportCsv": "Export CSV",
+      "table": {
+        "claimId": "Claim #",
+        "address": "Address",
+        "claimedAt": "Claimed At",
+        "transaction": "Transaction"
+      }
     }
   }
 }

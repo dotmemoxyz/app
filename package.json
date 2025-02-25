@@ -8,10 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "prepare": "husky",
-    "story:dev": "histoire dev",
-    "story:build": "histoire build",
-    "story:preview": "histoire preview"
+    "prepare": "husky"
   },
   "dependencies": {
     "@intlify/eslint-plugin-vue-i18n": "^3.0.0",
@@ -58,12 +55,9 @@
   },
   "packageManager": "pnpm@9.2.0+sha512.98a80fd11c2e7096747762304106432b3ddc67dcf54b5a8c01c93f68a2cd5e05e6821849522a06fb76284d41a2660d5e334f2ee3bbf29183bf2e739b1dafa771",
   "devDependencies": {
-    "@histoire/plugin-nuxt": "^0.17.17",
-    "@histoire/plugin-vue": "^0.17.17",
     "@types/lodash": "^4.17.14",
     "@types/luxon": "^3.4.2",
     "@types/qrcode": "^1.5.5",
-    "histoire": "^0.17.17",
     "husky": "^9.0.11"
   }
 }

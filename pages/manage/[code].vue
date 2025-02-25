@@ -31,7 +31,7 @@
     </div>
     <hr class="w-full" />
     <!-- Sub containers -->
-    <manage-drop-analytics v-if="selectedTab === 'analytics'" />
+    <manage-drop-analytics v-if="selectedTab === 'analytics' && data" :drop="data" />
   </div>
 </template>
 
