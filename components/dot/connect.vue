@@ -1,6 +1,13 @@
 <template>
-  <dot-button variant="tertiary" :size="size" @click="open">
-    {{ accountStore.hasSelectedAccount ? `${accountStore.accountName} ${accountStore.shortAddress}` : "Connect" }}
+  <dot-button squared variant="tertiary" class="!px-[16px] !py-[14px]" :size="size" @click="open">
+    <div v-if="accountStore.hasSelectedAccount" class="flex items-center gap-2">
+      <!-- @vue-ignore -->
+      <Identicon :value="accountStore.selected!.address" theme="polkadot" size="26" />
+      <small class="text-[14px]">{{ accountStore.shortAddress }}</small>
+    </div>
+    <small v-else class="text-[14px]">
+      {{ $t("common.connect") }}
+    </small>
   </dot-button>
 </template>
 
@@ -8,6 +15,7 @@
 import { useModal } from "vue-final-modal";
 import ConnectModal from "~/components/modals/connect-modal.vue";
 import { getSupportedWallets } from "~/utils/wallet";
+import Identicon from "@polkadot/vue-identicon";
 
 const accountStore = useAccountStore();
 
