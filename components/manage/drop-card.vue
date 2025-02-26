@@ -1,30 +1,34 @@
 <template>
-  <div class="flex flex-col items-center gap-4 rounded-3xl bg-[#F9F9F9] p-4">
+  <div class="flex min-w-[320px] flex-col items-center gap-4 rounded-3xl bg-surface-card p-4">
     <!-- Heading -->
     <div class="flex w-full items-center justify-between border-b border-[#E5E5E5] pb-2">
       <div class="flex items-center gap-2">
+        <template v-if="startsIn">
+          <span class="size-[10px] rounded-full bg-[#ABD9FE]" />
+          <p class="!text-secondary text-[14px]">{{ $t("manage.drop.upcoming") }}</p>
+        </template>
         <template v-if="isExpired">
           <span class="size-[10px] rounded-full bg-[#606060]" />
-          <p class="text-[14px] !text-[#606060]">{{ $t("manage.drop.inactive") }}</p>
+          <p class="!text-secondary text-[14px]">{{ $t("manage.drop.inactive") }}</p>
         </template>
         <template v-else>
           <span class="size-[10px] rounded-full bg-[#49DE80]" />
-          <p class="text-[14px] !text-[#606060]">{{ $t("manage.drop.active") }}</p>
+          <p class="!text-secondary text-[14px]">{{ $t("manage.drop.active") }}</p>
         </template>
       </div>
-      <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
+      <p class="!text-secondary text-[14px]">{{ remainingTime }}</p>
     </div>
     <!-- Image -->
     <div class="aspect-square size-[200px] overflow-hidden rounded-full border-[6px] border-white bg-white">
       <img :src="props.drop.image" class="h-full rounded-full" />
     </div>
     <!-- Title -->
-    <b class="text-center text-[24px] !text-black">{{ props.drop.name }}</b>
+    <b class="text-center text-[24px]">{{ props.drop.name }}</b>
     <!-- Info -->
     <div class="flex w-full flex-col gap-2">
       <div class="flex w-full items-center justify-between">
-        <p class="text-[14px] !text-[#606060]">{{ $t("manage.drop.progress") }}</p>
-        <p class="text-[14px] !text-[#606060]">
+        <p class="!text-secondary text-[14px]">{{ $t("manage.drop.progress") }}</p>
+        <p class="!text-secondary text-[14px]">
           {{
             $t("manage.drop.claimed", {
               part: minted,
@@ -62,6 +66,27 @@ const props = defineProps<{
   drop: Memo;
 }>();
 const { locale, t } = useI18n();
+
+// Starts in
+const startsIn = computed<string | null>(() => {
+  const date = DateTime.fromSQL(props.drop.createdAt);
+  const now = DateTime.now();
+  const diff = date.diff(now, ["days", "hours", "minutes", "seconds"]);
+  if (diff.as("seconds") < 0) {
+    return null;
+  }
+  // Return remaining time with locale
+  if (diff.days > 0) {
+    return Duration.fromObject({ days: diff.days }, { locale: locale.value }).toHuman();
+  } else if (diff.hours > 0) {
+    return Duration.fromObject({ hours: diff.hours }, { locale: locale.value }).toHuman();
+  } else if (diff.minutes > 0) {
+    return Duration.fromObject({ minutes: diff.minutes }, { locale: locale.value }).toHuman();
+  } else {
+    return Duration.fromObject({ seconds: diff.seconds }, { locale: locale.value }).toHuman();
+  }
+});
+
 // Check if drop is expired
 const isExpired = computed<boolean>(() => {
   const date = DateTime.fromSQL(props.drop.expiresAt);

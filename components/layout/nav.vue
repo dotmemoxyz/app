@@ -6,7 +6,7 @@
       <span class="bottom"></span>
     </button>
     <transition name="fade">
-      <nav v-if="navOpen" class="py-[24px] backdrop-blur-sm">
+      <nav v-if="navOpen" class="backdrop-blur-sm">
         <ul>
           <li v-for="link in links" :key="link.name" class="cursor-pointer transition ease-in-out">
             <nuxt-link :to="link.href" @click="closeNav">

@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="text-text-color absolute bottom-0 grid h-16 w-full grid-cols-3 items-center border-t border-accent-primary bg-[#0D2919]"
+    class="text-text-color absolute bottom-0 grid h-16 w-full grid-cols-3 items-center border-t border-accent-primary bg-surface-white"
   >
     <a class="flex items-center gap-1 pl-5" target="_blank" href="https://github.com/dotmemoxyz/app/wiki">
       <p class="!text-white">Wiki</p>

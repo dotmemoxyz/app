@@ -1,39 +1,40 @@
 <template>
   <div class="flex h-full w-full flex-col gap-8 px-8 py-10">
-    <h1 class="text-[40px] !text-black dark:!text-white">{{ $t("manage.title") }}</h1>
-    <div class="flex w-full justify-between">
+    <h1 class="text-center text-[40px] !text-black md:text-left dark:!text-white">{{ $t("manage.title") }}</h1>
+    <div class="flex w-full flex-wrap justify-between gap-8">
       <!-- Statistics -->
-      <div class="flex gap-4">
+      <div class="flex w-full justify-evenly gap-4 md:w-auto">
         <!-- Active drops -->
-        <div class="flex items-center gap-2">
-          <div class="flex size-16 items-center justify-center rounded-full bg-[#94FFBB] p-2">
-            <Icon name="memo:bar-chart" class="size-[34px] text-[#00AD40]" />
+        <div class="flex flex-col items-center gap-2 md:flex-row">
+          <div class="flex aspect-square size-16 items-center justify-center rounded-full bg-accent-primary-light p-2">
+            <Icon name="memo:bar-chart" class="size-[34px] text-accent-primary-dark" />
           </div>
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col items-center gap-2 md:items-start">
             <p class="text-[14px] !text-black/40 dark:!text-white/70">{{ $t("manage.activeDrops") }}</p>
-            <p class="text-[20px] text-black">3</p>
+            <p class="text-[20px] text-black">{{ totalActiveDrops }}</p>
           </div>
         </div>
         <!-- Total claims -->
-        <div class="flex items-center gap-2">
-          <div class="flex size-16 items-center justify-center rounded-full bg-[#ABD9FE] p-2">
-            <Icon name="memo:people" class="size-[34px] text-[#007BDF]" />
+        <div class="flex flex-col items-center gap-2 md:flex-row">
+          <div class="flex aspect-square size-16 items-center justify-center rounded-full bg-surface-blue p-2">
+            <Icon name="memo:people" class="size-[34px] text-text-blue" />
           </div>
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col items-center gap-2 md:items-start">
             <p class="text-[14px] !text-black/40 dark:!text-white/70">{{ $t("manage.totalClaims") }}</p>
             <p class="text-[20px] text-black">14 000</p>
           </div>
         </div>
       </div>
-      <div class="flex gap-2">
+      <div class="flex w-full justify-center gap-2 md:w-auto">
         <!-- Chain select -->
         <dot-select v-model="urlParams.chain" class="w-[250px]" :options="chainList" />
         <dot-button variant="tertiary" squared @click="navigateTo('/create')">
-          {{ $t("manage.createDrop") }}
+          <span class="hidden md:block">{{ $t("manage.createDrop") }}</span>
+          <Icon name="mdi:plus" size="24" class="md:hidden" />
         </dot-button>
       </div>
     </div>
-    <div class="grid w-full grid-cols-4 gap-4">
+    <div class="flex w-full flex-wrap justify-center gap-[40px]">
       <template v-if="drops">
         <manage-drop-card v-for="drop in drops" :key="drop.id" :drop="drop" />
       </template>
@@ -49,6 +50,7 @@ import type { Memo, UniqCollection } from "~/types/memo";
 import { $purify as purify } from "@kodadot1/minipfs";
 import type { Option } from "~/types/components";
 import { useUrlSearchParams } from "@vueuse/core";
+import { DateTime } from "luxon";
 
 const accountStore = useAccountStore();
 
@@ -101,6 +103,20 @@ const { data: drops, error: dropsError } = useAsyncData(
     immediate: true,
   },
 );
-</script>
 
-<style></style>
+const totalActiveDrops = computed(() => {
+  if (!drops.value) {
+    return 0;
+  }
+  return drops.value.reduce((acc, drop) => {
+    // Use createdAt and expiredAt to determine if drop is active
+    const createdAt = DateTime.fromSQL(drop.createdAt);
+    const expiredAt = DateTime.fromSQL(drop.expiresAt);
+    const now = DateTime.now();
+    if (createdAt < now && expiredAt > now) {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
+});
+</script>

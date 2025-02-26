@@ -1,14 +1,19 @@
 <template>
-  <dot-button squared variant="tertiary" class="!px-[16px] !py-[14px]" :size="size" @click="open">
-    <div v-if="accountStore.hasSelectedAccount" class="flex items-center gap-2">
+  <div class="cursor-pointer rounded-xl border px-[16px] py-[14px]" :size="size" @click="open">
+    <div v-if="accountStore.hasSelectedAccount" class="flex items-center gap-[12px]">
       <!-- @vue-ignore -->
-      <Identicon :value="accountStore.selected!.address" theme="polkadot" size="26" />
+      <Identicon
+        :value="accountStore.selected!.address"
+        theme="polkadot"
+        class="rounded-full border border-black"
+        size="28"
+      />
       <small class="text-[14px]">{{ accountStore.shortAddress }}</small>
     </div>
     <small v-else class="text-[14px]">
       {{ $t("common.connect") }}
     </small>
-  </dot-button>
+  </div>
 </template>
 
 <script lang="ts" setup>

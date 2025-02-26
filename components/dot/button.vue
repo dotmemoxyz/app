@@ -49,7 +49,7 @@ const VARIANT_CLASSES: Record<BtnVariant, string> = {
       disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
     `,
   tertiary: `
-    bg-transparent text-text-primary border-2 border-border hover:bg-text-primary hover:text-text-color-inverse
+    bg-transparent text-text-primary border-2 border-border hover:bg-[rgba(0,0,0,0.1)] hover:text-text-color-inverse
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
   "tertiary-light": `

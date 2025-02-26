@@ -310,6 +310,8 @@
     "drop": {
       "active": "Active",
       "inactive": "Inactive",
+      "upcoming": "Upcoming",
+      "ended": "Ended",
       "left": "{time} left",
       "progress": "Progress",
       "claimed": "{part}/{total} claimed",
