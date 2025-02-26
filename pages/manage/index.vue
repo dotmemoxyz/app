@@ -21,7 +21,7 @@
           </div>
           <div class="flex flex-col items-center gap-2 md:items-start">
             <p class="text-[14px] !text-black/40 dark:!text-white/70">{{ $t("manage.totalClaims") }}</p>
-            <p class="text-[20px] text-black">14 000</p>
+            <p class="text-[20px] text-black">{{ totalClaims }}</p>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@ import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
 import type { Memo, UniqCollection } from "~/types/memo";
 import { $purify as purify } from "@kodadot1/minipfs";
 import type { Option } from "~/types/components";
-import { useUrlSearchParams } from "@vueuse/core";
+import { asyncComputed, useUrlSearchParams } from "@vueuse/core";
 import { DateTime } from "luxon";
 
 const accountStore = useAccountStore();
@@ -64,7 +64,7 @@ const urlParams = useUrlSearchParams<{
 
 const selectedAccount = computed(() => accountStore.selected);
 
-type QueryResponse = {
+type QueryCollectionsResponse = {
   collections: UniqCollection[];
 };
 
@@ -73,16 +73,17 @@ const chainList = computed<Option[]>(() => [
   { text: "Asset Hub Kusama", value: "ahk", info: "Kusama is a canary network for Polkadot." },
 ]);
 
+const client = computed(() => getClient(urlParams.chain));
+
 const { data: drops, error: dropsError } = useAsyncData(
   "drops",
   async () => {
     if (!accountStore.selected) {
       throw new Error("No account selected");
     }
-    const client = getClient(urlParams.chain);
     const address = encodeAddress(decodeAddress(selectedAccount.value?.address), urlParams.chain === "ahp" ? 0 : 2);
-    const query = client.collectionListByOwner(address);
-    const resp = await client.fetch<QueryResponse>(query);
+    const query = client.value.collectionListByOwner(address);
+    const resp = await client.value.fetch<QueryCollectionsResponse>(query);
     const memos: Memo[] = [];
     for (const collection of resp.data.collections) {
       const data = await $fetch(`/api/drop/${urlParams.chain}/${collection.id}`);
@@ -119,4 +120,23 @@ const totalActiveDrops = computed(() => {
     return acc;
   }, 0);
 });
+
+type QueryCountResponse = {
+  itemCount: {
+    totalCount: number;
+  };
+};
+
+const totalClaims = asyncComputed(async () => {
+  if (!drops.value) {
+    return 0;
+  }
+  let claims = 0;
+  for (const drop of drops.value) {
+    const query = client.value.itemCountByCollectionId(drop.collection);
+    const { data } = await client.value.fetch<QueryCountResponse>(query);
+    claims += data.itemCount.totalCount;
+  }
+  return claims;
+}, 0);
 </script>
