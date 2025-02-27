@@ -2,28 +2,19 @@
   <div class="flex w-full flex-col gap-8">
     <!-- Top analytics -->
     <div class="flex w-full gap-4">
-      <div class="flex items-center gap-4 rounded-xl bg-[#F9F9F9] p-4">
-        <div class="size-51 flex items-center justify-center rounded-lg bg-[#55F39A] p-3">
-          <Icon name="memo:people" class="size-[22px] text-black" />
+      <div class="flex items-center gap-4 rounded-xl bg-surface-card p-4">
+        <div class="size-51 flex items-center justify-center rounded-lg bg-accent-primary-light p-3">
+          <Icon name="memo:people" class="size-[22px] text-accent-primary-dark" />
         </div>
         <div class="flex flex-col justify-between">
-          <h3 class="text-[20px] !text-black">30</h3>
+          <h3 class="text-[20px]">30</h3>
           <p class="text-[14px] !text-[#606060]">{{ $t("manage.analytics.totalClaims") }}</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-4 rounded-xl bg-[#F9F9F9] p-4">
-        <div class="size-51 flex items-center justify-center rounded-lg bg-white p-3">
-          <Icon name="memo:fingerprint" class="size-[22px] text-black" />
-        </div>
-        <div class="flex flex-col justify-between">
-          <h3 class="text-[20px] !text-black">14</h3>
-          <p class="text-[14px] !text-[#606060]">{{ $t("manage.analytics.uniqueAddresses") }}</p>
         </div>
       </div>
     </div>
     <!-- Table -->
     <div class="flex items-center justify-between">
-      <h2 class="text-[24px] !text-black">{{ $t("manage.analytics.recentClaims") }}</h2>
+      <h2 class="text-[24px]">{{ $t("manage.analytics.recentClaims") }}</h2>
 
       <div class="flex gap-4">
         <!-- Pagination -->
@@ -41,38 +32,37 @@
           </dot-button>
         </div>
         <div
-          class="flex h-fit cursor-pointer items-center gap-2 rounded-xl border border-black bg-white p-2 hover:opacity-70"
+          class="flex h-fit cursor-pointer items-center gap-2 rounded-xl border border-text-primary bg-transparent p-2 hover:opacity-70"
         >
-          <p class="text-[14px] !text-black">{{ $t("manage.analytics.exportCsv") }}</p>
-          <Icon name="mdi:export" class="size-[24px] text-black" />
+          <p class="text-[14px]">{{ $t("manage.analytics.exportCsv") }}</p>
         </div>
       </div>
     </div>
-    <table v-if="data" class="transaction-table w-full">
-      <thead>
-        <tr>
-          <th>{{ $t("manage.analytics.table.claimId") }}</th>
-          <th>{{ $t("manage.analytics.table.address") }}</th>
-          <th>{{ $t("manage.analytics.table.time") }}</th>
-          <th>{{ $t("manage.analytics.table.transaction") }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in data" :key="item.id">
-          <td>{{ item.id.split("-").at(1) }}</td>
-          <td>{{ addressShortener(item.currentOwner) }}</td>
-          <td>{{ getTimeFormat(item.createdAt) }}</td>
-          <td>
-            <span class="flex items-center gap-1">
-              <a :href="getTxLink('0x123123123')">
-                {{ "0x123123123" }}
-              </a>
-              <Icon name="mdi:arrow-top-right" class="size-[16px] text-black" />
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="w-full overflow-x-scroll">
+      <table v-if="data" class="transaction-table w-full">
+        <thead>
+          <tr>
+            <th>{{ $t("manage.analytics.table.claimId") }}</th>
+            <th>{{ $t("manage.analytics.table.address") }}</th>
+            <th>{{ $t("manage.analytics.table.time") }}</th>
+            <th>{{ $t("manage.analytics.table.transaction") }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in data" :key="item.id">
+            <td>{{ item.id.split("-").at(1) }}</td>
+            <td>{{ addressShortener(item.currentOwner) }}</td>
+            <td>{{ getTimeFormat(item.createdAt) }}</td>
+            <td>
+              <span class="flex items-center gap-1">
+                <a :href="getTxLink(item.hash)"> 0x{{ item.hash }} </a>
+                <Icon name="mdi:arrow-top-right" class="size-[16px] text-black" />
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -94,13 +84,14 @@ const getTxLink = (tx: string) => {
 };
 
 type Item = {
+  id: string;
   createdAt: string;
   currentOwner: string;
-  id: string;
   image: string;
   issuer: string;
   metadata: string;
   name: string;
+  hash: string;
 };
 
 type Query = {
@@ -123,10 +114,11 @@ const { data } = await useAsyncData(
   `transactions-drop-${props.drop.id}`,
   () => {
     const client = getClient(props.drop.chain);
-    const query = client.itemListByCollectionId(props.drop.collection, {
+    const query = client.itemListByCollectionId(props.drop.id, {
       offset: (page.value - 1) * PAGE_SIZE,
       orderBy: "createdAt_ASC",
       limit: PAGE_SIZE,
+      fields: ["id", "createdAt", "currentOwner", "image", "issuer", "metadata", "name", "hash"],
     });
     return client.fetch<Query>(query);
   },
@@ -163,11 +155,11 @@ const getTimeFormat = (dateRaw: string) => {
   @apply w-full;
 
   th {
-    @apply py-4 text-start text-[14px] !text-[#606060];
+    @apply py-4 text-start text-[14px];
   }
 
   td {
-    @apply py-4 text-start text-[14px] !text-black;
+    @apply py-4 text-start text-[14px];
   }
 
   tr {

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full w-full flex-col gap-8 px-8 py-10">
+  <div class="flex h-full w-full flex-col gap-8 py-10">
     <h1 class="text-center text-[40px] !text-black md:text-left dark:!text-white">{{ $t("manage.title") }}</h1>
     <div class="flex w-full flex-wrap justify-between gap-8">
       <!-- Statistics -->
@@ -133,7 +133,7 @@ const totalClaims = asyncComputed(async () => {
   }
   let claims = 0;
   for (const drop of drops.value) {
-    const query = client.value.itemCountByCollectionId(drop.collection);
+    const query = client.value.itemCountByCollectionId(drop.id);
     const { data } = await client.value.fetch<QueryCountResponse>(query);
     claims += data.itemCount.totalCount;
   }

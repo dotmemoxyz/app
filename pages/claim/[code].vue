@@ -215,7 +215,7 @@ watch(
     if (data) {
       loadingLimitInfo.value = true;
       const api = await apiInstanceByPrefix(data.chain);
-      const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.collection);
+      const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.id);
       maxMints.value = maxTokens;
       minted.value = mintedTokens;
       remaining.value = remainingMints;

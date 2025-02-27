@@ -1,5 +1,5 @@
 import { $purify as purify } from "@kodadot1/minipfs";
-import type { Memo, MemoDTO } from "~/types/memo";
+import type { MemoWithCode, MemoDTO } from "~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
@@ -26,10 +26,10 @@ export default defineEventHandler(async (event) => {
     throw new Error("Image not found");
   }
 
-  const memo: Memo = {
-    id: rawData.id,
+  const memo: MemoWithCode = {
+    code: rawData.id,
     chain: rawData.chain,
-    collection: rawData.collection,
+    id: rawData.collection,
     name: rawData.name,
     description: rawData.description,
     image,

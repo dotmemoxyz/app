@@ -1,23 +1,49 @@
-import type { Prefix } from "@kodadot1/static";
-import type { Memo } from "~/types/memo";
+import { $purify as purify } from "@kodadot1/minipfs";
+import { DateTime } from "luxon";
+import type { MemoDTO, Memo } from "~/types/memo";
 
-const MEMO_MOCK: Memo = {
-  id: "dotdark",
-  chain: "ahk",
-  collection: "-1",
-  description: "This is a test MEMO",
-  name: "Test MEMO",
-  image: "https://image.w.kodadot.xyz/ipfs/QmUUoVu5M9NosV9utqvgUoxn3euDSASbNREDMmMMHPHXGE",
-  mint: "ipfs://QmWqqmYKhXtsfbviJpj9Dhty7qhb91zatDryPcDro2qCeg",
-  createdAt: "2024-10-29 16:05:16",
-  expiresAt: "2025-01-29 16:05:16",
-};
-
+const RUNTIME_CONFIG = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
-  const { chain, id } = getRouterParams(event);
-  return {
-    ...MEMO_MOCK,
-    chain: chain as Prefix,
-    collection: id,
+  const { id, chain } = getRouterParams(event);
+
+  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/detail/${chain}/${id}`)
+    .then((r) => [r, null])
+    .catch((r) => [null, r]);
+
+  if (err) {
+    console.error(err);
+    throw new Error("An unknown error has occoured");
+  }
+
+  if (!rawData) {
+    throw createError({
+      statusCode: 404,
+      message: "Memo not found",
+    });
+  }
+
+  const image = purify(rawData?.image).at(0);
+  if (!image) {
+    throw new Error("Image not found");
+  }
+
+  // Unify Dates to SQL
+  rawData.created_at = DateTime.fromSQL(rawData.created_at).isValid
+    ? rawData.created_at
+    : DateTime.fromISO(rawData.created_at).toSQL();
+  rawData.expires_at = DateTime.fromSQL(rawData.expires_at).isValid
+    ? rawData.expires_at
+    : DateTime.fromISO(rawData.expires_at).toSQL();
+
+  const memo: Memo = {
+    id: rawData.collection,
+    chain: rawData.chain,
+    name: rawData.name,
+    description: rawData.description,
+    image,
+    mint: rawData.mint,
+    createdAt: rawData.created_at,
+    expiresAt: rawData.expires_at,
   };
+  return memo;
 });

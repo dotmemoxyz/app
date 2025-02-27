@@ -1,25 +1,27 @@
 <template>
   <div class="flex min-w-[320px] flex-col items-center gap-4 rounded-3xl bg-surface-card p-4">
     <!-- Heading -->
-    <div class="flex w-full items-center justify-between border-b border-[#E5E5E5] pb-2">
+    <div class="flex w-full items-center justify-between border-b border-border-default pb-2">
       <div class="flex items-center gap-2">
         <template v-if="startsIn">
-          <span class="size-[10px] rounded-full bg-[#ABD9FE]" />
-          <p class="!text-secondary text-[14px]">{{ $t("manage.drop.upcoming") }}</p>
+          <span class="size-[10px] rounded-full bg-surface-blue" />
+          <p class="text-[14px] !text-text-secondary">{{ $t("manage.drop.upcoming") }}</p>
         </template>
         <template v-if="isExpired">
-          <span class="size-[10px] rounded-full bg-[#606060]" />
-          <p class="!text-secondary text-[14px]">{{ $t("manage.drop.inactive") }}</p>
+          <span class="size-[10px] rounded-full bg-text-placeholder" />
+          <p class="text-[14px] !text-text-secondary">{{ $t("manage.drop.inactive") }}</p>
         </template>
         <template v-else>
-          <span class="size-[10px] rounded-full bg-[#49DE80]" />
-          <p class="!text-secondary text-[14px]">{{ $t("manage.drop.active") }}</p>
+          <span class="size-[10px] rounded-full bg-accent-primary" />
+          <p class="text-[14px] !text-text-secondary">{{ $t("manage.drop.active") }}</p>
         </template>
       </div>
-      <p class="!text-secondary text-[14px]">{{ remainingTime }}</p>
+      <p class="text-[14px] !text-text-secondary">{{ remainingTime }}</p>
     </div>
     <!-- Image -->
-    <div class="aspect-square size-[200px] overflow-hidden rounded-full border-[6px] border-white bg-white">
+    <div
+      class="aspect-square size-[200px] overflow-hidden rounded-full border-[6px] border-surface-white bg-surface-white"
+    >
       <img :src="props.drop.image" class="h-full rounded-full" />
     </div>
     <!-- Title -->
@@ -27,8 +29,8 @@
     <!-- Info -->
     <div class="flex w-full flex-col gap-2">
       <div class="flex w-full items-center justify-between">
-        <p class="!text-secondary text-[14px]">{{ $t("manage.drop.progress") }}</p>
-        <p class="!text-secondary text-[14px]">
+        <p class="text-[14px] !text-text-secondary">{{ $t("manage.drop.progress") }}</p>
+        <p class="text-[14px] !text-text-secondary">
           {{
             $t("manage.drop.claimed", {
               part: minted,
@@ -38,9 +40,9 @@
         </p>
       </div>
       <!-- Progress bar -->
-      <div class="h-2 w-full rounded-full bg-[#E5E5E5]">
+      <div class="h-2 w-full rounded-full bg-border-default">
         <div
-          class="h-full rounded-full bg-[#49DE80]"
+          class="h-full rounded-full bg-accent-primary"
           :style="{
             width: `${currentProgress}%`,
           }"
@@ -48,11 +50,11 @@
       </div>
     </div>
     <div
-      class="flex w-full cursor-pointer items-center justify-between rounded-xl border border-[#DEDEDE] bg-white p-4 hover:opacity-70"
-      @click="navigateTo(`/manage/${props.drop.id}`)"
+      class="flex w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white p-4 hover:opacity-70"
+      @click="navigateTo(`/manage/${props.drop.chain}/${props.drop.id}`)"
     >
-      <p class="text-[14px] font-normal !text-black">{{ $t("manage.drop.manageDrop") }}</p>
-      <Icon name="mdi:arrow-right" class="size-[20px] text-black" />
+      <p class="text-[14px] font-normal">{{ $t("manage.drop.manageDrop") }}</p>
+      <Icon name="mdi:arrow-right" class="size-[20px] text-text-primary" />
     </div>
   </div>
 </template>
@@ -70,8 +72,10 @@ const { locale, t } = useI18n();
 // Starts in
 const startsIn = computed<string | null>(() => {
   const date = DateTime.fromSQL(props.drop.createdAt);
+
   const now = DateTime.now();
   const diff = date.diff(now, ["days", "hours", "minutes", "seconds"]);
+
   if (diff.as("seconds") < 0) {
     return null;
   }
@@ -125,7 +129,7 @@ watch(
     if (data) {
       loadingLimitInfo.value = true;
       const api = await apiInstanceByPrefix(data.chain);
-      const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.collection);
+      const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.id);
       maxMints.value = maxTokens;
       minted.value = mintedTokens;
       remaining.value = remainingMints;

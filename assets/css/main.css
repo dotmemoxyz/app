@@ -61,8 +61,21 @@ body {
     h6,
     input,
     textarea,
+    td,
     label {
       color: rgb(var(--text-primary));
+    }
+
+    th {
+      color: rgb(var(--text-secondary));
+    }
+
+    b {
+      @apply font-medium;
+    }
+
+    p {
+      @apply font-normal;
     }
   }
   input[type="number"]::-webkit-inner-spin-button,

@@ -33,11 +33,8 @@ export type UniqCollection = {
 /**
  * Local MEMO object
  */
+
 export type Memo = {
-  /**
-   * Code of the memo
-   */
-  id: string;
   /**
    * Chain of the memo
    */
@@ -45,7 +42,7 @@ export type Memo = {
   /**
    * Collection ID of the memo
    */
-  collection: string;
+  id: string;
   /**
    * Name of the memo
    */
@@ -71,6 +68,13 @@ export type Memo = {
    */
   expiresAt: string;
 };
+
+export interface MemoWithCode extends Memo {
+  /**
+   * Code of the memo
+   */
+  code: string;
+}
 
 export type CreateMemoDTO = {
   /**
