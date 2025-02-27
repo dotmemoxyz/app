@@ -33,6 +33,7 @@
         </div>
         <div
           class="flex h-fit cursor-pointer items-center gap-2 rounded-xl border border-text-primary bg-transparent p-2 hover:opacity-70"
+          @click="exportCsv"
         >
           <p class="text-[14px]">{{ $t("manage.analytics.exportCsv") }}</p>
         </div>
@@ -55,7 +56,7 @@
             <td>{{ getTimeFormat(item.createdAt) }}</td>
             <td>
               <span class="flex items-center gap-1">
-                <a target="_blank" :href="getTxLink(item.hash)"> 0x{{ item.hash }} </a>
+                <a target="_blank" :href="getTxLink(item.blockNumber)"> {{ item.blockNumber }} </a>
                 <Icon name="mdi:arrow-top-right" class="size-[16px] text-black" />
               </span>
             </td>
@@ -75,12 +76,12 @@ const props = defineProps<{
   drop: Memo;
 }>();
 
-const getTxLink = (txHash: string) => {
+const getTxLink = (blockNumber: string) => {
   if (props.drop.chain === "ahp") {
-    return `https://assethub-polkadot.subscan.io/extrinsic/0x${txHash}`;
+    return `https://assethub-polkadot.subscan.io/block/${blockNumber}`;
   }
 
-  return `https://assethub-kusama.subscan.io/extrinsic/0x${txHash}`;
+  return `https://assethub-kusama.subscan.io/block/${blockNumber}`;
 };
 
 type Item = {
@@ -91,7 +92,7 @@ type Item = {
   issuer: string;
   metadata: string;
   name: string;
-  hash: string;
+  blockNumber: string;
 };
 
 type Query = {
@@ -118,7 +119,7 @@ const { data } = await useAsyncData(
       offset: (page.value - 1) * PAGE_SIZE,
       orderBy: "createdAt_ASC",
       limit: PAGE_SIZE,
-      fields: ["id", "createdAt", "currentOwner", "image", "issuer", "metadata", "name", "hash"],
+      fields: ["id", "createdAt", "currentOwner", "image", "issuer", "metadata", "name", "blockNumber"],
     });
     return client.fetch<Query>(query);
   },
@@ -148,6 +149,25 @@ const getTimeFormat = (dateRaw: string) => {
       time: Duration.fromObject({ seconds: Math.round(diff.seconds) }, { locale: locale.value }).toHuman(),
     });
   }
+};
+
+const exportCsv = () => {
+  if (!data.value) {
+    return;
+  }
+  const header = `${t("manage.analytics.table.claimId")},${t("manage.analytics.table.address")},${t("manage.analytics.table.time")},${t("manage.analytics.table.transaction")}\n`;
+  const csv = data.value
+    .map((item) => {
+      return `${item.id.split("-").at(1)},${item.currentOwner},${getTimeFormat(item.createdAt)},${item.blockNumber}`;
+    })
+    .join("\n");
+  const blob = new Blob([header + csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `transactions-${props.drop.id}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 };
 </script>
 <style scoped>
