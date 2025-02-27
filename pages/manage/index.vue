@@ -28,7 +28,7 @@
       <div class="flex w-full justify-center gap-2 md:w-auto">
         <!-- Chain select -->
         <dot-select v-model="urlParams.chain" class="w-[250px]" :options="chainList" />
-        <dot-button variant="tertiary" squared @click="navigateTo('/create')">
+        <dot-button variant="tertiary" @click="navigateTo('/create')">
           <span class="hidden md:block">{{ $t("manage.createDrop") }}</span>
           <Icon name="mdi:plus" size="24" class="md:hidden" />
         </dot-button>

@@ -23,8 +23,8 @@ const props = withDefaults(
     disabled?: boolean;
     variant?: BtnVariant;
     size?: BtnSize;
-    squared?: boolean;
     submit?: boolean;
+    rounded?: boolean;
   }>(),
   {
     disabled: false,
@@ -49,7 +49,7 @@ const VARIANT_CLASSES: Record<BtnVariant, string> = {
       disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
     `,
   tertiary: `
-    bg-transparent text-text-primary border-2 border-border hover:bg-[rgba(0,0,0,0.1)] hover:text-text-color-inverse
+    bg-transparent text-text-primary border-2 border-border-default hover:bg-[rgba(0,0,0,0.1)] hover:text-text-color-inverse
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
   "tertiary-light": `
@@ -69,9 +69,9 @@ const btnClasses = computed(() => {
 
   const variant = VARIANT_CLASSES[props.variant];
 
-  const squareClasses = props.squared ? "rounded-xl" : "rounded-full";
+  const radius = props.rounded ? "rounded-full" : "rounded-xl";
 
-  return [baseClasses, size, variant, squareClasses];
+  return [baseClasses, size, variant, radius];
 });
 </script>
 

@@ -39,7 +39,7 @@ const wrapperClasses = computed(() => {
   if (props.error) {
     return "border-red-500";
   }
-  return "border-border";
+  return "border-border-default";
 });
 
 const inputClasses = computed(() => {

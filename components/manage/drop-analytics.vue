@@ -55,7 +55,7 @@
             <td>{{ getTimeFormat(item.createdAt) }}</td>
             <td>
               <span class="flex items-center gap-1">
-                <a :href="getTxLink(item.hash)"> 0x{{ item.hash }} </a>
+                <a target="_blank" :href="getTxLink(item.hash)"> 0x{{ item.hash }} </a>
                 <Icon name="mdi:arrow-top-right" class="size-[16px] text-black" />
               </span>
             </td>
@@ -75,12 +75,12 @@ const props = defineProps<{
   drop: Memo;
 }>();
 
-const getTxLink = (tx: string) => {
+const getTxLink = (txHash: string) => {
   if (props.drop.chain === "ahp") {
-    return `https://assethub-polkadot.subscan.io/extrinsic/${tx}`;
+    return `https://assethub-polkadot.subscan.io/extrinsic/0x${txHash}`;
   }
 
-  return `https://assethub-kusama.subscan.io/extrinsic/${tx}`;
+  return `https://assethub-kusama.subscan.io/extrinsic/0x${txHash}`;
 };
 
 type Item = {

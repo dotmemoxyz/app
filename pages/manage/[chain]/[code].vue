@@ -3,7 +3,7 @@
     <div class="w-full">
       <div
         class="flex w-fit cursor-pointer items-center justify-between rounded-xl border border-black bg-white p-4 hover:opacity-70"
-        @click="navigateTo('/manage')"
+        @click="navigateTo('/manage?chain=' + data?.chain)"
       >
         <Icon name="mdi:arrow-left" class="size-[20px] text-black" />
         <p class="text-[14px] font-normal !text-black">{{ $t("manage.drop.backToDrops") }}</p>

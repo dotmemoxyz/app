@@ -66,13 +66,17 @@
         </div>
         <dot-text-input v-model.number="quantity" type="number" placeholder="0" :error="quantityError" />
         <div class="hidden gap-2 md:flex">
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity -= 100"> -100 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity -= 10"> -10 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity -= 1"> -1 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity = 0">0 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 1"> +1 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 10"> +10 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 100"> +100 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 100">
+            -100
+          </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 10"> -10 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 1"> -1 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity = 0">0 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 1"> +1 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 10"> +10 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 100">
+            +100
+          </dot-button>
         </div>
       </dot-label>
       <dot-label class="relative" :text="t('create.memo.secret')">

@@ -1,6 +1,6 @@
 <template>
   <header
-    class="border-primary fixed left-0 top-0 z-50 flex w-full items-center justify-between py-[14px] backdrop-blur-sm md:px-[160px]"
+    class="border-primary fixed left-0 top-0 z-50 flex w-full items-center justify-between px-[16px] py-[14px] backdrop-blur-sm md:px-[160px]"
   >
     <nuxt-link to="/">
       <h1 class="text-2xl">.MEMO</h1>

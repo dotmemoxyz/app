@@ -62,7 +62,8 @@ body {
     input,
     textarea,
     td,
-    label {
+    label,
+    select {
       color: rgb(var(--text-primary));
     }
 
