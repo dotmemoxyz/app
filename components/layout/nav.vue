@@ -15,6 +15,12 @@
               </span>
             </nuxt-link>
           </li>
+          <client-only v-if="accountStore.hasSelectedAccount && !accountStore.hasToken">
+            <li class="flex items-center gap-2" @click="open">
+              <p class="block md:hidden">Sudo</p>
+              <Icon name="mdi:shield-crown-outline" class="cursor-pointer text-text-primary" size="24" />
+            </li>
+          </client-only>
           <li class="flex items-center gap-2" @click="switchMode">
             <p class="block md:hidden">Color mode</p>
             <Icon
@@ -34,6 +40,9 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useModal } from "vue-final-modal";
+import AdminModal from "../modals/admin-modal.vue";
+
 const { t } = useI18n();
 const accountStore = useAccountStore();
 const links = computed(() => {
@@ -45,7 +54,7 @@ const links = computed(() => {
       href: "/create",
     },
   ];
-  if (accountStore.hasSelectedAccount) {
+  if (accountStore.hasSelectedAccount && accountStore.hasToken) {
     availableLinks.push({ name: t("common.manage"), icon: "mdi:account-cog", href: "/manage" });
   }
   return availableLinks;
@@ -80,6 +89,10 @@ const closeNav = () => {
     navOpen.value = false;
   }
 };
+
+const { open, close: _closeAdminModal } = useModal({
+  component: AdminModal,
+});
 </script>
 <style scoped>
 .fade-enter-active,
