@@ -82,7 +82,11 @@ const { data: drops, error: dropsError } = useAsyncData(
       throw new Error("No account selected");
     }
     const address = encodeAddress(decodeAddress(selectedAccount.value?.address), urlParams.chain === "ahp" ? 0 : 2);
-    const query = client.value.collectionListByOwner(address);
+    const query = client.value.collectionListByOwner(address, {
+      fields: ["id", "name", "image"],
+      orderBy: "createdAt_DESC",
+      kind: "poap",
+    });
     const resp = await client.value.fetch<QueryCollectionsResponse>(query);
     const memos: Memo[] = [];
     for (const collection of resp.data.collections) {

@@ -24,8 +24,8 @@ importers:
         specifier: 0.4.0-rc.2
         version: 0.4.0-rc.2(@polkadot/api@13.1.1)(@polkadot/types-codec@13.1.1)
       '@kodadot1/uniquery':
-        specifier: ^0.7.2-rc.0
-        version: 0.7.2-rc.0
+        specifier: ^0.7.2-rc.1
+        version: 0.7.2-rc.1
       '@nuxt/eslint':
         specifier: ^0.3.13
         version: 0.3.13(eslint@8.57.1)(magicast@0.3.5)(rollup@4.22.2)(typescript@5.6.2)(vite@5.4.6(@types/node@22.5.5)(terser@5.33.0))
@@ -1443,8 +1443,8 @@ packages:
       '@polkadot/api': '>= 11.2'
       '@polkadot/types-codec': '>= 11.2'
 
-  '@kodadot1/uniquery@0.7.2-rc.0':
-    resolution: {integrity: sha512-gA/oT6nsH5HSAxTnaRjtPLiYfDP9RSCXLXae3kSUVd65p3Swjf8OTX0O4tHeISfUEUp2cgWoPuXXDOMDzxpoXw==}
+  '@kodadot1/uniquery@0.7.2-rc.1':
+    resolution: {integrity: sha512-eT9vspRQIvEdAvl5dev3T9coRrBJnNXwK6HAGXOMvt6JTXxIhbJjNmPQG1aPZWUW8CNfbdEadpcayg7+YfayPQ==}
 
   '@kwsites/file-exists@1.1.1':
     resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
@@ -7878,7 +7878,7 @@ snapshots:
       '@polkadot/api': 13.1.1
       '@polkadot/types-codec': 13.1.1
 
-  '@kodadot1/uniquery@0.7.2-rc.0':
+  '@kodadot1/uniquery@0.7.2-rc.1':
     dependencies:
       '@kodadot1/static': 0.0.7
       gql-query-builder: 3.8.0
