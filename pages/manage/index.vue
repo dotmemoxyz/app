@@ -35,7 +35,10 @@
       </div>
     </div>
     <div class="flex w-full flex-wrap justify-center gap-[40px]">
-      <template v-if="drops">
+      <template v-if="dropsStatus === 'pending' || !accountStore.loaded">
+        <dot-skeleton v-for="i in 4" :key="i" :width="320" :height="400" roundness="lg" />
+      </template>
+      <template v-else-if="drops">
         <manage-drop-card v-for="drop in drops" :key="drop.id" :drop="drop" />
       </template>
       <p v-else-if="dropsError">{{ dropsError }}</p>
@@ -75,13 +78,20 @@ const chainList = computed<Option[]>(() => [
 
 const client = computed(() => getClient(urlParams.chain));
 
-const { data: drops, error: dropsError } = useAsyncData(
+const {
+  data: drops,
+  error: dropsError,
+  status: dropsStatus,
+} = useAsyncData(
   "drops",
   async () => {
-    if (!accountStore.selected) {
+    if (!accountStore.loaded) {
+      return [];
+    }
+    if (!accountStore.selected?.address) {
       throw new Error("No account selected");
     }
-    const address = encodeAddress(decodeAddress(selectedAccount.value?.address), urlParams.chain === "ahp" ? 0 : 2);
+    const address = encodeAddress(decodeAddress(accountStore.selected.address), urlParams.chain === "ahp" ? 0 : 2);
     const query = client.value.collectionListByOwner(address, {
       fields: ["id", "name", "image"],
       orderBy: "createdAt_DESC",

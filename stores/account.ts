@@ -4,6 +4,7 @@ import type { ExtendedDotsamaAccount } from "~/utils/wallet/base_dotsama_wallet"
 interface StoreState {
   accounts: ExtendedDotsamaAccount[];
   selected: ExtendedDotsamaAccount | null;
+  loaded: boolean;
 }
 
 export const useAccountStore = defineStore({
@@ -11,10 +12,14 @@ export const useAccountStore = defineStore({
   state: (): StoreState => ({
     accounts: [],
     selected: null,
+    loaded: false,
   }),
   actions: {
     setAccounts(accounts: ExtendedDotsamaAccount[]) {
       this.accounts = accounts;
+    },
+    setLoaded() {
+      this.loaded = true;
     },
     selectAccount(account: ExtendedDotsamaAccount) {
       this.selected = account;

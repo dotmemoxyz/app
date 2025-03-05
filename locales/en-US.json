@@ -19,7 +19,10 @@
     "address": "Address",
     "account": "Account",
     "error": "Error",
-    "timeAgo": "{time} ago"
+    "timeAgo": "{time} ago",
+    "optional": "Optional",
+    "text": "Text",
+    "saveChanges": "Save Changes"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -338,6 +341,22 @@
         "time": "Time",
         "transaction": "Transaction"
       }
+    },
+    "customize": {
+      "title": "Claim page image",
+      "customPreviewImage": "Use custom preview image",
+      "customPreviewImageHint": "Upload a different image for the claim page",
+      "textContent": "Text Content",
+      "heading": "Heading",
+      "subheading": "Subheading",
+      "buttonText": "Button Text",
+      "socials": "Socials",
+      "socialsHint": "Links to socials are displayed under the subheading",
+      "colors": "Colors",
+      "colorsHint": "Choose color that match your brand",
+      "darkMode": "Dark Mode",
+      "accentColor": "Accent color",
+      "contrastCheck": "Contrast check"
     }
   }
 }

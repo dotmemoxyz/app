@@ -54,11 +54,13 @@ onMounted(async () => {
     try {
       const accounts = await wallet.getAccounts();
       if (!accounts) {
+        accountStore.setLoaded();
         return;
       }
       const account = accounts.find((acc) => acc.address === accountAddress);
       if (account) {
         accountStore.selectAccount(account);
+        accountStore.setLoaded();
       }
     } catch (e) {
       logger.error(e);

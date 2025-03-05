@@ -32,6 +32,7 @@
     <hr class="w-full" />
     <!-- Sub containers -->
     <manage-drop-analytics v-if="selectedTab === 'analytics' && data" :drop="data" />
+    <manage-drop-customize v-if="selectedTab === 'customize' && data" :drop="data" />
   </div>
 </template>
 
