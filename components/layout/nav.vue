@@ -54,7 +54,8 @@ const links = computed(() => {
       href: "/create",
     },
   ];
-  if (accountStore.hasSelectedAccount && accountStore.hasToken) {
+  // For now dont check token
+  if (accountStore.hasSelectedAccount) {
     availableLinks.push({ name: t("common.manage"), icon: "mdi:account-cog", href: "/manage" });
   }
   return availableLinks;

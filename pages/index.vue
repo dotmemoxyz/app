@@ -28,7 +28,7 @@
         </dot-button>
         <dot-button
           size="large"
-          :variant="networkStatus ? 'tertiary-light' : 'primary'"
+          :variant="networkStatus ? 'secondary' : 'primary'"
           :disabled="!networkStatus"
           class="px-10 sm:px-20"
           :class="{
@@ -57,7 +57,7 @@
           <p class="!text-surface-white">{{ t("landing.milestonesIntoMemories") }}</p>
         </div>
         <div class="justify-end">
-          <dot-button class="w-full sm:w-auto" variant="tertiary-dark" size="large">
+          <dot-button class="w-full sm:w-auto" variant="tertiary" size="large">
             {{ t("common.learnMore") }}
           </dot-button>
         </div>

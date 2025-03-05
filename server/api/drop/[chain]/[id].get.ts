@@ -1,24 +1,25 @@
 import { $purify as purify } from "@kodadot1/minipfs";
 import { DateTime } from "luxon";
 import type { MemoDTO, Memo } from "~/types/memo";
-import { jwtVerify } from "jose/jwt/verify";
-import { decode } from "jose/base64url";
+// import { jwtVerify } from "jose/jwt/verify";
+// import { decode } from "jose/base64url";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
   const { id, chain } = getRouterParams(event);
 
-  const auth = getRequestHeader(event, "Authorization");
-  if (!auth) {
-    throw createError({
-      statusCode: 401,
-      message: "Unauthorized",
-    });
-  }
+  // FIX: No auth for now
+  // const auth = getRequestHeader(event, "Authorization");
+  // if (!auth) {
+  //   throw createError({
+  //     statusCode: 401,
+  //     message: "Unauthorized",
+  //   });
+  // }
 
-  const JWT_SECRET = "secret";
-  const jwtKey = decode(JWT_SECRET);
-  const _token = await jwtVerify(auth.split(" ")[1], jwtKey);
+  // const JWT_SECRET = "secret";
+  // const jwtKey = decode(JWT_SECRET);
+  // const _token = await jwtVerify(auth.split(" ")[1], jwtKey);
 
   const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/detail/${chain}/${id}`)
     .then((r) => [r, null])
