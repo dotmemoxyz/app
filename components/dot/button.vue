@@ -35,7 +35,7 @@ const props = withDefaults(
 
 const SIZE_CLASSES: Record<BtnSize, string> = {
   small: "px-3 py-1 text-sm ",
-  medium: "px-4 py-2",
+  medium: "px-[16px] py-[14px]",
   large: "px-6 py-3 text-lg ",
 };
 
@@ -45,19 +45,11 @@ const VARIANT_CLASSES: Record<BtnVariant, string> = {
       disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
     `,
   secondary: `
-      bg-transparent text-accent-primary border-2 border-accent-primary hover:bg-accent-primary hover:text-black/90
-      disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
-    `,
+    bg-transparent text-text-primary border border-text-primary hover:bg-[rgba(0,0,0,0.1)] hover:text-text-color-inverse
+    disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
+  `,
   tertiary: `
-    bg-transparent text-text-primary border-2 border-border-default hover:bg-[rgba(0,0,0,0.1)] hover:text-text-color-inverse
-    disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
-  `,
-  "tertiary-light": `
-    bg-transparent text-white border-2 border-white hover:bg-white hover:text-black
-    disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
-  `,
-  "tertiary-dark": `
-    bg-transparent text-black border-2 border-black hover:bg-black hover:text-white
+    bg-transparent text-text-primary border border-border-default hover:border-text-placeholder hover:text-text-color-inverse
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
 };
@@ -69,7 +61,7 @@ const btnClasses = computed(() => {
 
   const variant = VARIANT_CLASSES[props.variant];
 
-  const radius = props.rounded ? "rounded-full" : "rounded-xl";
+  const radius = props.rounded ? "rounded-full" : "rounded-[12px]";
 
   return [baseClasses, size, variant, radius];
 });
@@ -77,7 +69,7 @@ const btnClasses = computed(() => {
 
 <style scoped>
 .dot-button {
-  @apply inline-flex items-center justify-center gap-1 transition ease-in-out;
+  @apply inline-flex items-center justify-center gap-[12px] transition ease-in-out;
 }
 .dot-button .icon {
   @apply ml-2;

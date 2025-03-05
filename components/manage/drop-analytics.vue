@@ -31,12 +31,9 @@
             <Icon name="mdi:chevron-right" class="size-[16px]" />
           </dot-button>
         </div>
-        <div
-          class="flex h-fit cursor-pointer items-center gap-2 rounded-xl border border-text-primary bg-transparent p-2 hover:opacity-70"
-          @click="exportCsv"
-        >
-          <p class="text-[14px]">{{ $t("manage.analytics.exportCsv") }}</p>
-        </div>
+        <dot-button variant="tertiary" @click="exportCsv">
+          {{ $t("manage.analytics.exportCsv") }}
+        </dot-button>
       </div>
     </div>
     <div class="w-full overflow-x-scroll">

@@ -356,7 +356,9 @@
       "colorsHint": "Choose color that match your brand",
       "darkMode": "Dark Mode",
       "accentColor": "Accent color",
-      "contrastCheck": "Contrast check"
+      "contrastCheck": "Contrast check",
+      "preview": "Preview",
+      "previewHint": "Live preview of claim page"
     }
   }
 }

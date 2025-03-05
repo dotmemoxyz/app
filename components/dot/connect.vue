@@ -1,5 +1,9 @@
 <template>
-  <div class="cursor-pointer rounded-xl border px-[16px] py-[14px]" :size="size" @click="open">
+  <div
+    class="cursor-pointer rounded-xl border border-border-default px-[16px] py-[14px] hover:border-text-placeholder"
+    :size="size"
+    @click="open"
+  >
     <div v-if="accountStore.hasSelectedAccount" class="flex items-center gap-[12px]">
       <!-- @vue-ignore -->
       <Identicon

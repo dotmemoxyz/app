@@ -1,13 +1,12 @@
 <template>
   <div class="flex h-full w-full flex-col gap-8 py-10">
     <div class="w-full">
-      <div
-        class="flex w-fit cursor-pointer items-center justify-between rounded-xl border border-black bg-white p-4 hover:opacity-70"
-        @click="navigateTo('/manage?chain=' + data?.chain)"
-      >
-        <Icon name="mdi:arrow-left" class="size-[20px] text-black" />
-        <p class="text-[14px] font-normal !text-black">{{ $t("manage.drop.backToDrops") }}</p>
-      </div>
+      <dot-button variant="secondary" @click="navigateTo('/manage?chain=' + data?.chain)">
+        <template #icon>
+          <Icon name="mdi:arrow-left" class="size-[20px] text-black" />
+        </template>
+        {{ $t("manage.drop.backToDrops") }}
+      </dot-button>
     </div>
     <manage-drop-detail v-if="data" :drop="data" />
     <div v-else class="w-full rounded-xl bg-surface-card p-10" />

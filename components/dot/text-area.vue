@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-1 flex-col">
     <span
-      class="relative flex w-full items-center justify-between gap-2 rounded-lg border-2 focus-within:border-accent-primary"
+      class="relative flex w-full items-center justify-between gap-2 rounded-lg border border-border-default focus-within:border-accent-primary"
       :class="wrapperClasses"
     >
       <textarea
@@ -10,7 +10,7 @@
         :placeholder="placeholder"
         :class="inputClasses"
         :maxlength="limit"
-        class="min-h-20 min-w-0 flex-1 resize-y bg-transparent p-3 focus:outline-none focus:ring-0"
+        class="min-h-20 min-w-0 flex-1 resize-y bg-transparent p-3 placeholder:text-text-placeholder focus:outline-none focus:ring-0"
       />
       <span v-if="Number.isInteger(limit)" class="absolute -top-7 right-0 text-xs text-text-primary">
         {{ model?.length ?? 0 }} / {{ limit }}

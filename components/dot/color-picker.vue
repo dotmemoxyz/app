@@ -11,7 +11,9 @@
     <!-- Color picker -->
     <input ref="inputRef" v-model="model" type="color" class="hidden" />
     <!-- Color as text -->
-    <p class="flex h-full w-full items-center rounded-[12px] border-2 px-4 text-[14px] font-semibold text-text-primary">
+    <p
+      class="flex h-full w-full items-center rounded-[12px] border border-border-default px-4 text-[14px] font-semibold text-text-primary"
+    >
       {{ model ?? placeholder }}
     </p>
   </span>

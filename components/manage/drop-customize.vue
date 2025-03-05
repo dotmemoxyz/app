@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3">
+  <div class="grid grid-cols-1 gap-x-8 md:grid-cols-3">
     <!-- Customize form -->
     <div class="flex w-full flex-col justify-center gap-8 md:w-auto">
       <!-- Custom image -->
@@ -22,7 +22,7 @@
             <b class="text-base font-normal">{{ $t("manage.customize.heading") }}</b>
             <p>0/40</p>
           </div>
-          <dot-text-area :placeholder="$t('common.text')" />
+          <dot-text-input :placeholder="$t('common.text')" />
         </div>
         <div class="flex flex-col gap-1">
           <div class="flex w-full items-center justify-between">
@@ -39,7 +39,7 @@
             <b class="text-base font-normal">{{ $t("manage.customize.buttonText") }}</b>
             <p>0/40</p>
           </div>
-          <dot-text-area :placeholder="$t('common.claim')" />
+          <dot-text-input :placeholder="$t('common.claim')" />
         </div>
       </div>
       <!-- Socials -->
@@ -48,17 +48,17 @@
         <p class="!text-text-secondary">{{ $t("manage.customize.socialsHint") }}</p>
         <dot-text-input placeholder="Telegram">
           <template #prefix>
-            <Icon name="mdi:telegram" class="text-primary]" />
+            <Icon name="mdi:telegram" class="text-text-primary" />
           </template>
         </dot-text-input>
         <dot-text-input placeholder="@instagram">
           <template #prefix>
-            <Icon name="mdi:instagram" class="text-primary]" />
+            <Icon name="mdi:instagram" class="text-text-primary" />
           </template>
         </dot-text-input>
         <dot-text-input placeholder="website.com">
           <template #prefix>
-            <Icon name="mdi:web" class="text-primary]" />
+            <Icon name="mdi:web" class="text-text-primary" />
           </template>
         </dot-text-input>
       </div>
@@ -83,7 +83,14 @@
       <dot-button>{{ $t("common.saveChanges") }}</dot-button>
     </div>
     <!-- Customize preview -->
-    <div class="col-span-2" />
+    <div class="col-span-2 flex flex-col gap-8">
+      <div class="flex flex-col gap-4">
+        <div class="flex justify-between">
+          <h2 class="text-xl font-medium">{{ $t("manage.customize.preview") }}</h2>
+          <p class="text-base font-normal !text-text-secondary">{{ $t("manage.customize.previewHint") }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -96,4 +103,22 @@ defineProps<{
 const isCustomPreview = ref(false);
 const darkMode = ref(false);
 const accentColor = ref("#4ADE80");
+
+// const GAMMA = 2.4;
+
+// function luminance(r: number, g: number, b: number) {
+//   const a = [r, g, b].map((v) => {
+//     v /= 255;
+//     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, GAMMA);
+//   });
+//   return a[0] * RED + a[1] * GREEN + a[2] * BLUE;
+// }
+
+// function contrast(rgb1, rgb2) {
+//   const lum1 = luminance(...rgb1);
+//   const lum2 = luminance(...rgb2);
+//   const brightest = Math.max(lum1, lum2);
+//   const darkest = Math.min(lum1, lum2);
+//   return (brightest + 0.05) / (darkest + 0.05);
+// }
 </script>
