@@ -51,7 +51,6 @@ const currentAccount = computed(() => accountStore.selected);
 const url = useRequestURL();
 
 const proceed = async () => {
-  logger.info("proceed");
   try {
     if (!currentAccount.value?.address) {
       throw new Error("No account selected");

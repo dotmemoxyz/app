@@ -16,7 +16,7 @@
             </nuxt-link>
           </li>
           <client-only v-if="accountStore.hasSelectedAccount && !accountStore.hasToken">
-            <li class="flex items-center gap-2" @click="open">
+            <li class="flex items-center gap-2" @click="openModal">
               <p class="block md:hidden">Sudo</p>
               <Icon name="mdi:shield-crown-outline" class="cursor-pointer text-text-primary" size="24" />
             </li>
@@ -90,7 +90,7 @@ const closeNav = () => {
   }
 };
 
-const { open, close: _closeAdminModal } = useModal({
+const { open: openModal, close: _closeAdminModal } = useModal({
   component: AdminModal,
 });
 </script>
