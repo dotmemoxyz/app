@@ -66,12 +66,6 @@
     "loading": "Loading info...",
     "remaining": "Remaining claims: {free} / {total}"
   },
-  "admin": {
-    "dialog": {
-      "confirm":"Confirm enabling admin mode",
-      "text": "You are entering the admin mode, you will be asked to sign an authentication key to confirm your identity."
-    }
-  },
   "create": {
     "title": ".create",
     "memo": {

@@ -5,7 +5,6 @@ interface StoreState {
   accounts: ExtendedDotsamaAccount[];
   selected: ExtendedDotsamaAccount | null;
   loaded: boolean;
-  token: string | null;
 }
 
 export const useAccountStore = defineStore({
@@ -14,7 +13,6 @@ export const useAccountStore = defineStore({
     accounts: [],
     selected: null,
     loaded: false,
-    token: null,
   }),
   actions: {
     setAccounts(accounts: ExtendedDotsamaAccount[]) {
@@ -26,18 +24,13 @@ export const useAccountStore = defineStore({
     selectAccount(account: ExtendedDotsamaAccount) {
       this.selected = account;
     },
-    setToken(token: string) {
-      this.token = token;
-    },
     disconnect() {
       this.selected = null;
-      this.token = null;
     },
   },
 
   getters: {
     hasSelectedAccount: (state) => !!state.selected,
-    hasToken: (state) => !!state.token,
     shortAddress: (state) => {
       if (!state.selected) return "";
       return addressShortener(state.selected.address);
