@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full justify-between gap-8 rounded-xl bg-surface-card p-4">
+  <div class="flex w-full justify-between gap-8 rounded-xl bg-surface-card p-[32px]">
     <!-- Image -->
     <div
       class="size-[165px] min-h-[165px] min-w-[165px] overflow-hidden rounded-full border-[6px] border-white bg-white"
@@ -71,7 +71,8 @@ const isExpired = computed<boolean>(() => {
 
 const remainingTime = computed<string>(() => {
   if (isExpired.value) {
-    return t("manage.drop.expired");
+    // Display end date if expired
+    return DateTime.fromSQL(props.drop.expiresAt).toFormat("dd.MM.yyyy");
   }
   const date = DateTime.fromSQL(props.drop.expiresAt);
   const startDate = DateTime.fromSQL(props.drop.createdAt);

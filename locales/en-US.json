@@ -312,7 +312,7 @@
     "createDrop": "+ Create MEMO",
     "drop": {
       "active": "Active",
-      "inactive": "Inactive",
+      "inactive": "Expired",
       "upcoming": "Upcoming",
       "ended": "Ended",
       "left": "{time} left",
