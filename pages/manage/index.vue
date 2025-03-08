@@ -38,7 +38,7 @@
     </div>
     <div class="grid grid-cols-1 gap-[40px] md:grid-cols-3 md:justify-start">
       <template v-if="dropsStatus === 'pending' || !accountStore.loaded">
-        <dot-skeleton v-for="i in 4" :key="i" class="h-[400px] w-[320px] md:w-[370px]" roundness="lg" />
+        <dot-skeleton v-for="i in 4" :key="i" class="h-[530px] w-[320px] md:w-[370px]" roundness="lg" />
       </template>
       <template v-else-if="drops">
         <manage-drop-card v-for="drop in drops" :key="drop.id" :drop="drop" />
