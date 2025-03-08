@@ -2,13 +2,13 @@
   <div class="flex w-full flex-col gap-8">
     <!-- Top analytics -->
     <div class="flex w-full gap-4">
-      <div class="flex items-center gap-4 rounded-xl bg-surface-card p-4">
-        <div class="size-51 flex items-center justify-center rounded-lg bg-accent-primary-light p-3">
+      <div class="flex items-center gap-[24px] rounded-[24px] bg-surface-card p-4">
+        <div class="size-51 flex items-center justify-center rounded-[8px] bg-accent-primary-light p-[14px]">
           <Icon name="memo:people" class="size-[22px] text-accent-primary-dark" />
         </div>
-        <div class="flex flex-col justify-between">
-          <h3 class="text-[20px]">30</h3>
-          <p class="text-[14px] !text-[#606060]">{{ $t("manage.analytics.totalClaims") }}</p>
+        <div class="flex flex-col justify-between gap-[6px]">
+          <h3 class="text-[20px] font-medium leading-[25px]">{{ data?.length ?? 0 }}</h3>
+          <p class="text-[14px] font-normal leading-[18px] !text-[#606060]">{{ $t("manage.analytics.totalClaims") }}</p>
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@
         }"
         @click="selectedTab = tab.key"
       >
-        <p class="text-[14px]">{{ tab.label }}</p>
+        <p class="text-[14px] font-normal leading-[18px]">{{ tab.label }}</p>
       </div>
     </div>
     <hr class="w-full" />
