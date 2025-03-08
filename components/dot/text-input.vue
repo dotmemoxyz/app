@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-w-0 flex-1 flex-col">
     <span
-      class="relative flex w-full items-center justify-between gap-2 rounded-lg border border-border-default px-4 focus-within:border-accent-primary"
+      class="relative flex w-full items-center justify-between gap-2 rounded-lg border border-border-default px-4 focus-within:border-text-secondary"
       :class="wrapperClasses"
     >
       <slot name="prefix" class="max-w-20" />

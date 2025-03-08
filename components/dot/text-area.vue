@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-1 flex-col">
     <span
-      class="relative flex w-full items-center justify-between gap-2 rounded-lg border border-border-default focus-within:border-accent-primary"
+      class="relative flex w-full items-center justify-between gap-2 rounded-lg border border-border-default focus-within:border-text-secondary"
       :class="wrapperClasses"
     >
       <textarea
