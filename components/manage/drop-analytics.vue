@@ -19,19 +19,24 @@
       <div class="flex gap-4">
         <!-- Pagination -->
         <div v-if="data" class="flex gap-2">
-          <dot-button :disabled="page === 1" variant="tertiary" class="flex items-center gap-1" @click="prevPage">
-            <Icon name="mdi:chevron-left" class="size-[16px]" />
+          <dot-button
+            :disabled="page === 1"
+            variant="tertiary"
+            class="flex !h-[45px] items-center gap-1"
+            @click="prevPage"
+          >
+            <Icon name="mdi:chevron-left" class="size-[24px]" />
           </dot-button>
           <dot-button
             :disabled="data.length < PAGE_SIZE"
             variant="tertiary"
-            class="flex items-center gap-1"
+            class="flex !h-[45px] items-center gap-1"
             @click="nextPage"
           >
-            <Icon name="mdi:chevron-right" class="size-[16px]" />
+            <Icon name="mdi:chevron-right" class="size-[24px]" />
           </dot-button>
         </div>
-        <dot-button variant="tertiary" @click="exportCsv">
+        <dot-button variant="secondary" @click="exportCsv">
           {{ $t("manage.analytics.exportCsv") }}
         </dot-button>
       </div>
@@ -48,7 +53,7 @@
         </thead>
         <tbody>
           <tr v-for="item in data" :key="item.id">
-            <td>{{ item.id.split("-").at(1) }}</td>
+            <td>#{{ item.id.split("-").at(1) }}</td>
             <td>{{ addressShortener(item.currentOwner) }}</td>
             <td>{{ getTimeFormat(item.createdAt) }}</td>
             <td>
@@ -172,11 +177,11 @@ const exportCsv = () => {
   @apply w-full;
 
   th {
-    @apply py-4 text-start text-[14px];
+    @apply py-[24px] text-start text-[14px];
   }
 
   td {
-    @apply py-4 text-start text-[14px];
+    @apply py-[24px] text-start text-[14px];
   }
 
   tr {
