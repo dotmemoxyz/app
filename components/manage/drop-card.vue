@@ -1,60 +1,67 @@
 <template>
-  <div class="flex min-w-[320px] flex-col items-center gap-4 rounded-3xl bg-surface-card p-4">
+  <div class="flex min-w-[320px] flex-col items-center gap-[32px] rounded-[36px] bg-surface-card p-[24px]">
     <!-- Heading -->
-    <div class="flex w-full items-center justify-between border-b border-border-default pb-2">
-      <div class="flex items-center gap-2">
-        <template v-if="startsIn">
-          <span class="size-[10px] rounded-full bg-surface-blue" />
-          <p class="text-[14px] !text-text-secondary">{{ $t("manage.drop.upcoming") }}</p>
-        </template>
-        <template v-if="isExpired">
-          <span class="size-[10px] rounded-full bg-text-placeholder" />
-          <p class="text-[14px] !text-text-secondary">{{ $t("manage.drop.inactive") }}</p>
-        </template>
-        <template v-else>
-          <span class="size-[10px] rounded-full bg-accent-primary" />
-          <p class="text-[14px] !text-text-secondary">{{ $t("manage.drop.active") }}</p>
-        </template>
+    <div class="flex w-full flex-col justify-between gap-[16px]">
+      <div class="flex w-full items-center justify-between">
+        <div class="flex items-center gap-[6px]">
+          <template v-if="startsIn">
+            <span class="size-[10px] rounded-full bg-surface-blue" />
+            <p class="text-[14px] leading-[18px] !text-text-secondary">{{ $t("manage.drop.upcoming") }}</p>
+          </template>
+          <template v-if="isExpired">
+            <span class="size-[10px] rounded-full bg-text-placeholder" />
+            <p class="text-[14px] leading-[18px] !text-text-secondary">{{ $t("manage.drop.inactive") }}</p>
+          </template>
+          <template v-else>
+            <span class="size-[10px] rounded-full bg-accent-primary" />
+            <p class="text-[14px] leading-[18px] !text-text-secondary">{{ $t("manage.drop.active") }}</p>
+          </template>
+        </div>
+        <p class="text-[14px] leading-[18px] !text-text-secondary">{{ remainingTime }}</p>
       </div>
-      <p class="text-[14px] !text-text-secondary">{{ remainingTime }}</p>
+      <span class="w-full border-b border-border-default" />
     </div>
     <!-- Image -->
-    <div
-      class="aspect-square size-[200px] overflow-hidden rounded-full border-[6px] border-surface-white bg-surface-white"
-    >
-      <img :src="props.drop.image" class="h-full rounded-full" />
+    <div class="flex flex-col items-center gap-[32px]">
+      <div
+        class="aspect-square max-h-[210px] min-h-[210px] min-w-[210px] max-w-[210px] overflow-hidden rounded-full border-[6px] border-surface-white bg-surface-white"
+      >
+        <img :src="props.drop.image" class="h-full rounded-full" />
+      </div>
+      <!-- Title -->
+      <b class="text-center text-[24px] leading-[30px]">{{ props.drop.name }}</b>
     </div>
-    <!-- Title -->
-    <b class="text-center text-[24px]">{{ props.drop.name }}</b>
     <!-- Info -->
-    <div class="flex w-full flex-col gap-2">
-      <div class="flex w-full items-center justify-between">
-        <p class="text-[14px] !text-text-secondary">{{ $t("manage.drop.progress") }}</p>
-        <p class="text-[14px] !text-text-secondary">
-          {{
-            $t("manage.drop.claimed", {
-              part: minted,
-              total: maxMints,
-            })
-          }}
-        </p>
+    <div class="flex w-full flex-col gap-[24px]">
+      <div class="flex flex-col gap-[16px]">
+        <div class="flex w-full items-center justify-between">
+          <p class="text-[14px] leading-[18px] !text-text-secondary">{{ $t("manage.drop.progress") }}</p>
+          <p class="text-[14px] leading-[18px] !text-text-secondary">
+            {{
+              $t("manage.drop.claimed", {
+                part: minted,
+                total: maxMints,
+              })
+            }}
+          </p>
+        </div>
+        <!-- Progress bar -->
+        <div class="h-2 w-full rounded-full bg-border-default">
+          <div
+            class="h-full rounded-full bg-accent-primary"
+            :style="{
+              width: `${currentProgress}%`,
+            }"
+          />
+        </div>
       </div>
-      <!-- Progress bar -->
-      <div class="h-2 w-full rounded-full bg-border-default">
-        <div
-          class="h-full rounded-full bg-accent-primary"
-          :style="{
-            width: `${currentProgress}%`,
-          }"
-        />
+      <div
+        class="flex max-h-[45px] w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white px-[14px] py-[16px] hover:opacity-70"
+        @click="navigateTo(`/manage/${props.drop.chain}/${props.drop.id}`)"
+      >
+        <p class="text-[14px] font-normal leading-[18px]">{{ $t("manage.drop.manageDrop") }}</p>
+        <Icon name="mdi:arrow-right" class="size-[20px] text-text-primary" />
       </div>
-    </div>
-    <div
-      class="flex w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white p-4 hover:opacity-70"
-      @click="navigateTo(`/manage/${props.drop.chain}/${props.drop.id}`)"
-    >
-      <p class="text-[14px] font-normal">{{ $t("manage.drop.manageDrop") }}</p>
-      <Icon name="mdi:arrow-right" class="size-[20px] text-text-primary" />
     </div>
   </div>
 </template>

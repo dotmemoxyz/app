@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative flex h-[45px] items-center">
     <select
       ref="selectInput"
       v-model="model"

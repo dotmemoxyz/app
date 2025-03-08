@@ -5,23 +5,25 @@
       <!-- Statistics -->
       <div class="flex w-full justify-evenly gap-4 md:w-auto">
         <!-- Active drops -->
-        <div class="flex flex-col items-center gap-2 md:flex-row">
-          <div class="flex aspect-square size-16 items-center justify-center rounded-full bg-accent-primary-light p-2">
-            <Icon name="memo:bar-chart" class="size-[34px] text-accent-primary-dark" />
+        <div class="flex flex-col items-center gap-[21px] md:flex-row">
+          <div
+            class="flex aspect-square size-[75px] items-center justify-center rounded-full bg-accent-primary-light p-2"
+          >
+            <Icon name="memo:bar-chart" class="size-[37px] text-accent-primary-dark" />
           </div>
-          <div class="flex flex-col items-center gap-2 md:items-start">
-            <p class="text-[14px] !text-black/40 dark:!text-white/70">{{ $t("manage.activeDrops") }}</p>
-            <p class="text-[20px] text-black">{{ totalActiveDrops }}</p>
+          <div class="flex flex-col items-center gap-[8px] md:items-start">
+            <p class="text-[14px] leading-[17px] !text-text-secondary">{{ $t("manage.activeDrops") }}</p>
+            <p class="text-[20px] font-medium leading-[26px]">{{ totalActiveDrops }}</p>
           </div>
         </div>
         <!-- Total claims -->
-        <div class="flex flex-col items-center gap-2 md:flex-row">
-          <div class="flex aspect-square size-16 items-center justify-center rounded-full bg-surface-blue p-2">
+        <div class="flex flex-col items-center gap-[21px] md:flex-row">
+          <div class="flex aspect-square size-[75px] items-center justify-center rounded-full bg-surface-blue p-2">
             <Icon name="memo:people" class="size-[34px] text-text-blue" />
           </div>
-          <div class="flex flex-col items-center gap-2 md:items-start">
-            <p class="text-[14px] !text-black/40 dark:!text-white/70">{{ $t("manage.totalClaims") }}</p>
-            <p class="text-[20px] text-black">{{ totalClaims }}</p>
+          <div class="flex flex-col items-center gap-[8px] md:items-start">
+            <p class="text-[14px] leading-[17px] !text-text-secondary">{{ $t("manage.totalClaims") }}</p>
+            <p class="text-[20px] font-medium leading-[26px]">{{ totalClaims }}</p>
           </div>
         </div>
       </div>
@@ -34,9 +36,9 @@
         </dot-button>
       </div>
     </div>
-    <div class="flex w-full flex-wrap justify-center gap-[40px]">
+    <div class="grid grid-cols-1 gap-[40px] md:grid-cols-3 md:justify-start">
       <template v-if="dropsStatus === 'pending' || !accountStore.loaded">
-        <dot-skeleton v-for="i in 4" :key="i" :width="320" :height="400" roundness="lg" />
+        <dot-skeleton v-for="i in 4" :key="i" class="h-[400px] w-[320px] md:w-[370px]" roundness="lg" />
       </template>
       <template v-else-if="drops">
         <manage-drop-card v-for="drop in drops" :key="drop.id" :drop="drop" />

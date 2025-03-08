@@ -69,7 +69,7 @@ const btnClasses = computed(() => {
 
 <style scoped>
 .dot-button {
-  @apply inline-flex items-center justify-center gap-[12px] transition ease-in-out;
+  @apply inline-flex h-fit items-center justify-center gap-[12px] text-nowrap text-[14px] leading-[18px] transition ease-in-out;
 }
 .dot-button .icon {
   @apply ml-2;

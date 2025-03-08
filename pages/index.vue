@@ -21,6 +21,7 @@
           size="large"
           variant="primary"
           :disabled="!networkStatus"
+          rounded
           class="px-10 sm:px-20"
           @click="router.push('/claim')"
         >
@@ -30,6 +31,7 @@
           size="large"
           :variant="networkStatus ? 'secondary' : 'primary'"
           :disabled="!networkStatus"
+          rounded
           class="px-10 sm:px-20"
           :class="{
             'hover:!text-bg-persistent hover:!bg-white': !networkStatus,
