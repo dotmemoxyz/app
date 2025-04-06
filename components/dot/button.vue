@@ -6,6 +6,7 @@
     :type="submit ? 'submit' : 'button'"
     :style="{
       backgroundColor: forceColor ? forceColor : undefined,
+      color: forceColor ? forceColorText : undefined,
     }"
     @click="$emit('click')"
   >
@@ -16,6 +17,8 @@
 
 <script lang="ts" setup>
 import type { BtnSize, BtnVariant } from "./types";
+
+import chroma from "chroma-js";
 
 defineEmits<{
   (e: "click"): void;
@@ -69,6 +72,14 @@ const btnClasses = computed(() => {
   const radius = props.rounded ? "rounded-full" : "rounded-[12px]";
 
   return [baseClasses, size, variant, radius];
+});
+
+const forceColorText = computed(() => {
+  if (props.forceColor) {
+    const contrast = chroma.contrast(props.forceColor, "white");
+    return contrast > 4.5 ? "white" : "black";
+  }
+  return undefined;
 });
 </script>
 
