@@ -18,11 +18,10 @@
         </div>
         <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
       </span>
-      <!-- TODO: Missing code in DTO -->
       <span class="flex items-center gap-4">
-        <!-- <a
+        <a
           class="flex h-fit cursor-pointer select-none items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
-          :href="`/claim/${props.drop.id}`"
+          :href="`/claim/${props.drop.code}`"
           target="_blank"
         >
           <p class="text-[14px]">{{ $t("manage.drop.viewClaimPage") }}</p>
@@ -35,7 +34,7 @@
         >
           <Icon name="mdi:content-copy" class="size-[16px] text-black" />
           <p class="text-[14px]">{{ $t("manage.drop.copyLink") }}</p>
-        </div> -->
+        </div>
       </span>
     </div>
     <!-- Actions -->
@@ -55,13 +54,13 @@
 <script lang="ts" setup>
 import type { Prefix } from "@kodadot1/static";
 import { DateTime, Duration } from "luxon";
-import type { Memo } from "~/types/memo";
+import type { MemoWithCode } from "~/types/memo";
 import { getFreeMints } from "~/utils/sdk/query";
-// import { emojiBlast } from "emoji-blast";
+import { emojiBlast } from "emoji-blast";
 const props = defineProps<{
-  drop: Memo;
+  drop: MemoWithCode;
 }>();
-const { locale, t } = useI18n();
+const { locale } = useI18n();
 // Check if drop is expired
 const isExpired = computed<boolean>(() => {
   const date = DateTime.fromSQL(props.drop.expiresAt);
@@ -117,19 +116,19 @@ watch(
 );
 
 // Copy link
-// const copyLink = () => {
-//   const url = `${window.location.origin}/claim/${props.drop.id}`;
-//   navigator.clipboard.writeText(url);
-//   const element = document.getElementById("copy-link");
-//   if (!element) return;
-//   emojiBlast({
-//     emojiCount: 10,
-//     position() {
-//       return {
-//         x: element.offsetLeft + element.clientWidth / 2,
-//         y: element.offsetTop + element.clientHeight / 2,
-//       };
-//     },
-//   });
-// };
+const copyLink = () => {
+  const url = `${window.location.origin}/claim/${props.drop.code}`;
+  navigator.clipboard.writeText(url);
+  const element = document.getElementById("copy-link");
+  if (!element) return;
+  emojiBlast({
+    emojiCount: 10,
+    position() {
+      return {
+        x: element.offsetLeft + element.clientWidth / 2,
+        y: element.offsetTop + element.clientHeight / 2,
+      };
+    },
+  });
+};
 </script>

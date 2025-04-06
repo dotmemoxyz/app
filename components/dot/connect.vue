@@ -1,6 +1,10 @@
 <template>
   <div
-    class="cursor-pointer rounded-xl border border-border-default px-[16px] py-[14px] hover:border-text-placeholder"
+    class="flex cursor-pointer items-center justify-between rounded-xl border border-border-default px-[16px] py-[14px] hover:border-text-placeholder"
+    :class="{
+      'bg-accent-primary': !accountStore.hasSelectedAccount,
+      'bg-surface-white': accountStore.hasSelectedAccount,
+    }"
     :size="size"
     @click="open"
   >
@@ -12,10 +16,15 @@
         class="rounded-full border border-black"
         size="28"
       />
-      <small class="text-[14px]">{{ accountStore.shortAddress }}</small>
+      <small class="text-[14px] text-text-primary">{{
+        props.long ? accountStore.midAddress : accountStore.shortAddress
+      }}</small>
     </div>
     <small v-else class="text-[14px]">
       {{ $t("common.connect") }}
+    </small>
+    <small v-if="long && accountStore.hasSelectedAccount" class="text-[14px] text-text-secondary">
+      {{ $t("common.change") }}
     </small>
   </div>
 </template>
@@ -28,8 +37,9 @@ import Identicon from "@polkadot/vue-identicon";
 
 const accountStore = useAccountStore();
 
-defineProps<{
+const props = defineProps<{
   size?: "small" | "medium" | "large";
+  long?: boolean;
 }>();
 
 const { open, close } = useModal({

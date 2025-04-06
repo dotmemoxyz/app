@@ -4,6 +4,9 @@
     :disabled="disabled"
     :class="btnClasses"
     :type="submit ? 'submit' : 'button'"
+    :style="{
+      backgroundColor: forceColor ? forceColor : undefined,
+    }"
     @click="$emit('click')"
   >
     <slot class="icon" name="icon" />
@@ -25,11 +28,13 @@ const props = withDefaults(
     size?: BtnSize;
     submit?: boolean;
     rounded?: boolean;
+    forceColor?: string;
   }>(),
   {
     disabled: false,
     variant: "primary",
     size: "medium",
+    forceColor: undefined,
   },
 );
 
@@ -49,7 +54,7 @@ const VARIANT_CLASSES: Record<BtnVariant, string> = {
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
   tertiary: `
-    bg-transparent text-text-primary border border-border-default hover:border-text-placeholder hover:text-text-color-inverse
+    bg-surface-white text-text-primary border border-border-default hover:border-text-placeholder hover:text-text-color-inverse
     disabled:bg-disabled disabled:text-neutral-7 disabled:opacity-50
   `,
 };

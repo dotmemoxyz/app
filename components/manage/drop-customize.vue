@@ -22,7 +22,7 @@
             <b class="text-base font-normal">{{ $t("manage.customize.heading") }}</b>
             <p>0/40</p>
           </div>
-          <dot-text-input :placeholder="$t('common.text')" />
+          <dot-text-input v-model="heading" :placeholder="$t('common.text')" />
         </div>
         <div class="flex flex-col gap-1">
           <div class="flex w-full items-center justify-between">
@@ -32,31 +32,31 @@
             </span>
             <p>0/40</p>
           </div>
-          <dot-text-area :placeholder="$t('common.text')" />
+          <dot-text-area v-model="subheading" :placeholder="$t('common.text')" />
         </div>
         <div class="flex flex-col gap-1">
           <div class="flex w-full items-center justify-between">
             <b class="text-base font-normal">{{ $t("manage.customize.buttonText") }}</b>
             <p>0/40</p>
           </div>
-          <dot-text-input :placeholder="$t('common.claim')" />
+          <dot-text-input v-model="claimText" :placeholder="$t('common.claim')" />
         </div>
       </div>
       <!-- Socials -->
       <div class="flex flex-col gap-4">
         <h2 class="text-xl font-medium">{{ $t("manage.customize.socials") }}</h2>
         <p class="!text-text-secondary">{{ $t("manage.customize.socialsHint") }}</p>
-        <dot-text-input placeholder="Telegram">
+        <dot-text-input v-model="telegramLink" placeholder="Telegram">
           <template #prefix>
             <Icon name="mdi:telegram" class="text-text-primary" />
           </template>
         </dot-text-input>
-        <dot-text-input placeholder="@instagram">
+        <dot-text-input v-model="instagramLink" placeholder="@instagram">
           <template #prefix>
             <Icon name="mdi:instagram" class="text-text-primary" />
           </template>
         </dot-text-input>
-        <dot-text-input placeholder="website.com">
+        <dot-text-input v-model="websiteLink" placeholder="website.com">
           <template #prefix>
             <Icon name="mdi:web" class="text-text-primary" />
           </template>
@@ -80,7 +80,7 @@
           <b class="text-base font-normal !text-text-secondary">21:1</b>
         </div>
       </div>
-      <dot-button>{{ $t("common.saveChanges") }}</dot-button>
+      <dot-button @click="save">{{ $t("common.saveChanges") }}</dot-button>
     </div>
     <!-- Customize preview -->
     <div class="col-span-2 flex flex-col gap-8">
@@ -95,30 +95,34 @@
 </template>
 
 <script lang="ts" setup>
-import type { Memo } from "~/types/memo";
+import type { Memo, MemoCustomize } from "~/types/memo";
 
 defineProps<{
   drop: Memo;
 }>();
 const isCustomPreview = ref(false);
+const imageIPFS = ref<string>();
 const darkMode = ref(false);
 const accentColor = ref("#4ADE80");
+const heading = ref("");
+const subheading = ref("");
+const claimText = ref("");
+const telegramLink = ref("");
+const instagramLink = ref("");
+const websiteLink = ref("");
 
-// const GAMMA = 2.4;
-
-// function luminance(r: number, g: number, b: number) {
-//   const a = [r, g, b].map((v) => {
-//     v /= 255;
-//     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, GAMMA);
-//   });
-//   return a[0] * RED + a[1] * GREEN + a[2] * BLUE;
-// }
-
-// function contrast(rgb1, rgb2) {
-//   const lum1 = luminance(...rgb1);
-//   const lum2 = luminance(...rgb2);
-//   const brightest = Math.max(lum1, lum2);
-//   const darkest = Math.min(lum1, lum2);
-//   return (brightest + 0.05) / (darkest + 0.05);
-// }
+const save = async () => {
+  const payload: MemoCustomize = {
+    image: imageIPFS.value,
+    heading: heading.value,
+    subheading: subheading.value,
+    claimText: claimText.value,
+    telegram: telegramLink.value,
+    instagram: instagramLink.value,
+    website: websiteLink.value,
+    darkMode: darkMode.value,
+    accentColor: accentColor.value,
+  };
+  console.log("Save changes", payload);
+};
 </script>

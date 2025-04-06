@@ -1,6 +1,6 @@
 import { $purify as purify } from "@kodadot1/minipfs";
 import { DateTime } from "luxon";
-import type { MemoDTO, Memo } from "~/types/memo";
+import type { MemoDTO, MemoWithCode } from "~/types/memo";
 const RUNTIME_CONFIG = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
   const { id, chain } = getRouterParams(event);
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     ? rawData.expires_at
     : DateTime.fromISO(rawData.expires_at).toSQL();
 
-  const memo: Memo = {
+  const memo: MemoWithCode = {
     id: rawData.collection,
     chain: rawData.chain,
     name: rawData.name,
@@ -42,6 +42,8 @@ export default defineEventHandler(async (event) => {
     mint: rawData.mint,
     createdAt: rawData.created_at,
     expiresAt: rawData.expires_at,
+    code: rawData.id,
+    customize: rawData.customize ?? {},
   };
   return memo;
 });

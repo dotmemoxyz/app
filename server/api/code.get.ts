@@ -36,6 +36,17 @@ export default defineEventHandler(async (event) => {
     mint: rawData.mint,
     createdAt: rawData.created_at,
     expiresAt: rawData.expires_at,
+    customize: rawData.customize ?? {
+      heading: "Test heading",
+      subheading: "Lorem ipsum dolor sit amet consectetur. In suspendisse justo diam arcu in tellus.",
+      claimText: "Claim your test MEMO",
+      telegram: "https://t.me/kodadot",
+      instagram: "https://instagram.com/kodadot",
+      website: "https://kodadot.xyz",
+      accentColor: "#FF9900",
+      darkMode: true,
+      image: "https://kodadot.xyz/images/logo.png",
+    },
   };
 
   return memo;

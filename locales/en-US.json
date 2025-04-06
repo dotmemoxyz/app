@@ -13,6 +13,7 @@
     "calculating": "Calculating...",
     "signing": "Signing...",
     "connect": "Connect",
+    "connectedAccount": "Connected account",
     "download": "Download",
     "disconnect": "Disconnect",
     "back": "Back",
@@ -22,7 +23,8 @@
     "timeAgo": "{time} ago",
     "optional": "Optional",
     "text": "Text",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "change": "Change"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -64,7 +66,7 @@
     "claiming": "Claiming MEMO...",
     "claim": "Claim MEMO",
     "loading": "Loading info...",
-    "remaining": "Remaining claims: {free} / {total}"
+    "remaining": "{free} / {total} remaining"
   },
   "create": {
     "title": ".create",
