@@ -28,12 +28,42 @@
     <!-- Metadata -->
     <div
       v-if="status === 'success' && data"
-      class="flex w-full items-center justify-between rounded-[12px] bg-surface-card p-[16px]"
+      class="flex w-full items-center justify-center rounded-[12px] bg-surface-card p-[16px] md:justify-between"
     >
-      <p class="text-[14px] font-normal !text-text-secondary">
-        {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_MED) }} -
-        {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
-      </p>
+      <span class="hidden items-center gap-2 md:flex">
+        <p class="text-[14px] font-normal !text-text-secondary">
+          {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_MED) }} -
+          {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
+        </p>
+        <p class="text-[14px] font-normal !text-text-placeholder">
+          {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+        </p>
+      </span>
+      <span class="flex flex-col gap-2 md:hidden">
+        <span class="flex gap-2">
+          <p class="text-[14px] font-normal !text-text-secondary">
+            {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_MED) }}
+          </p>
+
+          <p class="text-[14px] font-normal !text-text-placeholder">
+            {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+          </p>
+        </span>
+        <Icon name="mdi:chevron-down" class="self-center text-text-placeholder" size="16" />
+        <span class="flex gap-2">
+          <p class="text-[14px] font-normal !text-text-secondary">
+            {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
+          </p>
+          <p class="text-[14px] font-normal !text-text-placeholder">
+            {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+          </p>
+        </span>
+      </span>
+    </div>
+    <div
+      v-if="status === 'success' && data"
+      class="flex w-full items-center justify-center rounded-[12px] bg-surface-card p-[16px] md:hidden"
+    >
       <p class="text-[14px] font-normal !text-text-secondary">
         {{
           $t("claim.remaining", {
