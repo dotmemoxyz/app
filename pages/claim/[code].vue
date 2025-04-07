@@ -88,33 +88,33 @@
         v-if="data?.customize?.telegram"
         :href="data.customize.telegram"
         target="_blank"
-        class="flex items-center gap-[13px] px-[14px]"
+        class="flex items-center gap-[6px] px-[14px]"
         rel="noopener noreferrer"
       >
-        <icon name="mdi:telegram" size="16" class="mr-2 text-text-primary" />
-        <p>{{ data.customize.telegram }}</p>
+        <icon name="mdi:telegram" size="16" class="text-text-primary" />
+        <p>@{{ data.customize.telegram.split("/").pop() }}</p>
       </a>
       <!-- Instagram -->
       <a
         v-if="data?.customize?.instagram"
         :href="data.customize.instagram"
         target="_blank"
-        class="flex items-center gap-[13px] px-[14px]"
+        class="flex items-center gap-[6px] px-[14px]"
         rel="noopener noreferrer"
       >
-        <icon name="mdi:instagram" size="16" class="mr-2 text-text-primary" />
-        <p>{{ data.customize.instagram }}</p>
+        <icon name="mdi:instagram" size="16" class="text-text-primary" />
+        <p>@{{ data.customize.instagram.split("/").pop() }}</p>
       </a>
       <!-- Website -->
       <a
         v-if="data?.customize?.website"
         :href="data.customize.website"
         target="_blank"
-        class="flex items-center gap-[13px] px-[14px]"
+        class="flex items-center gap-[6px] px-[14px]"
         rel="noopener noreferrer"
       >
-        <icon name="mdi:web" size="16" class="mr-2 text-text-primary" />
-        <p>{{ data.customize.website }}</p>
+        <icon name="mdi:web" size="16" class="text-text-primary" />
+        <p>{{ formatWeb(data.customize.website) }}</p>
       </a>
     </div>
     <!-- Interaction -->
@@ -385,4 +385,9 @@ watch(
     immediate: true,
   },
 );
+
+const formatWeb = (url: string) => {
+  const { hostname } = new URL(url);
+  return hostname.replace("www.", "");
+};
 </script>
