@@ -10,7 +10,7 @@
 
     <label :for="imageInputId">
       <div
-        class="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border-2 border-dashed border-background-color-inverse hover:border-background-color-inverse hover:shadow-background-color-inverse"
+        class="border-background-color-inverse hover:border-background-color-inverse hover:shadow-background-color-inverse group relative aspect-square cursor-pointer overflow-hidden rounded-lg border-2 border-dashed"
       >
         <div class="absolute inset-0 flex flex-col items-center justify-center">
           <template v-if="previewImageSrc">
@@ -23,7 +23,7 @@
             <div
               class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 backdrop-blur-lg transition-opacity group-hover:opacity-100"
             >
-              <h1 class="px-4 text-center text-k-primary">{{ t("create.image.chooseDifferent") }}</h1>
+              <h1 class="px-4 text-center text-accent-primary">{{ t("create.image.chooseDifferent") }}</h1>
             </div>
           </template>
 

@@ -44,6 +44,8 @@ export default defineNuxtConfig({
     },
   },
   colorMode: {
+    preference: "system",
+    fallback: "light",
     storage: "localStorage",
     storageKey: "color-mode",
   },
@@ -89,15 +91,25 @@ export default defineNuxtConfig({
     },
     devOptions: {
       // Enable for development testing
-      enabled: true,
+      // enabled: true,
     },
   },
 
   icon: {
     clientBundle: {
       scan: true,
+      includeCustomCollections: true,
+      sizeLimitKb: 1024,
     },
     serverBundle: "local",
+    customCollections: [
+      {
+        prefix: "memo",
+        dir: "./assets/icons",
+        width: 24,
+        height: 24,
+      },
+    ],
   },
 
   googleFonts: {
