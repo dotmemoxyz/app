@@ -26,7 +26,7 @@ export type IWalletConfigMap = Partial<Record<SupportWalletExtension, WalletConf
 
 export const WalletExtensionProxyMap = {
   [SupportWalletExtension.Math]: SupportWalletExtension.PolkadotJs, // mathwallet
-  [SupportWalletExtension.Nova]: SupportWalletExtension.PolkadotJs, // nova
+  // [SupportWalletExtension.Nova]: SupportWalletExtension.PolkadotJs, // nova
 } as Record<SupportWalletExtension, SupportWalletExtension | undefined>;
 
 export type SubscriptionFn = (accounts: WalletAccount[] | undefined) => void | Promise<void>;
