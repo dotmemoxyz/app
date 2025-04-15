@@ -346,6 +346,7 @@
     },
     "customize": {
       "title": "Claim page image",
+      "titleHint": "This image will be shown on the claim page. After claiming, users will receive your memo NFT with its own unique image.",
       "customPreviewImage": "Use custom preview image",
       "customPreviewImageHint": "Upload a different image for the claim page",
       "textContent": "Text Content",

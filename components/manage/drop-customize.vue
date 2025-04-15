@@ -4,40 +4,56 @@
     <div class="flex w-full flex-col justify-center gap-8 md:w-auto">
       <!-- Custom image -->
       <div class="flex flex-col gap-4">
-        <h2 class="text-xl font-medium">{{ $t("manage.customize.title") }}</h2>
+        <span class="flex items-center gap-2">
+          <h2 class="text-xl font-medium">
+            {{ $t("manage.customize.title") }}
+          </h2>
+          <div
+            class="group relative flex h-[20px] w-[20px] cursor-default items-center justify-center rounded-full border-2 border-text-secondary px-2"
+          >
+            <span class="text-[12px] text-text-secondary">?</span>
+            <span
+              class="pointer-events-none absolute bottom-5 right-0 z-50 mt-2 w-64 rounded-lg border border-border-default bg-surface-card px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            >
+              {{ $t("manage.customize.titleHint") }}
+            </span>
+          </div>
+        </span>
 
         <div class="flex flex-col">
           <div class="flex w-full items-center justify-between">
             <b class="text-base font-normal">{{ $t("manage.customize.customPreviewImage") }}</b>
             <dot-switch v-model="isCustomPreview" />
           </div>
-          <p class="w-2/3 !text-text-secondary">{{ $t("manage.customize.customPreviewImageHint") }}</p>
+          <p class="!text-sm !font-normal !text-text-secondary">
+            {{ $t("manage.customize.customPreviewImageHint") }}
+          </p>
         </div>
       </div>
       <!-- Text content -->
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-[42px]">
         <h2 class="text-xl font-medium">{{ $t("manage.customize.textContent") }}</h2>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-[16px]">
           <div class="flex w-full items-center justify-between">
-            <b class="text-base font-normal">{{ $t("manage.customize.heading") }}</b>
-            <p>0/40</p>
+            <b class="text-base !font-normal">{{ $t("manage.customize.heading") }}</b>
+            <p class="text-xs font-normal">{{ heading.length }}/40</p>
           </div>
           <dot-text-input v-model="heading" :placeholder="$t('common.text')" />
         </div>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-[16px]">
           <div class="flex w-full items-center justify-between">
             <span class="flex items-center gap-2">
-              <b class="text-base font-normal">{{ $t("manage.customize.subheading") }}</b>
-              <p class="!text-text-secondary">({{ $t("common.optional") }})</p>
+              <b class="text-base !font-normal">{{ $t("manage.customize.subheading") }}</b>
+              <p class="text-xs !font-normal !text-text-secondary">({{ $t("common.optional") }})</p>
             </span>
-            <p>0/40</p>
+            <p class="text-xs font-normal">{{ subheading.length }}/40</p>
           </div>
           <dot-text-area v-model="subheading" :placeholder="$t('common.text')" />
         </div>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-[16px]">
           <div class="flex w-full items-center justify-between">
-            <b class="text-base font-normal">{{ $t("manage.customize.buttonText") }}</b>
-            <p>0/40</p>
+            <b class="text-base !font-normal">{{ $t("manage.customize.buttonText") }}</b>
+            <p class="text-xs font-normal">{{ claimText.length }}/40</p>
           </div>
           <dot-text-input v-model="claimText" :placeholder="$t('common.claim')" />
         </div>
@@ -112,7 +128,7 @@ const instagramLink = ref("");
 const websiteLink = ref("");
 
 const save = async () => {
-  const payload: MemoCustomize = {
+  const _payload: MemoCustomize = {
     image: imageIPFS.value,
     heading: heading.value,
     subheading: subheading.value,
@@ -123,6 +139,5 @@ const save = async () => {
     darkMode: darkMode.value,
     accentColor: accentColor.value,
   };
-  console.log("Save changes", payload);
 };
 </script>

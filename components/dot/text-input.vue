@@ -59,6 +59,6 @@ const inputClasses = computed(() => {
   if (props.error) {
     return "placeholder:text-red";
   }
-  return "placeholder:text-text-primary/60";
+  return "placeholder:text-placeholder";
 });
 </script>

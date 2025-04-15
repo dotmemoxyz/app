@@ -8,7 +8,7 @@
         ref="textarea"
         v-model="model"
         :placeholder="placeholder"
-        :class="inputClasses"
+        :class="[inputClasses, props.placeholderClass]"
         :maxlength="limit"
         class="min-h-20 min-w-0 flex-1 resize-y bg-transparent p-3 placeholder:text-text-placeholder focus:outline-none focus:ring-0"
       />
@@ -16,7 +16,7 @@
         {{ model?.length ?? 0 }} / {{ limit }}
       </span>
     </span>
-    <span class="text-red mt-0.5 text-xs font-semibold">
+    <span v-if="error" class="text-red mt-0.5 text-xs font-semibold">
       {{ error ?? "&nbsp;" }}
     </span>
   </div>
@@ -24,6 +24,7 @@
 
 <script lang="ts" setup>
 import { useTextareaAutosize } from "@vueuse/core";
+import type { ClassOptions } from "~/types/components";
 
 const { textarea } = useTextareaAutosize();
 
@@ -31,6 +32,7 @@ const model = defineModel<string>();
 
 const props = defineProps<{
   placeholder?: string;
+  placeholderClass?: ClassOptions;
   error?: string;
   limit?: number;
 }>();
@@ -46,6 +48,6 @@ const inputClasses = computed(() => {
   if (props.error) {
     return "placeholder:text-red";
   }
-  return "placeholder:text-text-primary/60";
+  return "placeholder:text-placeholder";
 });
 </script>
