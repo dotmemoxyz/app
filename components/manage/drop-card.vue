@@ -74,7 +74,7 @@ import { getFreeMints } from "~/utils/sdk/query";
 const props = defineProps<{
   drop: Memo;
 }>();
-const { locale, t } = useI18n();
+const { locale } = useI18n();
 
 // Starts in
 const startsIn = computed<string | null>(() => {
@@ -107,7 +107,8 @@ const isExpired = computed<boolean>(() => {
 
 const remainingTime = computed<string>(() => {
   if (isExpired.value) {
-    return t("manage.drop.expired");
+    // Return end date
+    return DateTime.fromSQL(props.drop.expiresAt).toFormat("dd.MM.yyyy");
   }
   const date = DateTime.fromSQL(props.drop.expiresAt);
   const now = DateTime.now();

@@ -3,7 +3,7 @@
     <div class="w-full">
       <dot-button variant="secondary" @click="navigateTo('/manage?chain=' + data?.chain)">
         <template #icon>
-          <Icon name="mdi:arrow-left" class="size-[20px] text-black" />
+          <Icon name="mdi:arrow-left" class="size-[20px] text-text-primary" />
         </template>
         {{ $t("manage.drop.backToDrops") }}
       </dot-button>
@@ -14,7 +14,7 @@
       <p>{{ error }}</p>
     </div>
     <!-- Tabs -->
-    <div class="flex w-fit gap-[6px] rounded-[18px] bg-surface-card p-2">
+    <div class="flex w-fit gap-[6px] rounded-[18px] bg-surface-card p-[6px]">
       <div
         v-for="tab in TABS"
         :key="tab.key"

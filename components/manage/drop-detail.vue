@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full justify-between gap-8 rounded-xl bg-surface-card p-[32px]">
+  <div class="flex w-full justify-between gap-8 rounded-[24px] bg-surface-card p-[32px]">
     <!-- Image -->
     <div
       class="size-[165px] min-h-[165px] min-w-[165px] overflow-hidden rounded-full border-[6px] border-white bg-white"
@@ -10,8 +10,8 @@
     <div class="flex flex-1 flex-col justify-between py-4">
       <h2 class="text-[24px]">{{ props.drop.name }}</h2>
       <span class="flex items-center gap-8">
-        <div v-if="isExpired" class="flex items-center justify-center rounded-full bg-[#c5c4c4] px-4 py-2">
-          <p class="text-[14px] !text-[#898989]">{{ $t("manage.drop.inactive") }}</p>
+        <div v-if="isExpired" class="flex w-[88px] items-center justify-center rounded-full bg-border-default p-[5px]">
+          <p class="text-[14px] !text-text-placeholder">{{ $t("manage.drop.inactive") }}</p>
         </div>
         <div v-else class="flex items-center justify-center rounded-full bg-accent-primary-light p-2">
           <p class="text-[14px] !text-accent-primary-dark">{{ $t("manage.drop.active") }}</p>
@@ -24,16 +24,16 @@
           :href="`/claim/${props.drop.code}`"
           target="_blank"
         >
-          <p class="text-[14px]">{{ $t("manage.drop.viewClaimPage") }}</p>
-          <Icon name="mdi:arrow-top-right" class="size-[16px] text-black" />
+          <p class="text-[14px] !text-black">{{ $t("manage.drop.viewClaimPage") }}</p>
+          <Icon name="mdi:arrow-top-right" class="size-[16px] !text-black" />
         </a>
         <div
           id="copy-link"
           class="flex h-fit cursor-pointer select-none items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
           @click="copyLink"
         >
-          <Icon name="mdi:content-copy" class="size-[16px] text-black" />
-          <p class="text-[14px]">{{ $t("manage.drop.copyLink") }}</p>
+          <Icon name="mdi:content-copy" class="size-[16px] !text-black" />
+          <p class="text-[14px] !text-black">{{ $t("manage.drop.copyLink") }}</p>
         </div>
       </span>
     </div>
