@@ -229,7 +229,14 @@ watch(
 );
 
 const allClaimed = computed(() => remaining.value === 0);
-const tooLate = computed(() => data.value && DateTime.now() > DateTime.fromSQL(data.value.expiresAt));
+const tooLate = computed(() => {
+  if (!data.value) return false;
+  const serverDate = DateTime.fromSQL(data.value.createdAt).endOf("day");
+  const localDate = DateTime.now().startOf("day");
+  // Diff only in days, ignore hours, minutes, seconds
+  const diff = serverDate.diff(localDate, ["days"]).toObject();
+  return diff.days && diff.days < 0;
+});
 
 const claimFailed = ref(false);
 const claimed = ref<null | string>(null);
