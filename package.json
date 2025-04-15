@@ -30,6 +30,7 @@
     "@polkadot/types-codec": "^13.1.1",
     "@polkadot/util-crypto": "^13.1.1",
     "@polkadot/vue-identicon": "^3.10.1",
+    "@types/vue-select": "^3.16.8",
     "@vee-validate/zod": "^4.13.2",
     "@vite-pwa/nuxt": "0.10.6",
     "@vue-final-modal/nuxt": "^1.0.3",
@@ -50,6 +51,8 @@
     "vue": "^3.4.27",
     "vue-final-modal": "^4.5.4",
     "vue-router": "^4.3.2",
+    "vue-select": "^3.20.4",
+    "vue3-select-component": "^0.11.6",
     "zod": "^3.23.8"
   },
   "lint-staged": {
