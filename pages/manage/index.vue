@@ -1,7 +1,9 @@
 <template>
-  <div class="flex h-full w-full flex-col gap-8 py-10">
-    <h1 class="text-center text-[40px] !text-black md:text-left dark:!text-white">{{ $t("manage.title") }}</h1>
-    <div class="flex w-full flex-wrap justify-between gap-8">
+  <div class="flex h-full w-full flex-col py-[113px]">
+    <h1 class="mb-[7px] text-center text-[40px] !text-black md:text-left dark:!text-white">
+      {{ $t("manage.title") }}
+    </h1>
+    <div class="my-[35px] flex w-full flex-wrap justify-between gap-8">
       <!-- Statistics -->
       <div class="flex w-full justify-evenly gap-4 md:w-auto">
         <!-- Active drops -->
@@ -29,14 +31,15 @@
       </div>
       <div class="flex w-full justify-center gap-2 md:w-auto">
         <!-- Chain select -->
-        <dot-select v-model="urlParams.chain" class="w-[250px]" :options="chainList" />
         <dot-button variant="tertiary" @click="navigateTo('/create')">
           <span class="hidden md:block">{{ $t("manage.createDrop") }}</span>
           <Icon name="mdi:plus" size="24" class="md:hidden" />
         </dot-button>
       </div>
     </div>
-    <div class="grid grid-cols-1 gap-[40px] md:grid-cols-3 md:justify-start">
+    <hr class="my-[29px]" />
+    <dot-select v-model="urlParams.chain" class="w-[250px]" :options="chainList" />
+    <div class="mt-[35px] grid grid-cols-1 gap-[40px] md:grid-cols-3 md:justify-start">
       <template v-if="dropsStatus === 'pending' || !accountStore.loaded">
         <dot-skeleton v-for="i in 4" :key="i" class="h-[530px] w-[320px] md:w-[370px]" roundness="lg" />
       </template>
