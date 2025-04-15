@@ -100,8 +100,8 @@
     </div>
     <!-- Customize preview -->
     <div class="col-span-2 flex flex-col gap-8">
-      <div class="flex flex-col gap-4">
-        <div class="flex justify-between">
+      <div class="flex flex-col items-center gap-4">
+        <div class="flex w-[450px] justify-between">
           <h2 class="text-xl font-medium">{{ $t("manage.customize.preview") }}</h2>
           <p class="text-base font-normal !text-text-secondary">{{ $t("manage.customize.previewHint") }}</p>
         </div>
