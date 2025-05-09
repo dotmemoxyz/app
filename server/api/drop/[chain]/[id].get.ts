@@ -1,16 +1,15 @@
 import { $purify as purify } from "@kodadot1/minipfs";
-import type { MemoWithCode, MemoDTO } from "~/types/memo";
-
+import { DateTime } from "luxon";
+import type { MemoDTO, MemoWithCode } from "~/types/memo";
 const RUNTIME_CONFIG = useRuntimeConfig();
-
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);
-
-  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/${query.code}`)
+  const { id, chain } = getRouterParams(event);
+  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/detail/${chain}/${id}`)
     .then((r) => [r, null])
     .catch((r) => [null, r]);
 
   if (err) {
+    console.error(err);
     throw new Error("An unknown error has occoured");
   }
 
@@ -26,28 +25,25 @@ export default defineEventHandler(async (event) => {
     throw new Error("Image not found");
   }
 
+  // Unify Dates to SQL
+  rawData.created_at = DateTime.fromSQL(rawData.created_at).isValid
+    ? rawData.created_at
+    : DateTime.fromISO(rawData.created_at).toSQL();
+  rawData.expires_at = DateTime.fromSQL(rawData.expires_at).isValid
+    ? rawData.expires_at
+    : DateTime.fromISO(rawData.expires_at).toSQL();
+
   const memo: MemoWithCode = {
-    code: rawData.id,
-    chain: rawData.chain,
     id: rawData.collection,
+    chain: rawData.chain,
     name: rawData.name,
     description: rawData.description,
     image,
     mint: rawData.mint,
     createdAt: rawData.created_at,
     expiresAt: rawData.expires_at,
-    customize: rawData.customize ?? {
-      heading: "Test heading",
-      subheading: "Lorem ipsum dolor sit amet consectetur. In suspendisse justo diam arcu in tellus.",
-      claimText: "Claim your test MEMO",
-      telegram: "https://t.me/kodadot",
-      instagram: "https://instagram.com/kodadot",
-      website: "https://kodadot.xyz",
-      accentColor: "#FF9900",
-      darkMode: true,
-      image: "https://kodadot.xyz/images/logo.png",
-    },
+    code: rawData.id,
+    customize: rawData.customize ?? {},
   };
-
   return memo;
 });
