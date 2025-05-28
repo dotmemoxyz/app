@@ -41,6 +41,9 @@
           }}
         </small>
       </div>
+      <div v-if="apiError" class="flex w-full justify-center">
+        <small class="text-red-500 dark:text-white">{{ apiError }}</small>
+      </div>
     </template>
 
     <div v-if="!error" class="flex flex-col space-y-3 self-stretch">
@@ -209,17 +212,24 @@ const minted = ref(0);
 const remaining = ref(0);
 const { apiInstanceByPrefix } = useApi(toRef<Prefix>("ahp"));
 const loadingLimitInfo = ref(true);
+const apiError = ref<string | null>(null);
 watch(
   data,
   async (data) => {
     if (data) {
       loadingLimitInfo.value = true;
-      const api = await apiInstanceByPrefix(data.chain);
-      const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.collection);
-      maxMints.value = maxTokens;
-      minted.value = mintedTokens;
-      remaining.value = remainingMints;
-      loadingLimitInfo.value = false;
+      try {
+        const api = await apiInstanceByPrefix(data.chain);
+        const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.collection);
+        maxMints.value = maxTokens;
+        minted.value = mintedTokens;
+        remaining.value = remainingMints;
+        loadingLimitInfo.value = false;
+      } catch (error) {
+        console.error("Error fetching minting limits:", error);
+        apiError.value = "Failed to load minting limits. Please try again later.";
+        loadingLimitInfo.value = false;
+      }
     }
   },
   {

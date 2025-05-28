@@ -190,7 +190,7 @@ watch(status, async (status) => {
     isSigning.value = false;
   }
   // Save transaction data
-  if (status === TransactionStatus.Finalized) {
+  if (status === TransactionStatus.Finalized && !signError.value && !txError.value) {
     try {
       const _data = await $fetch("/api/create", {
         method: "POST",
