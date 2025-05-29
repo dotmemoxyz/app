@@ -31,7 +31,7 @@
           {{ data.description }}
         </p>
       </div>
-      <div class="flex w-full justify-center">
+      <div v-if="maxMints !== null" class="flex w-full justify-center">
         <small class="text-gray-400 dark:text-white">
           {{
             $t("claim.remaining", {
@@ -207,9 +207,9 @@ const { data, status, error } = await useFetch("/api/code", {
   watch: false,
 });
 // Minting info
-const maxMints = ref(0);
+const maxMints = ref<number | null>(0);
 const minted = ref(0);
-const remaining = ref(0);
+const remaining = ref<number | null>(0);
 const { apiInstanceByPrefix } = useApi(toRef<Prefix>("ahp"));
 const loadingLimitInfo = ref(true);
 const apiError = ref<string | null>(null);
