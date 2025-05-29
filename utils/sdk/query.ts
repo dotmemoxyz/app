@@ -24,18 +24,18 @@ export async function getFreeMints(api: ApiPromise, collectionId: string) {
     const config = configInfo.unwrap();
 
     // Get max tokens
-    const maxTokens = new BN(config.maxSupply.toString());
+    const maxTokens = config.maxSupply.isSome ? new BN(config.maxSupply.toString()) : null;
 
     // Get minted tokens
     const mintedTokens = new BN(collection.items.toString());
 
     // Calculate remaining mints
-    const remainingMints = maxTokens.sub(mintedTokens);
+    const remainingMints = maxTokens?.sub(mintedTokens) ?? null;
 
     return {
-      maxTokens: maxTokens.toNumber(),
+      maxTokens: maxTokens?.toNumber() ?? null,
       mintedTokens: mintedTokens.toNumber(),
-      remainingMints: remainingMints.toNumber(),
+      remainingMints: remainingMints?.toNumber() ?? null,
     };
   } else {
     throw new Error("Collection not found");
