@@ -38,13 +38,16 @@
       </div>
     </div>
     <hr class="my-[29px]" />
-    <dot-select v-model="urlParams.chain" class="w-[250px]" :options="chainList" />
+    <div class="flex gap-[16px]">
+      <dot-select v-model="filter" class="!w-fit" :options="FILTER_OPTIONS" />
+      <dot-select v-model="urlParams.chain" class="!w-fit" :options="chainList" />
+    </div>
     <div class="mt-[35px] grid grid-cols-1 gap-[40px] md:grid-cols-3 md:justify-start">
       <template v-if="dropsStatus === 'pending' || !accountStore.loaded">
         <dot-skeleton v-for="i in 4" :key="i" class="h-[530px] w-full" roundness="lg" />
       </template>
-      <template v-else-if="drops">
-        <manage-drop-card v-for="drop in drops" :key="drop.id" :drop="drop" />
+      <template v-else-if="filteredDrops">
+        <manage-drop-card v-for="drop in filteredDrops" :key="drop.id" :drop="drop" />
       </template>
       <p v-else-if="dropsError">{{ dropsError }}</p>
     </div>
@@ -69,6 +72,16 @@ const urlParams = useUrlSearchParams<{
     chain: "ahp",
   },
 });
+
+type FilterOptions = "all" | "active" | "inactive";
+
+const FILTER_OPTIONS: Option[] = [
+  { text: "Show All", value: "all", info: "Show all drops" },
+  { text: "Show Active", value: "active", info: "Show active drops" },
+  { text: "Show Inactive", value: "inactive", info: "Show inactive drops" },
+];
+
+const filter = ref<FilterOptions>("all");
 
 const selectedAccount = computed(() => accountStore.selected);
 
@@ -123,6 +136,26 @@ const {
     immediate: true,
   },
 );
+
+const filteredDrops = computed(() => {
+  if (!drops.value) {
+    return [];
+  }
+  if (filter.value === "all") {
+    return drops.value;
+  }
+  const now = DateTime.now();
+  return drops.value.filter((drop) => {
+    const createdAt = DateTime.fromSQL(drop.createdAt);
+    const expiredAt = DateTime.fromSQL(drop.expiresAt);
+    if (filter.value === "active") {
+      return createdAt < now && expiredAt > now;
+    } else if (filter.value === "inactive") {
+      return expiredAt <= now;
+    }
+    return true; // Fallback to all if no filter matches
+  });
+});
 
 const totalActiveDrops = computed(() => {
   if (!drops.value) {
