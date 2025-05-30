@@ -173,9 +173,9 @@ debouncedWatch(
   async () => {
     await refresh();
     if (loadCodeError.value && loadCodeError.value.statusCode !== 404) {
-      existingCodeError.value = "Checking existence error!";
+      existingCodeError.value = t("create.existenceError");
     } else if (status.value === "success") {
-      existingCodeError.value = "Code already exists!";
+      existingCodeError.value = t("create.alreadyExists");
     } else {
       existingCodeError.value = "";
     }

@@ -49,9 +49,14 @@
       <template v-else-if="filteredDrops.length > 0">
         <manage-drop-card v-for="drop in filteredDrops" :key="drop.id" :drop="drop" />
       </template>
-      <p v-else-if="dropsError">{{ dropsError }}</p>
     </div>
-    <div v-if="dropsStatus === 'success' && filteredDrops.length === 0" class="flex w-full items-center justify-center">
+    <div v-if="dropsError" class="flex w-full items-center justify-center">
+      <p class="!text-red-500">{{ $t("manage.dropsError") }}</p>
+    </div>
+    <div
+      v-else-if="dropsStatus === 'success' && filteredDrops.length === 0"
+      class="flex w-full items-center justify-center"
+    >
       <p class="text-center text-lg">{{ $t("manage.noDrops") }}</p>
     </div>
   </div>

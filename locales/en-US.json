@@ -71,6 +71,8 @@
   },
   "create": {
     "title": ".create",
+    "existenceError": "Checking for uniqueness failed. Please contact support or try again later.",
+    "alreadyExists": "This code is already being used",
     "memo": {
       "chain": "Chain",
       "name": "Name",
@@ -314,6 +316,7 @@
     "totalClaims": "Total Claims",
     "createDrop": "+ Create MEMO",
     "noDrops": "You have no MEMOs on this network.",
+    "dropsError": "There was an error loading drops. Please contact our support or try again later.",
     "drop": {
       "active": "Active",
       "inactive": "Expired",
