@@ -89,7 +89,7 @@ export default defineNuxtConfig({
     },
     devOptions: {
       // Enable for development testing
-      enabled: true,
+      // enabled: true,
     },
   },
 

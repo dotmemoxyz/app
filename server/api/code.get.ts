@@ -1,8 +1,17 @@
-import { $purify as purify } from "@kodadot1/minipfs";
-import type { Memo, MemoDTO } from "~/types/memo";
+import { $purify as purify, $obtain as obtain } from "@kodadot1/minipfs";
+import type { MemoDTO, Memo } from "~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
+type Metadata = {
+  name: string;
+  image: string;
+  banner: string;
+  kind: string;
+  description: string;
+  external_url: string;
+  type: string;
+};
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
@@ -26,12 +35,17 @@ export default defineEventHandler(async (event) => {
     throw new Error("Image not found");
   }
 
+  const meta = await obtain<Metadata>(rawData.mint);
+  if (!meta) {
+    throw new Error("Metadata not found");
+  }
+
   const memo: Memo = {
     id: rawData.id,
     chain: rawData.chain,
     collection: rawData.collection,
     name: rawData.name,
-    description: rawData.description,
+    description: meta.description,
     image,
     mint: rawData.mint,
     createdAt: rawData.created_at,

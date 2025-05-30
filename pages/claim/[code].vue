@@ -27,7 +27,7 @@
       </div>
       <div v-if="data.description" class="flex items-center gap-2">
         <Icon name="mdi:text" size="24" class="text-k-primary" />
-        <p>
+        <p class="text-center">
           {{ data.description }}
         </p>
       </div>
