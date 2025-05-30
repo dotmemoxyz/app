@@ -11,10 +11,10 @@
       <h2 class="text-[24px]">{{ props.drop.name }}</h2>
       <span class="flex items-center gap-8">
         <div v-if="isExpired" class="flex w-[88px] items-center justify-center rounded-full bg-border-default p-[5px]">
-          <p class="text-[14px] !text-text-placeholder">{{ $t("manage.drop.inactive") }}</p>
+          <p class="text-[14px] leading-[17px] !text-text-placeholder">{{ $t("manage.drop.inactive") }}</p>
         </div>
-        <div v-else class="flex items-center justify-center rounded-full bg-accent-primary-light p-2">
-          <p class="text-[14px] !text-accent-primary-dark">{{ $t("manage.drop.active") }}</p>
+        <div v-else class="flex w-[80px] items-center justify-center rounded-full bg-accent-primary-light p-[5px]">
+          <p class="text-[14px] leading-[17px] !text-accent-primary-dark">{{ $t("manage.drop.active") }}</p>
         </div>
         <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
       </span>
@@ -52,10 +52,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { Prefix } from "@kodadot1/static";
 import { DateTime, Duration } from "luxon";
 import type { MemoWithCode } from "~/types/memo";
-import { getFreeMints } from "~/utils/sdk/query";
 import { emojiBlast } from "emoji-blast";
 const props = defineProps<{
   drop: MemoWithCode;
@@ -89,31 +87,6 @@ const remainingTime = computed<string>(() => {
     return Duration.fromObject({ seconds: diff.seconds }, { locale: locale.value }).toHuman();
   }
 });
-
-// Minting info
-const maxMints = ref(0);
-const minted = ref(0);
-const remaining = ref(0);
-const { apiInstanceByPrefix } = useApi(toRef<Prefix>("ahp"));
-const loadingLimitInfo = ref(true);
-watch(
-  props.drop,
-  async (data) => {
-    if (data) {
-      loadingLimitInfo.value = true;
-      const api = await apiInstanceByPrefix(data.chain);
-      const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.id);
-      maxMints.value = maxTokens;
-      minted.value = mintedTokens;
-      remaining.value = remainingMints;
-      loadingLimitInfo.value = false;
-    }
-  },
-  {
-    immediate: true,
-    deep: true,
-  },
-);
 
 // Copy link
 const copyLink = () => {
