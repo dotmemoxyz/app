@@ -24,6 +24,7 @@
     <!-- Image -->
     <div class="flex flex-col items-center gap-[32px]">
       <div
+        :style="`view-transition-name: drop-${props.drop.id}`"
         class="aspect-square max-h-[210px] min-h-[210px] min-w-[210px] max-w-[210px] overflow-hidden rounded-full border-[6px] border-surface-white bg-surface-white"
       >
         <img :src="props.drop.image" class="h-full rounded-full" />
@@ -55,13 +56,13 @@
           />
         </div>
       </div>
-      <div
+      <a
         class="flex max-h-[45px] w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white px-[14px] py-[16px] hover:opacity-70"
-        @click="navigateTo(`/manage/${props.drop.chain}/${props.drop.id}`)"
+        :href="`/manage/${props.drop.chain}/${props.drop.id}`"
       >
         <p class="text-[14px] font-normal leading-[18px]">{{ $t("manage.drop.manageDrop") }}</p>
         <Icon name="mdi:arrow-right" class="size-[20px] text-text-primary" />
-      </div>
+      </a>
     </div>
   </div>
 </template>

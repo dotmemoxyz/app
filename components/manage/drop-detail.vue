@@ -2,6 +2,7 @@
   <div class="flex w-full justify-between gap-8 rounded-[24px] bg-surface-card p-[32px]">
     <!-- Image -->
     <div
+      :style="`view-transition-name: drop-${props.drop.id}`"
       class="size-[165px] min-h-[165px] min-w-[165px] overflow-hidden rounded-full border-[6px] border-white bg-white"
     >
       <img :src="props.drop.image" class="h-full rounded-full" />
