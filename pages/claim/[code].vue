@@ -59,7 +59,7 @@
           </p>
         </span>
       </span>
-      <p class="hidden text-[14px] font-normal !text-text-secondary md:block">
+      <p v-if="maxMints !== null" class="hidden text-[14px] font-normal !text-text-secondary md:block">
         {{
           $t("claim.remaining", {
             free: remaining,

@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
     throw new Error("Image not found");
   }
 
-  const meta = await obtain<Metadata>(rawData?.mint);
+  const meta = await obtain<Metadata>(rawData.mint);
   if (!meta) {
     throw new Error("Metadata not found");
   }
