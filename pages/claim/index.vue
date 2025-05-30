@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto flex max-w-xl flex-col items-center gap-y-[40px] p-4">
+  <div class="mx-auto flex max-w-xl flex-col items-center gap-y-[40px] px-4 pt-10">
     <div class="flex flex-col items-center gap-y-[24px]">
       <image-preview />
       <h1 class="text-3xl font-medium">
