@@ -24,7 +24,8 @@
     "optional": "Optional",
     "text": "Text",
     "saveChanges": "Save Changes",
-    "change": "Change"
+    "change": "Change",
+    "saving": "Saving..."
   },
   "landing": {
     "quote1": "Your memories,",

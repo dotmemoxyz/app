@@ -21,10 +21,11 @@ export default defineEventHandler(async (event) => {
     .catch((r) => [null, r]);
 
   if (err) {
+    console.error("Error fetching memo data:", err);
     throw new Error("An unknown error has occoured");
   }
 
-  if (!rawData) {
+  if (!rawData || !rawData.id) {
     throw createError({
       statusCode: 404,
       message: "Memo not found",

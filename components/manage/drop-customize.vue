@@ -96,7 +96,10 @@
           <b class="text-base font-normal !text-text-secondary">21:1</b>
         </div>
       </div>
-      <dot-button @click="save">{{ $t("common.saveChanges") }}</dot-button>
+      <div class="flex w-full flex-col items-center gap-2">
+        <dot-button :disabled="loading" class="w-full" @click="save">{{ buttonLabel }}</dot-button>
+        <p v-if="updateError" class="text-center text-sm !text-red-500">{{ updateError }}</p>
+      </div>
     </div>
     <!-- Customize preview -->
     <div class="col-span-2 flex flex-col gap-8">
@@ -128,6 +131,8 @@ const telegramLink = ref(props.drop.customize?.telegram ?? "");
 const instagramLink = ref(props.drop.customize?.instagram ?? "");
 const websiteLink = ref(props.drop.customize?.website ?? "");
 
+const { t } = useI18n();
+
 const editedData = computed<Memo>(() => {
   return {
     ...props.drop,
@@ -145,17 +150,41 @@ const editedData = computed<Memo>(() => {
   };
 });
 
+const loading = ref(false);
+const updateError = ref<string | null>(null);
+
 const save = async () => {
-  const _payload: MemoCustomize = {
-    image: imageIPFS.value,
-    heading: heading.value,
-    subheading: subheading.value,
-    claimText: claimText.value,
-    telegram: telegramLink.value,
-    instagram: instagramLink.value,
-    website: websiteLink.value,
-    darkMode: darkMode.value,
-    accentColor: accentColor.value,
+  const body: MemoCustomize = {
+    image: imageIPFS.value || undefined,
+    heading: heading.value || undefined,
+    subheading: subheading.value || undefined,
+    claimText: claimText.value || undefined,
+    telegram: telegramLink.value || undefined,
+    instagram: instagramLink.value || undefined,
+    website: websiteLink.value || undefined,
+    darkMode: darkMode.value || undefined,
+    accentColor: accentColor.value || undefined,
   };
+  updateError.value = null; // Reset error message
+  loading.value = true;
+
+  try {
+    await $fetch(`/api/drop/${props.drop.chain}/${props.drop.id}/customization`, {
+      method: "PUT",
+      body,
+    });
+  } catch (error) {
+    console.error("Error updating drop customization:", error);
+    updateError.value = "Failed to save changes. Please try again.";
+  } finally {
+    loading.value = false;
+  }
 };
+
+const buttonLabel = computed(() => {
+  if (loading.value) {
+    return t("common.saving");
+  }
+  return t("common.saveChanges");
+});
 </script>
