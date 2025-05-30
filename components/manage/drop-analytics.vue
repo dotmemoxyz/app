@@ -36,7 +36,7 @@
             <Icon name="mdi:chevron-right" class="size-[24px]" />
           </dot-button>
         </div>
-        <dot-button variant="secondary" @click="exportCsv">
+        <dot-button class="!h-[45px]" variant="secondary" @click="exportCsv">
           {{ $t("manage.analytics.exportCsv") }}
         </dot-button>
       </div>
