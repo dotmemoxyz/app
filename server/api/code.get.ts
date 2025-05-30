@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     throw new Error("An unknown error has occoured");
   }
 
-  if (!rawData) {
+  if (!rawData || !rawData.id) {
     throw createError({
       statusCode: 404,
       message: "Memo not found",
