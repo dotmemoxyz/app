@@ -106,6 +106,7 @@
           <p class="text-base font-normal !text-text-secondary">{{ $t("manage.customize.previewHint") }}</p>
         </div>
       </div>
+      <manage-drop-preview :data="editedData" />
     </div>
   </div>
 </template>
@@ -113,19 +114,36 @@
 <script lang="ts" setup>
 import type { Memo, MemoCustomize } from "~/types/memo";
 
-defineProps<{
+const props = defineProps<{
   drop: Memo;
 }>();
 const isCustomPreview = ref(false);
 const imageIPFS = ref<string>();
 const darkMode = ref(false);
-const accentColor = ref("#4ADE80");
-const heading = ref("");
-const subheading = ref("");
-const claimText = ref("");
-const telegramLink = ref("");
-const instagramLink = ref("");
-const websiteLink = ref("");
+const accentColor = ref(props.drop.customize?.accentColor ?? "#4ADE80");
+const heading = ref(props.drop.customize?.heading ?? "");
+const subheading = ref(props.drop.customize?.subheading ?? "");
+const claimText = ref(props.drop.customize?.claimText ?? "");
+const telegramLink = ref(props.drop.customize?.telegram ?? "");
+const instagramLink = ref(props.drop.customize?.instagram ?? "");
+const websiteLink = ref(props.drop.customize?.website ?? "");
+
+const editedData = computed<Memo>(() => {
+  return {
+    ...props.drop,
+    customize: {
+      image: imageIPFS.value,
+      heading: heading.value,
+      subheading: subheading.value,
+      claimText: claimText.value,
+      telegram: telegramLink.value,
+      instagram: instagramLink.value,
+      website: websiteLink.value,
+      darkMode: darkMode.value,
+      accentColor: accentColor.value,
+    },
+  };
+});
 
 const save = async () => {
   const _payload: MemoCustomize = {
