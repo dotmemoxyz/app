@@ -36,7 +36,7 @@
       <div class="flex flex-col gap-[16px]">
         <div class="flex w-full items-center justify-between">
           <p class="text-[14px] leading-[18px] !text-text-secondary">{{ $t("manage.drop.progress") }}</p>
-          <p class="text-[14px] leading-[18px] !text-text-secondary">
+          <p v-if="maxMints !== null" class="text-[14px] leading-[18px] !text-text-secondary">
             {{
               $t("manage.drop.claimed", {
                 part: minted,
@@ -126,9 +126,9 @@ const remainingTime = computed<string>(() => {
 });
 
 // Minting info
-const maxMints = ref(0);
+const maxMints = ref<number | null>(0);
 const minted = ref(0);
-const remaining = ref(0);
+const remaining = ref<number | null>(0);
 const { apiInstanceByPrefix } = useApi(toRef<Prefix>("ahp"));
 const loadingLimitInfo = ref(true);
 watch(
@@ -150,5 +150,10 @@ watch(
   },
 );
 
-const currentProgress = computed<number>(() => (minted.value / maxMints.value) * 100);
+const currentProgress = computed<number>(() => {
+  if (maxMints.value === null || maxMints.value === 0) {
+    return 0;
+  }
+  return (minted.value / maxMints.value) * 100;
+});
 </script>

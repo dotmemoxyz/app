@@ -2,7 +2,7 @@
   <vue-select
     v-model="model"
     :classes="{
-      control: 'border h-[45px] !rounded-[12px] border-border-default gap-x-[12px] w-fit px-[19px]',
+      control: 'border h-[45px] !rounded-[12px] border-border-default gap-x-[12px] px-[19px]',
     }"
     :is-clearable="false"
     :options="localOptions"

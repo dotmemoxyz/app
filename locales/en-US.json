@@ -342,7 +342,8 @@
         "claimId": "Claim #",
         "address": "Address",
         "time": "Time",
-        "transaction": "Transaction"
+        "transaction": "Transaction",
+        "noTransactionsYet": "No transactions yet"
       }
     },
     "customize": {

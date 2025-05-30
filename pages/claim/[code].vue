@@ -86,7 +86,7 @@
       </p>
     </div>
     <!-- Links -->
-    <div class="flex w-full flex-wrap items-center justify-center gap-[12px] rounded-[12px] p-[16px]">
+    <div v-if="hasSocials" class="flex w-full flex-wrap items-center justify-center gap-[12px] rounded-[12px] p-[16px]">
       <!-- Telegram -->
       <a
         v-if="data?.customize?.telegram"
@@ -286,6 +286,11 @@ const canClaim = computed(
 const { data, status, error } = await useFetch("/api/code", {
   query: { code: route.params.code },
   watch: false,
+});
+
+const hasSocials = computed(() => {
+  const customize = data.value?.customize;
+  return customize?.telegram || customize?.instagram || customize?.website;
 });
 // Minting info
 const maxMints = ref<number | null>(0);

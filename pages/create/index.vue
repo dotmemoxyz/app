@@ -5,7 +5,7 @@
     <div class="flex flex-col gap-4">
       <dot-image-input v-model="image" :error="imageError" />
       <dot-label :text="t('create.memo.chain')">
-        <dot-select v-model="preferredChain" :options="chainList" />
+        <dot-select v-model="preferredChain" :options="chainList" class="w-full" />
       </dot-label>
       <dot-label :text="t('create.memo.name')">
         <dot-text-input

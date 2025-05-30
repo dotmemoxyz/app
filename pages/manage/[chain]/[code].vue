@@ -36,9 +36,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { Prefix } from "@kodadot1/static";
-import { getFreeMints } from "~/utils/sdk/query";
-
 const { t } = useI18n();
 const TABS = [
   { key: "analytics", label: t("manage.drop.tabs.analytics") },
@@ -50,27 +47,4 @@ const selectedTab = ref(TABS[0].key);
 
 const route = useRoute();
 const { data, status, error } = await useFetch(`/api/drop/${route.params.chain}/${route.params.code}`);
-const maxMints = ref(0);
-const minted = ref(0);
-const remaining = ref(0);
-const { apiInstanceByPrefix } = useApi(toRef<Prefix>("ahp"));
-const loadingLimitInfo = ref(true);
-watch(
-  data,
-  async (data) => {
-    if (data) {
-      loadingLimitInfo.value = true;
-      const api = await apiInstanceByPrefix(data.chain);
-      const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.id);
-      maxMints.value = maxTokens;
-      minted.value = mintedTokens;
-      remaining.value = remainingMints;
-      loadingLimitInfo.value = false;
-    }
-  },
-  {
-    immediate: true,
-    deep: true,
-  },
-);
 </script>

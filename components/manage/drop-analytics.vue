@@ -65,6 +65,9 @@
           </tr>
         </tbody>
       </table>
+      <div v-if="data?.length === 0" class="flex h-[200px] w-full items-center justify-center">
+        <p class="text-[16px] font-medium">{{ $t("manage.analytics.table.noTransactionsYet") }}</p>
+      </div>
     </div>
   </div>
 </template>
