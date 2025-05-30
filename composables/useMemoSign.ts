@@ -79,11 +79,27 @@ export const useMemoSign = (
       }
     }
 
-    const api = await apiInstance.value;
+    let api: ApiPromise;
+    try {
+      api = await apiInstance.value;
+    } catch (e) {
+      logger.error("Failed to get API instance. Reason: %s", (e as Error).message);
+      signError.value = "Failed to get API instance. Try again later or contact support.";
+      isSigning.value = false;
+      return;
+    }
 
     const createArgs = createArgsForNftPallet(accountId.value, quantity);
     logger.info("Creating collection with args: %O", createArgs);
-    const nextId = await nextCollectionId(api);
+    let nextId: number | null = null;
+    try {
+      nextId = await nextCollectionId(api);
+    } catch (e) {
+      logger.error("Failed to get next collection id. Reason: %s", (e as Error).message);
+      signError.value = "Failed to get next collection id. Try again later or contact support.";
+      isSigning.value = false;
+      return;
+    }
     if (!nextId) {
       signError.value = "Failed to get next collection id. Try again later or contact support.";
       isSigning.value = false;
@@ -106,14 +122,21 @@ export const useMemoSign = (
     ];
 
     initTransactionLoader();
-    await howAboutToExecute(accountId.value, cb, args, {
-      onSuccess(param) {
-        txHash.value = param.txHash;
-      },
-      onError(error) {
-        onError?.(error);
-      },
-    });
+    try {
+      await howAboutToExecute(accountId.value, cb, args, {
+        onSuccess(param) {
+          txHash.value = param.txHash;
+        },
+        onError(error) {
+          onError?.(error);
+        },
+      });
+    } catch (e) {
+      logger.error("Failed to execute transaction. Reason: %s", (e as Error).message);
+      signError.value = "Failed to execute transaction. Try again later or contact support.";
+      isSigning.value = false;
+      return;
+    }
   }
 
   return {

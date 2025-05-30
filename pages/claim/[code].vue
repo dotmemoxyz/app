@@ -67,6 +67,10 @@
           })
         }}
       </p>
+
+      <div v-if="apiError" class="flex w-full justify-center">
+        <small class="text-red-500 dark:text-white">{{ apiError }}</small>
+      </div>
     </div>
     <div
       v-if="status === 'success' && data"
@@ -284,22 +288,29 @@ const { data, status, error } = await useFetch("/api/code", {
   watch: false,
 });
 // Minting info
-const maxMints = ref(0);
+const maxMints = ref<number | null>(0);
 const minted = ref(0);
-const remaining = ref(0);
+const remaining = ref<number | null>(0);
 const { apiInstanceByPrefix } = useApi(toRef<Prefix>("ahp"));
 const loadingLimitInfo = ref(true);
+const apiError = ref<string | null>(null);
 watch(
   data,
   async (data) => {
     if (data) {
       loadingLimitInfo.value = true;
-      const api = await apiInstanceByPrefix(data.chain);
-      const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.id);
-      maxMints.value = maxTokens;
-      minted.value = mintedTokens;
-      remaining.value = remainingMints;
-      loadingLimitInfo.value = false;
+      try {
+        const api = await apiInstanceByPrefix(data.chain);
+        const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.id);
+        maxMints.value = maxTokens;
+        minted.value = mintedTokens;
+        remaining.value = remainingMints;
+        loadingLimitInfo.value = false;
+      } catch (error) {
+        console.error("Error fetching minting limits:", error);
+        apiError.value = "Failed to load minting limits. Please try again later.";
+        loadingLimitInfo.value = false;
+      }
     }
   },
   {
@@ -311,7 +322,7 @@ watch(
 const allClaimed = computed(() => remaining.value === 0);
 const tooLate = computed(() => {
   if (!data.value) return false;
-  const serverDate = DateTime.fromSQL(data.value.createdAt).endOf("day");
+  const serverDate = DateTime.fromSQL(data.value.expiresAt).endOf("day");
   const localDate = DateTime.now().startOf("day");
   // Diff only in days, ignore hours, minutes, seconds
   const diff = serverDate.diff(localDate, ["days"]).toObject();
