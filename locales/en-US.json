@@ -50,6 +50,7 @@
   },
   "claim": {
     "enterCode": "Enter MEMO Code",
+    "enterCodeDescription": "Enter the secret code to proceed",
     "howThisWorks": "How this works?",
     "success": "MEMO claimed successfully",
     "cantLoad": "Couldn't load MEMO",
