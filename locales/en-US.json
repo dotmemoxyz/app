@@ -313,6 +313,7 @@
     "activeDrops": "Active Drops",
     "totalClaims": "Total Claims",
     "createDrop": "+ Create MEMO",
+    "noDrops": "You have no MEMOs on this network.",
     "drop": {
       "active": "Active",
       "inactive": "Expired",
