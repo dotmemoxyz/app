@@ -2,7 +2,7 @@
   <VueFinalModal
     modal-id="qr-scanner-modal"
     class="flex items-center justify-center"
-    content-class="flex w-full h-full md:h-auto max-w-2xl mx-auto flex-col px-4 py-5 gap-4 bg-background-color rounded-3xl border border-background-color-inverse"
+    content-class="flex w-full h-full md:h-auto max-w-2xl mx-auto flex-col px-4 py-5 gap-4 bg-surface-white rounded-3xl border border-background-color-inverse"
     overlay-transition="vfm-fade"
     content-transition="vfm-fade"
     @opened="onOpened()"

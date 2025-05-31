@@ -1,5 +1,20 @@
 import type { Prefix } from "@kodadot1/static";
 
+export type MemoCustomize = {
+  image?: string;
+  heading?: string;
+  subheading?: string;
+  claimText?: string;
+  telegram?: string;
+  instagram?: string;
+  website?: string;
+  darkMode?: boolean;
+  accentColor?: string;
+};
+
+/**
+ * Memo DTO from hewers API
+ */
 export type MemoDTO = {
   id: string;
   chain: Prefix;
@@ -12,13 +27,26 @@ export type MemoDTO = {
   description?: string;
   password: string | null;
   expires_at: string;
+  customize?: MemoCustomize;
 };
 
-export type Memo = {
-  /**
-   * Code of the memo
-   */
+/**
+ * Uniquery collection format
+ */
+export type UniqCollection = {
   id: string;
+  name: string;
+  image: string;
+  issuer: string;
+  metadata: string;
+  currentOwner: string;
+  createdAt: string;
+};
+
+/**
+ * Local MEMO object
+ */
+export type Memo = {
   /**
    * Chain of the memo
    */
@@ -26,7 +54,7 @@ export type Memo = {
   /**
    * Collection ID of the memo
    */
-  collection: string;
+  id: string;
   /**
    * Name of the memo
    */
@@ -51,7 +79,19 @@ export type Memo = {
    * Expires at
    */
   expiresAt: string;
+
+  /**
+   * Customization of the memo
+   */
+  customize: MemoCustomize;
 };
+
+export interface MemoWithCode extends Memo {
+  /**
+   * Code of the memo
+   */
+  code: string;
+}
 
 export type CreateMemoDTO = {
   /**

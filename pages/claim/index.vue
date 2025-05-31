@@ -1,22 +1,26 @@
 <template>
-  <div class="mx-auto flex max-w-xl flex-col items-center space-y-10 p-4">
-    <h1 class="mt-10 text-center text-4xl font-bold md:mt-20">.claim</h1>
+  <div class="mx-auto flex max-w-xl flex-col items-center gap-y-[40px] px-4 pt-10">
+    <div class="flex flex-col items-center gap-y-[24px]">
+      <image-preview />
+      <h1 class="text-3xl font-medium">
+        {{ $t("claim.enterCode") }}
+      </h1>
+      <h2 class="text-base font-normal !text-text-secondary">
+        {{ $t("claim.enterCodeDescription") }}
+      </h2>
+    </div>
 
-    <image-preview />
-
-    <div class="flex flex-col space-y-1 self-stretch">
-      <dot-label :text="t('claim.enterCode')" class="flex-1">
-        <form class="flex space-x-4" @submit.prevent="onSubmit()">
-          <dot-text-input v-model="code" :error="errorMessage" placeholder="event2024" />
-          <div>
-            <dot-button variant="tertiary" size="large" @click="open()">
-              <template #icon>
-                <icon name="mdi:qrcode" size="24" />
-              </template>
-            </dot-button>
-          </div>
-        </form>
-      </dot-label>
+    <div class="flex flex-col space-y-[16px] self-stretch">
+      <form class="flex space-x-4" @submit.prevent="onSubmit()">
+        <dot-text-input v-model="code" :error="errorMessage" placeholder="event2024" />
+        <div>
+          <dot-button variant="tertiary" size="large" @click="open()">
+            <template #icon>
+              <icon name="mdi:qrcode" size="24" />
+            </template>
+          </dot-button>
+        </div>
+      </form>
       <dot-button
         :disabled="!isCodeValid || status === 'pending'"
         variant="primary"

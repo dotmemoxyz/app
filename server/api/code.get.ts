@@ -1,5 +1,5 @@
 import { $purify as purify, $obtain as obtain } from "@kodadot1/minipfs";
-import type { MemoDTO, Memo } from "~/types/memo";
+import type { MemoWithCode, MemoDTO } from "~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
@@ -12,6 +12,7 @@ type Metadata = {
   external_url: string;
   type: string;
 };
+
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
@@ -20,6 +21,7 @@ export default defineEventHandler(async (event) => {
     .catch((r) => [null, r]);
 
   if (err) {
+    console.error("Error fetching memo data:", err);
     throw new Error("An unknown error has occoured");
   }
 
@@ -40,16 +42,28 @@ export default defineEventHandler(async (event) => {
     throw new Error("Metadata not found");
   }
 
-  const memo: Memo = {
-    id: rawData.id,
+  const memo: MemoWithCode = {
+    code: rawData.id,
     chain: rawData.chain,
-    collection: rawData.collection,
+    id: rawData.collection,
     name: rawData.name,
     description: meta.description,
     image,
     mint: rawData.mint,
     createdAt: rawData.created_at,
     expiresAt: rawData.expires_at,
+    customize: rawData.customize,
+    // ?? {
+    //   heading: "Test heading",
+    //   subheading: "Lorem ipsum dolor sit amet consectetur. In suspendisse justo diam arcu in tellus.",
+    //   claimText: "Claim your test MEMO",
+    //   telegram: "https://t.me/kodadot",
+    //   instagram: "https://instagram.com/kodadot",
+    //   website: "https://kodadot.xyz",
+    //   accentColor: "#FF9900",
+    //   darkMode: true,
+    //   image: "https://kodadot.xyz/images/logo.png",
+    // },
   };
 
   return memo;
