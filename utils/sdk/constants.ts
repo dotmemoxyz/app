@@ -1,6 +1,6 @@
 import type { ApiPromise } from "@polkadot/api";
 
-export const MEMO_BOT = "Gn84LKb5HSxc3SACayxCzKQcWESRMcT1VUCqeZURfGj6ASi";
+export const MEMO_BOT = "HR1CWoPceSdvC3XNB6S8dZyeMRCiRYGrRYdrSEfPsTdTWqm";
 
 export enum Fee {
   TX = 0.0033,

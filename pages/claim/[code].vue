@@ -67,10 +67,10 @@
           })
         }}
       </p>
+    </div>
 
-      <div v-if="apiError" class="flex w-full justify-center">
-        <small class="text-red-500 dark:text-white">{{ apiError }}</small>
-      </div>
+    <div v-if="apiError" class="flex w-full justify-center">
+      <small class="text-red-500 dark:text-white">{{ apiError }}</small>
     </div>
     <div
       v-if="status === 'success' && data"
@@ -169,11 +169,11 @@
             </div>
           </client-only>
 
-          <p v-if="claimFailed" class="w-full text-center !text-red-500">{{ t("claim.alreadyClaimed") }}</p>
+          <p v-if="claimError" class="w-full text-center !text-red-500">{{ claimError }}</p>
         </template>
         <div class="relative flex w-full flex-col gap-2">
           <dot-button
-            :disabled="!canClaim || isClaiming || claimFailed"
+            :disabled="!canClaim || isClaiming || claimError !== null"
             variant="primary"
             :force-color="accentColor"
             size="medium"
@@ -246,6 +246,7 @@
 </template>
 <script setup lang="ts">
 import QRScannerModal from "~/components/modals/qr-scanner-modal.vue";
+import { FetchError } from "ofetch";
 import { DateTime } from "luxon";
 import { useModal } from "vue-final-modal";
 import type { Prefix } from "@kodadot1/static";
@@ -263,7 +264,7 @@ const { t } = useI18n();
 
 watch(claimType, (type) => {
   if (type !== "address") {
-    claimFailed.value = false;
+    claimError.value = null;
   }
 });
 
@@ -271,7 +272,7 @@ const address = computed(() => (claimType.value === "address" ? manualAddress.va
 
 const addressError = ref("");
 watch(address, (address) => {
-  claimFailed.value = false;
+  claimError.value = null;
   if (!address) {
     addressError.value = "Address is required";
     return;
@@ -334,7 +335,7 @@ const tooLate = computed(() => {
   return diff.days && diff.days < 0;
 });
 
-const claimFailed = ref(false);
+const claimError = ref<string | null>(null);
 const claimed = ref<null | string>(null);
 const isClaiming = ref(false);
 
@@ -364,7 +365,7 @@ const claim = async () => {
   if (!canClaim.value) return;
 
   try {
-    claimFailed.value = false;
+    claimError.value = null;
     isClaiming.value = true;
 
     const data = await $fetch("/api/claim", {
@@ -381,7 +382,12 @@ const claim = async () => {
       isClaiming.value = false;
     }, 60_000);
   } catch (error) {
-    claimFailed.value = true;
+    console.error("Claim failed:", error);
+    if (error instanceof FetchError && error.statusCode === 409) {
+      claimError.value = t("claim.alreadyClaimed");
+    } else {
+      claimError.value = t("claim.error");
+    }
     isClaiming.value = false;
   }
 };

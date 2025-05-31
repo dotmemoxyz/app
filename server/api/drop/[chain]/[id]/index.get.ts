@@ -4,7 +4,7 @@ import type { MemoDTO, MemoWithCode } from "~/types/memo";
 const RUNTIME_CONFIG = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
   const { id, chain } = getRouterParams(event);
-  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/detail/${chain}/${id}`)
+  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/manage/memos/${chain}/${id}`)
     .then((r) => [r, null])
     .catch((r) => [null, r]);
 
@@ -26,23 +26,23 @@ export default defineEventHandler(async (event) => {
   }
 
   // Unify Dates to SQL
-  rawData.created_at = DateTime.fromSQL(rawData.created_at).isValid
-    ? rawData.created_at
-    : DateTime.fromISO(rawData.created_at).toSQL();
-  rawData.expires_at = DateTime.fromSQL(rawData.expires_at).isValid
-    ? rawData.expires_at
-    : DateTime.fromISO(rawData.expires_at).toSQL();
+  rawData.createdAt = DateTime.fromSQL(rawData.createdAt).isValid
+    ? rawData.createdAt
+    : DateTime.fromISO(rawData.createdAt).toSQL();
+  rawData.expiresAt = DateTime.fromSQL(rawData.expiresAt).isValid
+    ? rawData.expiresAt
+    : DateTime.fromISO(rawData.expiresAt).toSQL();
 
   const memo: MemoWithCode = {
-    id: rawData.collection,
+    id: rawData.id,
     chain: rawData.chain,
     name: rawData.name,
     description: rawData.description,
     image,
     mint: rawData.mint,
-    createdAt: rawData.created_at,
-    expiresAt: rawData.expires_at,
-    code: rawData.id,
+    createdAt: rawData.createdAt,
+    expiresAt: rawData.expiresAt,
+    code: rawData.code,
     customize: rawData.customize ?? {},
   };
   return memo;

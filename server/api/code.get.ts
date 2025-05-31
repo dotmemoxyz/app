@@ -1,5 +1,6 @@
 import { $purify as purify, $obtain as obtain } from "@kodadot1/minipfs";
 import type { MemoWithCode, MemoDTO } from "~/types/memo";
+import { FetchError } from "ofetch";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
@@ -16,12 +17,18 @@ type Metadata = {
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
-  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/${query.code}`)
+  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/memos/${query.code}`)
     .then((r) => [r, null])
     .catch((r) => [null, r]);
 
   if (err) {
     console.error("Error fetching memo data:", err);
+    if (err instanceof FetchError && err.statusCode === 404) {
+      throw createError({
+        statusCode: 404,
+        message: "Memo not found",
+      });
+    }
     throw new Error("An unknown error has occoured");
   }
 
@@ -43,15 +50,15 @@ export default defineEventHandler(async (event) => {
   }
 
   const memo: MemoWithCode = {
-    code: rawData.id,
+    id: rawData.id,
+    code: rawData.code,
     chain: rawData.chain,
-    id: rawData.collection,
     name: rawData.name,
     description: meta.description,
     image,
     mint: rawData.mint,
-    createdAt: rawData.created_at,
-    expiresAt: rawData.expires_at,
+    createdAt: rawData.createdAt,
+    expiresAt: rawData.expiresAt,
     customize: rawData.customize,
     // ?? {
     //   heading: "Test heading",

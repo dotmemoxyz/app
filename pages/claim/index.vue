@@ -57,7 +57,9 @@ const continueClaim = async () => {
 };
 
 const onSubmit = () => continueClaim();
-const errorMessage = computed(() => (error.value ? "Couldn't load MEMO" : undefined));
+const errorMessage = computed(() =>
+  error.value?.statusCode === 404 ? "MEMO doesn't exist" : error.value ? "Couldn't load MEMO" : undefined,
+);
 
 const { open } = useModal({
   component: QRScannerModal,
