@@ -316,7 +316,7 @@
     "activeDrops": "Active Drops",
     "totalClaims": "Total Claims",
     "createDrop": "+ Create MEMO",
-    "noDrops": "You have no MEMOs on this network.",
+    "noDrops": "No MEMOs matched your filters.",
     "dropsError": "There was an error loading drops. Please contact our support or try again later.",
     "drop": {
       "active": "Active",

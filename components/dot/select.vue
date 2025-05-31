@@ -10,7 +10,6 @@
 </template>
 
 <script lang="ts" setup>
-import "vue-select/dist/vue-select.css";
 import VueSelect from "vue3-select-component";
 import type { Option } from "~/types/components";
 const model = defineModel<string>({ required: true });

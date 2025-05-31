@@ -30,6 +30,9 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
   ],
   i18n: {
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
     vueI18n: "./i18n.config.ts",
   },
   runtimeConfig: {
