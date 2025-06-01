@@ -68,7 +68,8 @@
     "claiming": "Claiming MEMO...",
     "claim": "Claim MEMO",
     "loading": "Loading info...",
-    "remaining": "{free} / {total} remaining"
+    "remaining": "{free} / {total} remaining",
+    "error": "Error while claiming MEMO. Please try again later or contact our support."
   },
   "create": {
     "title": ".create",
