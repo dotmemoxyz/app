@@ -113,7 +113,7 @@ export const useMemoSign = (
       [
         api.tx.nfts.create(...createArgs),
         api.tx.nfts.setCollectionMetadata(nextId, toMint.value),
-        api.tx.nfts.setTeam(nextId, MEMO_BOT, accountId.value, accountId.value),
+        api.tx.nfts.setTeam(nextId, MEMO_BOT, MEMO_BOT, accountId.value),
         // DEV: this does not cover tx fee, we will sponsor it for a whilegs
         api.tx.balances.transferKeepAlive(MEMO_BOT, totalPayableDeposit.value),
         // DEV: this is for tracking purposes
