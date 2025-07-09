@@ -95,7 +95,9 @@
         </dot-text-input>
       </dot-label>
     </div>
-    <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
+    <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full">
+      {{ t("common.create") }}
+    </dot-button>
   </form>
 </template>
 

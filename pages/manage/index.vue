@@ -126,16 +126,20 @@ const {
     const resp = await client.value.fetch<QueryCollectionsResponse>(query);
     const memos: Memo[] = [];
     for (const collection of resp.data.collections) {
-      const data = await $fetch(`/api/drop/${urlParams.chain}/${collection.id}`);
-      const image = purify(collection.image).at(0);
-      if (!image) {
-        throw new Error("No image found");
+      try {
+        const data = await $fetch(`/api/drop/${urlParams.chain}/${collection.id}`);
+        const image = purify(collection.image).at(0);
+        if (!image) {
+          throw new Error("No image found");
+        }
+        memos.push({
+          ...data,
+          name: collection.name,
+          image,
+        });
+      } catch (error) {
+        console.error(`Error fetching drop data for collection ${collection.id}:`, error);
       }
-      memos.push({
-        ...data,
-        name: collection.name,
-        image,
-      });
     }
     return memos;
   },

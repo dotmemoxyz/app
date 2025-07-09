@@ -369,6 +369,10 @@
       "contrastCheck": "Contrast check",
       "preview": "Preview",
       "previewHint": "Live preview of claim page"
+    },
+    "settings": {
+      "title": "Distribution settings",
+      "updateWindow": "Update claim window"
     }
   }
 }
