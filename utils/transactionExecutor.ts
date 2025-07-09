@@ -82,9 +82,7 @@ export const txCb =
     if (result.dispatchError) {
       console.warn("[EXEC] dispatchError", result);
       onError(result.dispatchError);
-    }
-
-    if (result.internalError) {
+    } else if (result.internalError) {
       console.warn("[EXEC] internalError", result);
       onError(result.internalError);
     }
