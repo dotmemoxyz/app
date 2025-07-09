@@ -260,8 +260,16 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
     };
   };
 
-  const notifyDispatchError = async (dispatchError: DispatchError): Promise<SignError> => {
+  const notifyDispatchError = async (dispatchError: DispatchError | Error): Promise<SignError> => {
     const { $i18n } = useNuxtApp();
+
+    if (dispatchError instanceof Error) {
+      return {
+        title: "Internal Onchain Error",
+        message: dispatchError.message,
+        level: "warning",
+      };
+    }
 
     if (!dispatchError.isModule) {
       const dispatchErrorStr = dispatchError.toString();
@@ -316,7 +324,7 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
       tx.value = undefined;
     };
 
-  const errorCb = (onError?: (err: SignError) => void) => (dispatchError: DispatchError) => {
+  const errorCb = (onError?: (err: SignError) => void) => (dispatchError: DispatchError | Error) => {
     tx.value && execResultValue(tx.value);
     onTxError(dispatchError);
     isLoading.value = false;
@@ -351,7 +359,7 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
       tx.value = undefined;
     }
   };
-  const onTxError = async (dispatchError: DispatchError): Promise<void> => {
+  const onTxError = async (dispatchError: DispatchError | Error): Promise<void> => {
     await notifyDispatchError(dispatchError);
     console.error("notifyDispatchError", dispatchError);
     isLoading.value = false;
