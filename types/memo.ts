@@ -13,22 +13,54 @@ export type MemoCustomize = {
 };
 
 /**
- * Memo DTO from hewers API
+ * Local MEMO object
  */
-export type MemoDTO = {
-  id: string;
+export type MemoPureDTO = {
+  /**
+   * Chain of the memo
+   */
   chain: Prefix;
-  collection: string;
-  table_ref: string;
-  created_at: string;
+  /**
+   * Collection ID of the memo
+   */
+  id: string;
+  /**
+   * Name of the memo
+   */
   name: string;
+  /**
+   * Description of the memo
+   */
+  description: string;
+  /**
+   * Image URL
+   */
   image: string;
+  /**
+   * IPFS Mint of the memo
+   */
   mint: string;
-  description?: string;
-  password: string | null;
-  expires_at: string;
-  customize?: MemoCustomize;
+  /**
+   * Created at
+   */
+  createdAt: string;
+  /**
+   * Expires at
+   */
+  expiresAt: string;
+
+  /**
+   * Customization of the memo
+   */
+  customize: MemoCustomize;
 };
+
+export interface MemoDTO extends MemoPureDTO {
+  /**
+   * Code of the memo
+   */
+  code: string;
+}
 
 /**
  * Uniquery collection format

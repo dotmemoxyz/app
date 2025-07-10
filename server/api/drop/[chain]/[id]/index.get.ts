@@ -4,7 +4,7 @@ import type { MemoDTO, MemoWithCode } from "~/types/memo";
 const RUNTIME_CONFIG = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
   const { id, chain } = getRouterParams(event);
-  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/detail/${chain}/${id}`)
+  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/memos/detail/${chain}/${id}`)
     .then((r) => [r, null])
     .catch((r) => [null, r]);
 

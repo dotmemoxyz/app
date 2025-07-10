@@ -1,6 +1,7 @@
 import { $purify as purify, $obtain as obtain } from "@kodadot1/minipfs";
 import type { MemoWithCode, MemoDTO } from "~/types/memo";
 
+import { FetchError } from "ofetch";
 const RUNTIME_CONFIG = useRuntimeConfig();
 
 type Metadata = {
@@ -16,13 +17,15 @@ type Metadata = {
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
-  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/${query.code}`)
-    .then((r) => [r, null])
-    .catch((r) => [null, r]);
+  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/memos/${query.code}`)
+    .then((r) => [r, null] as const)
+    .catch((r) => [null, r] as const);
 
   if (err) {
-    console.error("Error fetching memo data:", err);
-    throw new Error("An unknown error has occoured");
+    if (err instanceof FetchError && err.response?.status !== 404) {
+      console.error("Error fetching memo data:", err);
+      throw new Error("An unknown error has occoured");
+    }
   }
 
   if (!rawData || !rawData.id) {
@@ -42,29 +45,9 @@ export default defineEventHandler(async (event) => {
     throw new Error("Metadata not found");
   }
 
-  const memo: MemoWithCode = {
-    code: rawData.id,
-    chain: rawData.chain,
-    id: rawData.collection,
-    name: rawData.name,
-    description: meta.description,
+  return {
+    ...rawData,
     image,
-    mint: rawData.mint,
-    createdAt: rawData.created_at,
-    expiresAt: rawData.expires_at,
-    customize: rawData.customize,
-    // ?? {
-    //   heading: "Test heading",
-    //   subheading: "Lorem ipsum dolor sit amet consectetur. In suspendisse justo diam arcu in tellus.",
-    //   claimText: "Claim your test MEMO",
-    //   telegram: "https://t.me/kodadot",
-    //   instagram: "https://instagram.com/kodadot",
-    //   website: "https://kodadot.xyz",
-    //   accentColor: "#FF9900",
-    //   darkMode: true,
-    //   image: "https://kodadot.xyz/images/logo.png",
-    // },
-  };
-
-  return memo;
+    description: meta.description,
+  } satisfies MemoWithCode; // Ensure the return type matches MemoWithCode
 });

@@ -32,30 +32,30 @@
     >
       <span class="hidden items-center gap-2 md:flex">
         <p class="text-[14px] font-normal !text-text-secondary">
-          {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_MED) }} -
-          {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
+          {{ DateTime.fromISO(data.createdAt).toLocaleString(DateTime.DATE_MED) }} -
+          {{ DateTime.fromISO(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
         </p>
         <p class="text-[14px] font-normal !text-text-placeholder">
-          {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+          {{ DateTime.fromISO(data.expiresAt).offsetNameShort }}
         </p>
       </span>
       <span class="flex flex-col gap-2 md:hidden">
         <span class="flex gap-2">
           <p class="text-[14px] font-normal !text-text-secondary">
-            {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_MED) }}
+            {{ DateTime.fromISO(data.createdAt).toLocaleString(DateTime.DATE_MED) }}
           </p>
 
           <p class="text-[14px] font-normal !text-text-placeholder">
-            {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+            {{ DateTime.fromISO(data.expiresAt).offsetNameShort }}
           </p>
         </span>
         <Icon name="mdi:chevron-down" class="self-center text-text-placeholder" size="16" />
         <span class="flex gap-2">
           <p class="text-[14px] font-normal !text-text-secondary">
-            {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
+            {{ DateTime.fromISO(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
           </p>
           <p class="text-[14px] font-normal !text-text-placeholder">
-            {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+            {{ DateTime.fromISO(data.expiresAt).offsetNameShort }}
           </p>
         </span>
       </span>
@@ -381,6 +381,7 @@ const claim = async () => {
       isClaiming.value = false;
     }, 60_000);
   } catch (error) {
+    console.error("Claim failed:", error);
     claimFailed.value = true;
     isClaiming.value = false;
   }

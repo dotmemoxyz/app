@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(event, customizationSchema.parse);
 
   const RUNTIME_CONFIG = useRuntimeConfig();
-  const [rawData, err] = await $fetch(`${RUNTIME_CONFIG.apiUrl}/poaps/${chain}/${id}/customizations`, {
+  const [rawData, err] = await $fetch(`${RUNTIME_CONFIG.apiUrl}/memos/${chain}/${id}/customizations`, {
     method: "PUT",
     body,
   })
