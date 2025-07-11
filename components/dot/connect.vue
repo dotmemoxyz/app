@@ -51,7 +51,6 @@ const { open, close } = useModal({
   },
 });
 const logger = createLogger("dot:connector");
-
 onMounted(async () => {
   if (accountStore.hasSelectedAccount) {
     return;
@@ -74,11 +73,28 @@ onMounted(async () => {
       const account = accounts.find((acc) => acc.address === accountAddress);
       if (account) {
         accountStore.selectAccount(account);
-        accountStore.setLoaded();
       }
     } catch (e) {
       logger.error(e);
     }
   }
+
+  const token = localStorage.getItem("account-token");
+  if (token) {
+    const { verifyToken } = useAuth();
+    try {
+      const res = await verifyToken(token);
+      if (!res) {
+        logger.warn("Token verification failed, token is invalid or expired");
+        localStorage.removeItem("account-token");
+      } else {
+        accountStore.setToken(token);
+      }
+    } catch (e) {
+      logger.error("Token verification failed", e);
+      localStorage.removeItem("account-token");
+    }
+  }
+  accountStore.setLoaded();
 });
 </script>

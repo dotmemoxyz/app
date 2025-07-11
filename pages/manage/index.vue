@@ -72,6 +72,23 @@ import { asyncComputed, useUrlSearchParams } from "@vueuse/core";
 import { DateTime } from "luxon";
 
 const accountStore = useAccountStore();
+const { authorize } = useAuth();
+const router = useRouter();
+
+watch(
+  () => accountStore.loaded,
+  async (loaded) => {
+    if (loaded && !accountStore.token) {
+      try {
+        await authorize();
+      } catch (error) {
+        console.error("Authorization failed:", error);
+        router.replace("/");
+      }
+    }
+  },
+  { immediate: true },
+);
 
 const urlParams = useUrlSearchParams<{
   chain: Prefix;
