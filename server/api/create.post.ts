@@ -1,26 +1,26 @@
-import type { CreateMemoDTO } from "~/types/memo";
 import { FetchError } from "ofetch";
+import * as zod from "zod";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
-export default defineEventHandler(async (event) => {
-  // const { image, name, description, externalUrl, startDate, endDate, quantity, secret, chain, collection } =
-  //   await readBody(event);
+const createMemoValidator = zod.object({
+  secret: zod.string(),
+  mint: zod.string(),
+  collection: zod.number(),
+  chain: zod.string(),
+  name: zod.string(),
+  image: zod.string(),
+  expiresAt: zod.coerce.date(),
+  createdAt: zod.coerce.date(),
+  creator: zod.string(),
+});
 
-  const { secret, mint, collection, chain, name, image, expiresAt, createdAt } = await readBody<CreateMemoDTO>(event);
+export default defineEventHandler(async (event) => {
+  const body = await readValidatedBody(event, createMemoValidator.parse);
 
   const [data, err] = await $fetch(`${RUNTIME_CONFIG.apiUrl}/memos`, {
     method: "POST",
-    body: {
-      secret,
-      chain,
-      mint,
-      collection,
-      name,
-      image,
-      expiresAt,
-      createdAt,
-    },
+    body,
   })
     .then((r) => [r, null])
     .catch((r) => [null, r]);

@@ -6,7 +6,7 @@ export default defineNuxtConfig({
       title: ".MEMO",
     },
   },
-
+  plugins: ["~/plugins/auth-init.client.ts"],
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
   vite: {

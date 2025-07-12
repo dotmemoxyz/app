@@ -79,7 +79,7 @@ const { locale } = useI18n();
 
 // Starts in
 const startsIn = computed<string | null>(() => {
-  const date = DateTime.fromSQL(props.drop.createdAt);
+  const date = DateTime.fromISO(props.drop.createdAt);
 
   const now = DateTime.now();
   const diff = date.diff(now, ["days", "hours", "minutes", "seconds"]);
@@ -101,7 +101,7 @@ const startsIn = computed<string | null>(() => {
 
 // Check if drop is expired
 const isExpired = computed<boolean>(() => {
-  const date = DateTime.fromSQL(props.drop.expiresAt);
+  const date = DateTime.fromISO(props.drop.expiresAt);
   const now = DateTime.now();
   return date.diff(now, ["seconds"]).as("seconds") < 0;
 });
@@ -109,9 +109,9 @@ const isExpired = computed<boolean>(() => {
 const remainingTime = computed<string>(() => {
   if (isExpired.value) {
     // Return end date
-    return DateTime.fromSQL(props.drop.expiresAt).toFormat("dd.MM.yyyy");
+    return DateTime.fromISO(props.drop.expiresAt).toFormat("dd.MM.yyyy");
   }
-  const date = DateTime.fromSQL(props.drop.expiresAt);
+  const date = DateTime.fromISO(props.drop.expiresAt);
   const now = DateTime.now();
   const diff = date.diff(now, ["days", "hours", "minutes", "seconds"]);
   // Return remaining time with locale

@@ -5,6 +5,8 @@
     "claim": "Claim",
     "create": "Create",
     "manage": "Manage",
+    "authenticate": "Authenticate",
+    "authenticating": "Authenticating...",
     "confirm": "Confirm",
     "cancel": "Cancel",
     "learnMore": "Learn More",

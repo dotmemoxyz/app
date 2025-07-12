@@ -1,5 +1,5 @@
 import { $purify as purify, $obtain as obtain } from "@kodadot1/minipfs";
-import type { MemoWithCode, MemoDTO } from "~/types/memo";
+import type { MemoPureDTO, Memo } from "~/types/memo";
 
 import { FetchError } from "ofetch";
 const RUNTIME_CONFIG = useRuntimeConfig();
@@ -17,7 +17,7 @@ type Metadata = {
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
-  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/memos/${query.code}`)
+  const [rawData, err] = await $fetch<MemoPureDTO>(`${RUNTIME_CONFIG.apiUrl}/memos/${query.code}`)
     .then((r) => [r, null] as const)
     .catch((r) => [null, r] as const);
 
@@ -49,5 +49,5 @@ export default defineEventHandler(async (event) => {
     ...rawData,
     image,
     description: meta.description,
-  } satisfies MemoWithCode; // Ensure the return type matches MemoWithCode
+  } satisfies Memo; // Ensure the return type matches MemoWithCode
 });

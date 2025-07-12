@@ -1,16 +1,55 @@
-import { $purify as purify } from "@kodadot1/minipfs";
-import { DateTime } from "luxon";
+import { $obtain as obtain, $purify as purify } from "@kodadot1/minipfs";
 import type { MemoDTO, MemoWithCode } from "~/types/memo";
+import { FetchError } from "ofetch";
+import type { Metadata } from "~/services/nftStorage";
+
 const RUNTIME_CONFIG = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
   const { id, chain } = getRouterParams(event);
-  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/memos/detail/${chain}/${id}`)
-    .then((r) => [r, null])
-    .catch((r) => [null, r]);
+  const token = getCookie(event, "account-token");
+  if (!token) {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized access",
+    });
+  }
+
+  const [rawData, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/manage/memos/${chain}/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((r) => [r, null] as const)
+    .catch((r) => [null, r] as const);
 
   if (err) {
+    if (err instanceof FetchError) {
+      if (err.statusCode === 404) {
+        throw createError({
+          statusCode: 404,
+          message: "Memo not found",
+        });
+      }
+      if (err.statusCode === 401) {
+        throw createError({
+          statusCode: 401,
+          message: "Unauthorized access",
+        });
+      }
+      if (err.statusCode === 403) {
+        throw createError({
+          statusCode: 403,
+          message: "Not allowed to access this memo",
+        });
+      }
+    }
     console.error(err);
-    throw new Error("An unknown error has occoured");
+    throw createError({
+      statusCode: 500,
+      message: `[API::DROP] Failed to fetch memo details: ${err.message || "Unknown error"}`,
+    });
   }
 
   if (!rawData) {
@@ -22,28 +61,23 @@ export default defineEventHandler(async (event) => {
 
   const image = purify(rawData?.image).at(0);
   if (!image) {
-    throw new Error("Image not found");
+    throw createError({
+      statusCode: 404,
+      message: "Image not found",
+    });
   }
 
-  // Unify Dates to SQL
-  rawData.created_at = DateTime.fromSQL(rawData.created_at).isValid
-    ? rawData.created_at
-    : DateTime.fromISO(rawData.created_at).toSQL();
-  rawData.expires_at = DateTime.fromSQL(rawData.expires_at).isValid
-    ? rawData.expires_at
-    : DateTime.fromISO(rawData.expires_at).toSQL();
+  const meta = await obtain<Metadata>(rawData.mint);
+  if (!meta) {
+    throw createError({
+      statusCode: 404,
+      message: "Metadata not found",
+    });
+  }
 
-  const memo: MemoWithCode = {
-    id: rawData.collection,
-    chain: rawData.chain,
-    name: rawData.name,
-    description: rawData.description,
+  return {
+    ...rawData,
     image,
-    mint: rawData.mint,
-    createdAt: rawData.created_at,
-    expiresAt: rawData.expires_at,
-    code: rawData.id,
-    customize: rawData.customize ?? {},
-  };
-  return memo;
+    description: meta.description,
+  } satisfies MemoWithCode;
 });

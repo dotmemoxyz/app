@@ -24,30 +24,30 @@
     <div class="flex w-full items-center justify-center rounded-[12px] bg-surface-card p-[16px] md:justify-between">
       <span class="hidden items-center gap-2 md:flex">
         <p class="text-[14px] font-normal !text-text-secondary">
-          {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_MED) }} -
-          {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
+          {{ DateTime.fromISO(data.createdAt).toLocaleString(DateTime.DATE_MED) }} -
+          {{ DateTime.fromISO(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
         </p>
         <p class="text-[14px] font-normal !text-text-placeholder">
-          {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+          {{ DateTime.fromISO(data.expiresAt).offsetNameShort }}
         </p>
       </span>
       <span class="flex flex-col gap-2 md:hidden">
         <span class="flex gap-2">
           <p class="text-[14px] font-normal !text-text-secondary">
-            {{ DateTime.fromSQL(data.createdAt).toLocaleString(DateTime.DATE_MED) }}
+            {{ DateTime.fromISO(data.createdAt).toLocaleString(DateTime.DATE_MED) }}
           </p>
 
           <p class="text-[14px] font-normal !text-text-placeholder">
-            {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+            {{ DateTime.fromISO(data.expiresAt).offsetNameShort }}
           </p>
         </span>
         <Icon name="mdi:chevron-down" class="self-center text-text-placeholder" size="16" />
         <span class="flex gap-2">
           <p class="text-[14px] font-normal !text-text-secondary">
-            {{ DateTime.fromSQL(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
+            {{ DateTime.fromISO(data.expiresAt).toLocaleString(DateTime.DATE_MED) }}
           </p>
           <p class="text-[14px] font-normal !text-text-placeholder">
-            {{ DateTime.fromSQL(data.expiresAt).offsetNameShort }}
+            {{ DateTime.fromISO(data.expiresAt).offsetNameShort }}
           </p>
         </span>
       </span>
@@ -301,7 +301,7 @@ watch(
 
 const allClaimed = computed(() => remaining.value === 0);
 const tooLate = computed(() => {
-  const serverDate = DateTime.fromSQL(props.data.expiresAt).endOf("day");
+  const serverDate = DateTime.fromISO(props.data.expiresAt).endOf("day");
   const localDate = DateTime.now().startOf("day");
   // Diff only in days, ignore hours, minutes, seconds
   const diff = serverDate.diff(localDate, ["days"]).toObject();
@@ -354,6 +354,7 @@ const formatWeb = (url: string) => {
   try {
     const { hostname } = new URL(url);
     return hostname.replace("www.", "");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return url;
   }

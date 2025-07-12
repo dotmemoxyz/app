@@ -7,3 +7,8 @@ export interface ChallengeExchange {
   token: string;
   expiresAt: string;
 }
+
+export interface VerifyTokenResponse {
+  address: string;
+  expiresAt: string;
+}

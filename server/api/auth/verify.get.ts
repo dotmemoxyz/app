@@ -1,19 +1,22 @@
 import { FetchError } from "ofetch";
+import type { VerifyTokenResponse } from "~/types/auth";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
-interface VerifyTokenResponse {
-  address: string;
-  expiresAt: string;
-}
-
 export default defineEventHandler(async (event) => {
-  const headers = getHeaders(event);
+  const token = getCookie(event, "account-token");
+  if (!token) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    });
+  }
 
   const [data, err] = await $fetch<VerifyTokenResponse>(`${RUNTIME_CONFIG.apiUrl}/auth/verify`, {
     method: "GET",
     headers: {
-      Authorization: headers["authorization"] || "",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
   })
     .then((r) => [r, null] as const)
@@ -21,7 +24,10 @@ export default defineEventHandler(async (event) => {
 
   if (err || !data) {
     if (err instanceof FetchError && err.response?.status === 401) {
-      return false;
+      throw createError({
+        statusCode: 401,
+        statusMessage: "Unauthorized",
+      });
     }
     console.error(`Error verifying token:`, err);
     throw createError({
@@ -30,5 +36,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return true;
+  return data;
 });

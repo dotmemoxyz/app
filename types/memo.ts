@@ -158,4 +158,8 @@ export type CreateMemoDTO = {
    * Created at
    */
   createdAt: string;
+  /**
+   * Creator of the memo
+   */
+  creator: string;
 };

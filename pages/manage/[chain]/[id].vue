@@ -37,6 +37,10 @@
 </template>
 
 <script lang="ts" setup>
+definePageMeta({
+  middleware: "auth",
+});
+
 const { t } = useI18n();
 const TABS = [
   { key: "analytics", label: t("manage.drop.tabs.analytics") },
@@ -47,5 +51,5 @@ const TABS = [
 const selectedTab = ref(TABS[0].key);
 
 const route = useRoute();
-const { data, status, error } = await useFetch(`/api/drop/${route.params.chain}/${route.params.code}`);
+const { data, status, error } = await useFetch(`/api/drop/${route.params.chain}/${route.params.id}`);
 </script>

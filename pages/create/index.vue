@@ -112,6 +112,10 @@ import SignModal from "~/components/modals/sign-modal.vue";
 import { debouncedWatch } from "@vueuse/core";
 import SignErrorModal from "~/components/modals/sign-error-modal.vue";
 
+definePageMeta({
+  middleware: "auth",
+});
+
 const { t } = useI18n();
 const validationSchema = toTypedSchema(
   zod.object({

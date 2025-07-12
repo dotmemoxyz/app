@@ -30,5 +30,12 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  setCookie(event, "account-token", data.token, {
+    maxAge: 60 * 60 * 24, // 1 day
+    httpOnly: false,
+    secure: !import.meta.dev,
+    sameSite: "lax",
+  });
+
   return data;
 });

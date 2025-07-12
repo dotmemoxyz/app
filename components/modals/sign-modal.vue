@@ -203,6 +203,7 @@ watch(status, async (status) => {
           image: imageCid.value,
           expiresAt: DateTime.fromJSDate(props.endDate).toSQL(),
           createdAt: DateTime.fromJSDate(props.startDate).toSQL(),
+          creator: accountId.value,
         } as CreateMemoDTO,
       });
     } catch (error) {

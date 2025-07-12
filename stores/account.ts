@@ -32,6 +32,15 @@ export const useAccountStore = defineStore({
     disconnect() {
       this.selected = null;
     },
+    initializeToken() {
+      // Initialize token from cookie if available
+      if (import.meta.client) {
+        const accountTokenCookie = useCookie("account-token");
+        if (accountTokenCookie.value) {
+          this.token = accountTokenCookie.value;
+        }
+      }
+    },
   },
 
   getters: {

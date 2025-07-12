@@ -76,6 +76,7 @@ const isSubmittable = computed(
 
 const loading = ref(false);
 const router = useRouter();
+
 const onSubmit = handleSubmit(async ({ endDate, startDate }) => {
   if (localStartDateError.value || localEndDateError.value) {
     return;

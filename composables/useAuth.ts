@@ -1,6 +1,6 @@
-import { $fetch } from "ofetch";
+import { FetchError } from "ofetch";
 import { useAccountStore } from "@/stores/account";
-import type { Challenge, ChallengeExchange } from "~/types/auth";
+import type { Challenge, ChallengeExchange, VerifyTokenResponse } from "~/types/auth";
 
 export default function () {
   const accountStore = useAccountStore();
@@ -41,18 +41,30 @@ export default function () {
         signature,
       },
     });
+
+    // Set token in both store and cookie
     accountStore.setToken(response.token);
-    localStorage.setItem("account-token", response.token);
     return response.token;
   };
 
-  const verifyToken = async (token: string) => {
-    return await $fetch<boolean>("/api/auth/verify", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const verifyToken = async (): Promise<VerifyTokenResponse | null> => {
+    try {
+      return await $fetch("/api/auth/verify");
+    } catch (error) {
+      if (error instanceof FetchError && error.response?.status === 401) {
+        return null;
+      }
+      throw error;
+    }
+  };
+
+  const logout = () => {
+    // Clear token from store
+    accountStore.setToken("");
+
+    // Clear token from cookie
+    const accountTokenCookie = useCookie("account-token");
+    accountTokenCookie.value = null;
   };
 
   return {
@@ -62,5 +74,6 @@ export default function () {
     balance,
     authorize,
     verifyToken,
+    logout,
   };
 }

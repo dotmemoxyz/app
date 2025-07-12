@@ -71,24 +71,11 @@ import type { Option } from "~/types/components";
 import { asyncComputed, useUrlSearchParams } from "@vueuse/core";
 import { DateTime } from "luxon";
 
-const accountStore = useAccountStore();
-const { authorize } = useAuth();
-const router = useRouter();
+definePageMeta({
+  middleware: "auth",
+});
 
-watch(
-  () => accountStore.loaded,
-  async (loaded) => {
-    if (loaded && !accountStore.token) {
-      try {
-        await authorize();
-      } catch (error) {
-        console.error("Authorization failed:", error);
-        router.replace("/");
-      }
-    }
-  },
-  { immediate: true },
-);
+const accountStore = useAccountStore();
 
 const urlParams = useUrlSearchParams<{
   chain: Prefix;
@@ -175,8 +162,8 @@ const filteredDrops = computed(() => {
   }
   const now = DateTime.now();
   return drops.value.filter((drop) => {
-    const createdAt = DateTime.fromSQL(drop.createdAt);
-    const expiredAt = DateTime.fromSQL(drop.expiresAt);
+    const createdAt = DateTime.fromISO(drop.createdAt);
+    const expiredAt = DateTime.fromISO(drop.expiresAt);
     if (filter.value === "active") {
       return createdAt < now && expiredAt > now;
     } else if (filter.value === "inactive") {
@@ -192,8 +179,8 @@ const totalActiveDrops = computed(() => {
   }
   return drops.value.reduce((acc, drop) => {
     // Use createdAt and expiredAt to determine if drop is active
-    const createdAt = DateTime.fromSQL(drop.createdAt);
-    const expiredAt = DateTime.fromSQL(drop.expiresAt);
+    const createdAt = DateTime.fromISO(drop.createdAt);
+    const expiredAt = DateTime.fromISO(drop.expiresAt);
     const now = DateTime.now();
     if (createdAt < now && expiredAt > now) {
       return acc + 1;

@@ -28,6 +28,11 @@
               <dot-connect class="w-full md:w-auto" size="small">Connect</dot-connect>
             </client-only>
           </li>
+          <li v-if="showAuthenticateButton">
+            <dot-button variant="primary" size="large" :disabled="isAuthenticating" @click="handleAuthenticate">
+              {{ isAuthenticating ? t("common.authenticating") : t("common.authenticate") }}
+            </dot-button>
+          </li>
         </ul>
       </nav>
     </transition>
@@ -36,6 +41,15 @@
 <script setup lang="ts">
 const { t } = useI18n();
 const accountStore = useAccountStore();
+const { authorize } = useAuth();
+
+const isAuthenticating = ref(false);
+
+// Show authenticate button when wallet is connected but user is not authenticated
+const showAuthenticateButton = computed(() => {
+  return accountStore.hasSelectedAccount && !accountStore.token;
+});
+
 const links = computed(() => {
   const availableLinks = [
     { name: t("common.claim"), icon: "mdi:hand-back-right", href: "/claim" },
@@ -45,11 +59,28 @@ const links = computed(() => {
       href: "/create",
     },
   ];
-  if (accountStore.hasSelectedAccount) {
+
+  // Only show manage link if user is both connected and authenticated
+  if (accountStore.hasSelectedAccount && accountStore.token) {
     availableLinks.push({ name: t("common.manage"), icon: "mdi:account-cog", href: "/manage" });
   }
+
   return availableLinks;
 });
+
+const handleAuthenticate = async () => {
+  if (isAuthenticating.value) return;
+
+  isAuthenticating.value = true;
+  try {
+    await authorize();
+  } catch (error) {
+    console.error("Authentication failed:", error);
+    // You might want to show a toast notification here
+  } finally {
+    isAuthenticating.value = false;
+  }
+};
 
 const colorMode = useColorMode();
 
