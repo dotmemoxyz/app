@@ -1,33 +1,39 @@
-import type { CreateMemoDTO } from "~/types/memo";
+import { FetchError } from "ofetch";
+import * as zod from "zod";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
+const createMemoValidator = zod.object({
+  secret: zod.string(),
+  mint: zod.string(),
+  collection: zod.number(),
+  chain: zod.string(),
+  name: zod.string(),
+  image: zod.string(),
+  expiresAt: zod.coerce.date(),
+  createdAt: zod.coerce.date(),
+  creator: zod.string(),
+});
+
 export default defineEventHandler(async (event) => {
-  // const { image, name, description, externalUrl, startDate, endDate, quantity, secret, chain, collection } =
-  //   await readBody(event);
+  const body = await readValidatedBody(event, createMemoValidator.parse);
 
-  const { secret, mint, collection, chain, name, image, expiresAt, createdAt } = await readBody<CreateMemoDTO>(event);
-
-  const [data, err] = await $fetch(`${RUNTIME_CONFIG.apiUrl}/poaps`, {
+  const [data, err] = await $fetch(`${RUNTIME_CONFIG.apiUrl}/memos`, {
     method: "POST",
-    body: {
-      id: secret,
-      chain,
-      collection: String(collection),
-      table_ref: `poaps_${secret.toLowerCase()}`,
-      mint,
-      name,
-      image,
-      expires_at: expiresAt,
-      created_at: createdAt,
-    },
+    body,
   })
     .then((r) => [r, null])
     .catch((r) => [null, r]);
 
   if (err) {
-    console.error(err);
-    throw new Error(`[API::CREATE] Failed to create MEMO ${err.message}`);
+    if (err instanceof FetchError) {
+      console.error(
+        `[API::CREATE] Failed to create MEMO: [${err.statusCode}] ${err.statusMessage} - ${JSON.stringify(err.data)}`,
+      );
+    } else {
+      console.error(`[API::CREATE] Failed to create MEMO - unknown error:`, err);
+    }
+    throw new Error(`[API::CREATE] Failed to create MEMO`);
   }
 
   return data;

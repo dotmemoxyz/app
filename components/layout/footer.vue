@@ -1,19 +1,19 @@
 <template>
   <footer
-    class="absolute bottom-0 grid h-16 w-full grid-cols-3 items-center border-t border-k-primary bg-bg-persistent text-text-color"
+    class="text-text-color absolute bottom-0 grid h-16 w-full grid-cols-3 items-center border-t border-accent-primary bg-surface-white"
   >
     <a class="flex items-center gap-1 pl-5" target="_blank" href="https://github.com/dotmemoxyz/app/wiki">
-      <p class="!text-white">Wiki</p>
-      <Icon name="mdi:open-in-new" class="h-4 w-4 text-white" />
+      <p>Wiki</p>
+      <Icon name="mdi:open-in-new" class="h-4 w-4 text-text-primary" />
     </a>
-    <span class="flex-1 text-center text-white">.MEMO 2024 {{ name }}</span>
+    <span class="flex-1 text-center text-text-primary">.MEMO 2024 {{ name }}</span>
     <div class="flex flex-row items-center justify-end gap-5 pr-5 md:gap-10">
       <a target="_blank" href="https://t.me/dotmemoxyz">
         <svg
           style="enable-background: new 0 0 512 512"
           version="1.1"
           viewBox="0 0 512 512"
-          class="h-5 w-5 fill-white md:h-8 md:w-8"
+          class="h-5 w-5 fill-text-primary md:h-8 md:w-8"
           xml:space="preserve"
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -34,7 +34,7 @@
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           version="1.1"
-          class="h-5 w-5 fill-white md:h-8 md:w-8"
+          class="h-5 w-5 fill-text-primary md:h-8 md:w-8"
           viewBox="0 0 24 24"
           style="enable-background: new 0 0 24 24"
           xml:space="preserve"

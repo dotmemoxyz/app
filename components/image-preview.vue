@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex h-52 w-full overflow-hidden rounded-lg border-2 border-black/5 bg-black/5 md:h-72 dark:border-white dark:bg-white/5"
+    class="relative flex h-52 w-full overflow-hidden rounded-3xl border-2 border-black/5 bg-black/5 md:h-72 dark:border-white dark:bg-white/5"
   >
     <template v-if="props.src">
       <img :src="props.src" alt="MEMO image" class="absolute size-full object-cover opacity-80 blur-2xl" />

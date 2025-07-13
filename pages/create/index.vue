@@ -1,11 +1,11 @@
 <template>
   <form class="mx-auto flex max-w-md flex-col space-y-7 px-4 pb-20 pt-8" @submit="onSubmit">
-    <h1 class="text-4xl font-extrabold text-text-color">{{ t("create.title") }}</h1>
+    <h1 class="text-text-color text-4xl font-extrabold">{{ t("create.title") }}</h1>
 
     <div class="flex flex-col gap-4">
       <dot-image-input v-model="image" :error="imageError" />
       <dot-label :text="t('create.memo.chain')">
-        <dot-select v-model="preferredChain" :options="chainList" />
+        <dot-select v-model="preferredChain" :options="chainList" class="w-full" />
       </dot-label>
       <dot-label :text="t('create.memo.name')">
         <dot-text-input
@@ -25,10 +25,10 @@
         />
       </dot-label>
       <dot-label class="relative" :text="t('create.memo.website')">
-        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.websiteHint") }}
           </span>
@@ -40,10 +40,10 @@
         />
       </dot-label>
       <div class="relative grid grid-cols-2 gap-8">
-        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.dateHint") }}
           </span>
@@ -56,30 +56,34 @@
         </dot-label>
       </div>
       <dot-label class="relative" :text="t('create.memo.quantity')">
-        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.quantityHint") }}
           </span>
         </div>
         <dot-text-input v-model.number="quantity" type="number" placeholder="0" :error="quantityError" />
         <div class="hidden gap-2 md:flex">
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity -= 100"> -100 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity -= 10"> -10 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity -= 1"> -1 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity = 0">0 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 1"> +1 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 10"> +10 </dot-button>
-          <dot-button class="flex-1" size="small" variant="tertiary" @click="quantity += 100"> +100 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 100">
+            -100
+          </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 10"> -10 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 1"> -1 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity = 0">0 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 1"> +1 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 10"> +10 </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 100">
+            +100
+          </dot-button>
         </div>
       </dot-label>
       <dot-label class="relative" :text="t('create.memo.secret')">
-        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-k-primary px-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
-            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-k-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
           >
             {{ t("create.memo.secretHint") }}
           </span>
@@ -91,7 +95,9 @@
         </dot-text-input>
       </dot-label>
     </div>
-    <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full"> Create </dot-button>
+    <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full">
+      {{ t("common.create") }}
+    </dot-button>
   </form>
 </template>
 
@@ -105,6 +111,10 @@ import SuccessModal from "~/components/modals/success-modal.vue";
 import SignModal from "~/components/modals/sign-modal.vue";
 import { debouncedWatch } from "@vueuse/core";
 import SignErrorModal from "~/components/modals/sign-error-modal.vue";
+
+definePageMeta({
+  middleware: "auth",
+});
 
 const { t } = useI18n();
 const validationSchema = toTypedSchema(
@@ -169,9 +179,9 @@ debouncedWatch(
   async () => {
     await refresh();
     if (loadCodeError.value && loadCodeError.value.statusCode !== 404) {
-      existingCodeError.value = "Checking existence error!";
+      existingCodeError.value = t("create.existenceError");
     } else if (status.value === "success") {
-      existingCodeError.value = "Code already exists!";
+      existingCodeError.value = t("create.alreadyExists");
     } else {
       existingCodeError.value = "";
     }

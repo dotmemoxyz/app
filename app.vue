@@ -2,7 +2,7 @@
   <NuxtPwaManifest />
   <nuxt-layout>
     <nuxt-page />
-    <modals-container />
+    <ModalsContainer />
   </nuxt-layout>
 </template>
 <script setup lang="ts">
