@@ -8,21 +8,21 @@
   >
     <!-- Modal header -->
     <div class="flex items-center justify-between pb-1">
-      <h1 class="text-text-color text-xl font-semibold">{{ t("create.dialog.confirm") }}</h1>
+      <h1 class="text-xl font-semibold text-text-primary">{{ t("create.dialog.confirm") }}</h1>
       <button @click="closeModal()">
-        <Icon name="mdi:close" size="32" class="text-text-color" />
+        <Icon name="mdi:close" size="32" class="text-text-primary" />
       </button>
     </div>
 
     <hr class="-mx-6" />
     <!-- User Account -->
     <template v-if="accountStore.hasSelectedAccount">
-      <p class="text-text-color mt-2 opacity-70">{{ t("create.dialog.connectedAs") }}</p>
+      <p class="mt-2 text-text-primary opacity-70">{{ t("create.dialog.connectedAs") }}</p>
 
       <div class="flex items-center gap-3">
         <!-- @vue-ignore -->
         <Identicon :size="28" theme="polkadot" :value="currentAccount?.address" />
-        <p class="text-text-color">{{ currentAccount?.name }}</p>
+        <p class="text-text-primary">{{ currentAccount?.name }}</p>
       </div>
     </template>
     <client-only v-else>
@@ -91,8 +91,8 @@
       <div class="flex h-64 flex-row items-center justify-center gap-4 rounded-2xl bg-stone-600/15">
         <signing-loader />
         <div>
-          <p class="text-text-color text-2xl font-bold">{{ t("create.dialog.settingUp") }}</p>
-          <p class="text-text-color opacity-70">
+          <p class="text-2xl font-bold text-text-primary">{{ t("create.dialog.settingUp") }}</p>
+          <p class="text-text-primary opacity-70">
             {{
               t("create.dialog.txProgress", {
                 status: statusText,
