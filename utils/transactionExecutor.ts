@@ -73,14 +73,18 @@ export type TxCbOnSuccessParams = { blockHash: Hash; txHash: Hash };
 export const txCb =
   (
     onSuccess: (prams: TxCbOnSuccessParams) => void,
-    onError: (err: DispatchError) => void,
+    onError: (err: DispatchError | Error) => void,
     onResult: (result: ISubmittableResult) => void = console.log,
   ) =>
   (result: ISubmittableResult): void => {
     onResult(result);
+
     if (result.dispatchError) {
       console.warn("[EXEC] dispatchError", result);
       onError(result.dispatchError);
+    } else if (result.internalError) {
+      console.warn("[EXEC] internalError", result);
+      onError(result.internalError);
     }
 
     if (result.status.isFinalized) {
