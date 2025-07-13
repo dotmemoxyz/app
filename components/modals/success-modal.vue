@@ -7,9 +7,9 @@
     content-transition="vfm-fade"
   >
     <div class="flex items-center justify-between pb-1">
-      <h1 class="text-text-color text-xl font-semibold">{{ t("create.success.title") }}</h1>
+      <h1 class="text-xl font-semibold text-text-primary">{{ t("create.success.title") }}</h1>
       <button @click="closeModal()">
-        <Icon name="mdi:close" size="32" class="text-text-color" />
+        <Icon name="mdi:close" size="32" class="text-text-primary" />
       </button>
     </div>
 
@@ -20,7 +20,7 @@
         <icon name="mdi:check" size="24" />
         <span>{{ t("create.success.confirmed") }}</span>
       </p>
-      <a class="text-text-color inline-flex items-center justify-center gap-2 hover:underline" :href="hashLink">
+      <a class="inline-flex items-center justify-center gap-2 text-text-primary hover:underline" :href="hashLink">
         <span>{{ t("create.success.viewTx") }}</span>
         <icon name="mdi:arrow-top-right" size="24" />
       </a>
@@ -28,7 +28,7 @@
 
     <image-preview :src="imagePreviewSrc" />
 
-    <p class="text-text-color text-center">
+    <p class="text-center text-text-primary">
       {{ t("create.success.created1") }} <span class="text-accent-primary">{{ props.name }}</span>
       {{ t("create.success.created2") }} <span class="text-accent-primary">{{ props.quantity }}</span>
       {{ t("create.success.created3") }}
@@ -80,7 +80,7 @@
 
     <div class="flex gap-3">
       <dot-button variant="tertiary" size="medium" @click="generateQR()">
-        <Icon name="mdi:download" size="32" class="text-text-color" />
+        <Icon name="mdi:download" size="32" class="text-text-primary" />
         {{ t("create.success.qr") }}
       </dot-button>
       <dot-button variant="primary" size="medium" class="flex-1" @click="claim()">
