@@ -37,12 +37,6 @@ const { t } = useI18n();
 const props = defineProps<{
   drop: Memo;
 }>();
-
-const { value: startDate, errorMessage: startDateError } = useField<Date>("startDate");
-const localStartDateError = ref<string>("");
-const { value: endDate, errorMessage: endDateError } = useField<Date>("endDate");
-const localEndDateError = ref<string>("");
-
 const validationSchema = toTypedSchema(
   zod.object({
     startDate: zod.date({ message: "Start date is required" }),
@@ -53,10 +47,15 @@ const validationSchema = toTypedSchema(
 const { handleSubmit, errors } = useForm({
   validationSchema,
   initialValues: {
-    startDate: props.drop.createdAt ? new Date(props.drop.createdAt) : undefined,
-    endDate: props.drop.expiresAt ? new Date(props.drop.expiresAt) : undefined,
+    startDate: new Date(props.drop.createdAt),
+    endDate: new Date(props.drop.expiresAt),
   },
 });
+
+const { value: startDate, errorMessage: startDateError } = useField<Date>("startDate");
+const localStartDateError = ref<string>("");
+const { value: endDate, errorMessage: endDateError } = useField<Date>("endDate");
+const localEndDateError = ref<string>("");
 
 const dateRangeError = computed(() =>
   startDate.value <= endDate.value ? undefined : "Start date must be BEFORE the end date",
