@@ -77,7 +77,7 @@ const isSubmittable = computed(
 const loading = ref(false);
 const router = useRouter();
 
-const onSubmit = handleSubmit(async ({ endDate, startDate }) => {
+const onSubmit = handleSubmit(async () => {
   if (localStartDateError.value || localEndDateError.value) {
     return;
   }
@@ -86,8 +86,8 @@ const onSubmit = handleSubmit(async ({ endDate, startDate }) => {
     const res = await $fetch(`/api/drop/${props.drop.chain}/${props.drop.id}`, {
       method: "PUT",
       body: {
-        startsAt: startDate.toISOString(),
-        endsAt: endDate.toISOString(),
+        startsAt: startDate.value.toISOString(),
+        endsAt: endDate.value.toISOString(),
       },
     });
 

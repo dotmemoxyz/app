@@ -22,8 +22,8 @@ export default defineEventHandler(async (event) => {
   const [rawData, err] = await $fetch(`${RUNTIME_CONFIG.apiUrl}/manage/memos/${chain}/${id}`, {
     method: "PUT",
     body: {
-      created_at: body.startsAt,
-      expires_at: body.endsAt,
+      createdAt: body.startsAt,
+      expiresAt: body.endsAt,
     },
     headers: {
       Authorization: `Bearer ${token}`,
@@ -47,6 +47,7 @@ export default defineEventHandler(async (event) => {
           message: "Unauthorized access",
         });
       }
+      console.error(err.statusMessage, JSON.stringify(err.data));
     }
     console.error(err);
     throw createError({
