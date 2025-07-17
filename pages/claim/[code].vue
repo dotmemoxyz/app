@@ -175,7 +175,7 @@ const { shareOnTelegram, shareOnX } = useSocials();
 const route = useRoute();
 const router = useRouter();
 const accountStore = useAccountStore();
-const manualAddress = ref("");
+const manualAddress = ref((route.query.address as string) || "");
 const showAddressInput = ref(true);
 
 const { t } = useI18n();
@@ -295,6 +295,7 @@ const claim = async () => {
       isClaiming.value = false;
     }, 60_000);
   } catch (error) {
+    console.error("Claim failed:", error);
     claimFailed.value = true;
     isClaiming.value = false;
   }
