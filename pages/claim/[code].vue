@@ -256,7 +256,7 @@ const { shareOnTelegram, shareOnX } = useSocials();
 const route = useRoute();
 const router = useRouter();
 const accountStore = useAccountStore();
-const manualAddress = ref("");
+const manualAddress = ref(route.query.address || "");
 const claimType = ref<"wallet" | "address" | "email">("address");
 
 const { t } = useI18n();
