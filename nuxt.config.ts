@@ -41,6 +41,8 @@ export default defineNuxtConfig({
         coingecko: "",
       },
       chain: "ahp",
+      selfScope: "dot-memo",
+      selfEndpoint: "http://localhost:3000/api/verify",
     },
   },
   colorMode: {
