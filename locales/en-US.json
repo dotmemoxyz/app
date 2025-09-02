@@ -62,6 +62,7 @@
     "connectWallet": "Connect Wallet",
     "enterDOTAddress": "Enter DOT address",
     "alreadyClaimed": "You already claimed this MEMO",
+    "claimFailed": "Failed to claim MEMO, please contact support or try again later.",
     "claimFree": "Claim for free",
     "seeInGallery": "See {name} in gallery",
     "wantToShare": "Would you like to share it?",

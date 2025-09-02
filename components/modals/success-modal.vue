@@ -78,12 +78,13 @@
       </button>
     </div>
 
-    <div class="flex gap-3">
+    <div class="flex items-center gap-3">
       <dot-button variant="tertiary" size="medium" @click="generateQR()">
-        <Icon name="mdi:download" size="32" class="text-text-primary" />
+        <Icon name="mdi:download" class="size-[32px] text-text-primary" />
         {{ t("create.success.qr") }}
       </dot-button>
       <dot-button variant="primary" size="medium" class="flex-1" @click="claim()">
+        <span class="h-[28px]" />
         {{ t("create.success.claim") }}
       </dot-button>
     </div>

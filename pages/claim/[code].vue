@@ -169,7 +169,10 @@
             </div>
           </client-only>
 
-          <p v-if="claimFailed" class="w-full text-center !text-red-500">{{ t("claim.alreadyClaimed") }}</p>
+          <p v-if="claimFailed && alreadyCollected" class="w-full text-center !text-red-500">
+            {{ t("claim.alreadyClaimed") }}
+          </p>
+          <p v-else-if="claimFailed" class="w-full text-center !text-red-500">{{ t("claim.claimFailed") }}</p>
         </template>
         <div class="relative flex w-full flex-col gap-2">
           <dot-button
@@ -251,12 +254,14 @@ import { useModal } from "vue-final-modal";
 import type { Prefix } from "@kodadot1/static";
 import { getFreeMints } from "~/utils/sdk/query";
 
+import { FetchError } from "ofetch";
+
 const { shareOnTelegram, shareOnX } = useSocials();
 
 const route = useRoute();
 const router = useRouter();
 const accountStore = useAccountStore();
-const manualAddress = ref(route.query.address || "");
+const manualAddress = ref((route.query.address || "") as string);
 const claimType = ref<"wallet" | "address" | "email">("address");
 
 const { t } = useI18n();
@@ -335,6 +340,7 @@ const tooLate = computed(() => {
 });
 
 const claimFailed = ref(false);
+const alreadyCollected = ref(false);
 const claimed = ref<null | string>(null);
 const isClaiming = ref(false);
 
@@ -374,15 +380,16 @@ const claim = async () => {
         address: address.value,
       },
     });
-
-    setTimeout(() => {
-      const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collection}-${data.sn}`;
-      claimed.value = url;
-      isClaiming.value = false;
-    }, 60_000);
+    const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collection}-${data.sn}`;
+    claimed.value = url;
   } catch (error) {
-    console.error("Claim failed:", error);
     claimFailed.value = true;
+    if (error instanceof FetchError && error.status === 409) {
+      alreadyCollected.value = true;
+      return;
+    }
+    console.error("Claim failed:", error);
+  } finally {
     isClaiming.value = false;
   }
 };
