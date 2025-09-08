@@ -1,6 +1,6 @@
 import { ref, computed, watch, type Ref } from "vue";
 import { countries, getUniversalLink } from "@selfxyz/core";
-import { SelfAppBuilder, type SelfApp } from "@selfxyz/qrcode";
+import { SelfAppBuilder, type SelfApp } from "@selfxyz/common";
 
 interface UseSelfOptions {
   appName?: string;
