@@ -4,6 +4,9 @@
     "offline": "You are offline. Check your internet connection.",
     "claim": "Claim",
     "create": "Create",
+    "manage": "Manage",
+    "authenticate": "Authenticate",
+    "authenticating": "Authenticating...",
     "confirm": "Confirm",
     "cancel": "Cancel",
     "learnMore": "Learn More",
@@ -11,12 +14,20 @@
     "searching": "Searching...",
     "calculating": "Calculating...",
     "signing": "Signing...",
+    "connect": "Connect",
+    "connectedAccount": "Connected account",
     "download": "Download",
     "disconnect": "Disconnect",
     "back": "Back",
     "address": "Address",
     "account": "Account",
-    "error": "Error"
+    "error": "Error",
+    "timeAgo": "{time} ago",
+    "optional": "Optional",
+    "text": "Text",
+    "saveChanges": "Save Changes",
+    "change": "Change",
+    "saving": "Saving..."
   },
   "landing": {
     "quote1": "Your memories,",
@@ -42,6 +53,7 @@
   },
   "claim": {
     "enterCode": "Enter MEMO Code",
+    "enterCodeDescription": "Enter the secret code to proceed",
     "howThisWorks": "How this works?",
     "success": "MEMO claimed successfully",
     "cantLoad": "Couldn't load MEMO",
@@ -50,6 +62,7 @@
     "connectWallet": "Connect Wallet",
     "enterDOTAddress": "Enter DOT address",
     "alreadyClaimed": "You already claimed this MEMO",
+    "claimFailed": "Failed to claim MEMO, please contact support or try again later.",
     "claimFree": "Claim for free",
     "seeInGallery": "See {name} in gallery",
     "wantToShare": "Would you like to share it?",
@@ -58,10 +71,12 @@
     "claiming": "Claiming MEMO...",
     "claim": "Claim MEMO",
     "loading": "Loading info...",
-    "remaining": "Remaining claims: {free} / {total}"
+    "remaining": "{free} / {total} remaining"
   },
   "create": {
     "title": ".create",
+    "existenceError": "Checking for uniqueness failed. Please contact support or try again later.",
+    "alreadyExists": "This code is already being used",
     "memo": {
       "chain": "Chain",
       "name": "Name",
@@ -297,6 +312,70 @@
     "image": {
       "chooseArtwork": "Drop your artwork",
       "chooseDifferent": "Choose a different artwork"
+    }
+  },
+  "manage": {
+    "title": "Your MEMOs",
+    "activeDrops": "Active Drops",
+    "totalClaims": "Total Claims",
+    "createDrop": "+ Create MEMO",
+    "noDrops": "No MEMOs matched your filters.",
+    "dropsError": "There was an error loading drops. Please contact our support or try again later.",
+    "drop": {
+      "active": "Active",
+      "inactive": "Expired",
+      "upcoming": "Upcoming",
+      "ended": "Ended",
+      "left": "{time} left",
+      "progress": "Progress",
+      "claimed": "{part}/{total} claimed",
+      "manageDrop": "Manage Drop",
+      "expired": "Expired",
+      "backToDrops": "Back to Drops",
+      "viewClaimPage": "View Claim Page",
+      "copyLink": "Copy Link",
+      "pause": "Pause",
+      "tabs": {
+        "analytics": "Analytics",
+        "customize": "Customize",
+        "settings": "Settings"
+      }
+    },
+    "analytics": {
+      "totalClaims": "Total Claims",
+      "uniqueAddresses": "Unique Addresses",
+      "recentClaims": "Recent Claims",
+      "exportCsv": "Export CSV",
+      "table": {
+        "claimId": "Claim #",
+        "address": "Address",
+        "time": "Time",
+        "transaction": "Transaction",
+        "noTransactionsYet": "No transactions yet"
+      }
+    },
+    "customize": {
+      "title": "Claim page image",
+      "titleHint": "This image will be shown on the claim page. After claiming, users will receive your memo NFT with its own unique image.",
+      "customPreviewImage": "Use custom preview image",
+      "customPreviewImageHint": "Upload a different image for the claim page",
+      "textContent": "Text Content",
+      "heading": "Heading",
+      "subheading": "Subheading",
+      "buttonText": "Button Text",
+      "socials": "Socials",
+      "socialsHint": "Links to socials are displayed under the subheading",
+      "colors": "Colors",
+      "colorsHint": "Choose color that match your brand",
+      "darkMode": "Dark Mode",
+      "accentColor": "Accent color",
+      "contrastCheck": "Contrast check",
+      "preview": "Preview",
+      "previewHint": "Live preview of claim page"
+    },
+    "settings": {
+      "title": "Distribution settings",
+      "updateWindow": "Update claim window"
     }
   }
 }

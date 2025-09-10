@@ -6,7 +6,7 @@ export default defineNuxtConfig({
       title: ".MEMO",
     },
   },
-
+  plugins: ["~/plugins/auth-init.client.ts"],
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
   vite: {
@@ -30,6 +30,9 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
   ],
   i18n: {
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
     vueI18n: "./i18n.config.ts",
   },
   runtimeConfig: {
@@ -44,6 +47,8 @@ export default defineNuxtConfig({
     },
   },
   colorMode: {
+    preference: "system",
+    fallback: "light",
     storage: "localStorage",
     storageKey: "color-mode",
   },
@@ -96,8 +101,18 @@ export default defineNuxtConfig({
   icon: {
     clientBundle: {
       scan: true,
+      includeCustomCollections: true,
+      sizeLimitKb: 1024,
     },
     serverBundle: "local",
+    customCollections: [
+      {
+        prefix: "memo",
+        dir: "./assets/icons",
+        width: 24,
+        height: 24,
+      },
+    ],
   },
 
   googleFonts: {

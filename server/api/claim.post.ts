@@ -1,3 +1,4 @@
+import { FetchError } from "ofetch";
 import type { MemoDTO } from "~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
@@ -5,7 +6,7 @@ const RUNTIME_CONFIG = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
   const { code, address } = await readBody(event);
 
-  const [data, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/poaps/${code}/claim`, {
+  const [data, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/memos/${code}/claim`, {
     method: "POST",
     body: {
       address,
@@ -15,8 +16,17 @@ export default defineEventHandler(async (event) => {
     .catch((r) => [null, r]);
 
   if (err) {
-    console.error(err);
-    throw new Error("An unknown error has occoured");
+    if (err instanceof FetchError && err.status === 409) {
+      throw createError({
+        status: 409,
+        statusText: "MEMO has already been claimed",
+      });
+    }
+    console.error("Unknown claim error", err);
+    throw createError({
+      status: 500,
+      statusText: "An unknown error has occurred",
+    });
   }
 
   return data;

@@ -1,12 +1,12 @@
 <template>
   <VueFinalModal
     class="flex items-center justify-center px-4 py-6"
-    content-class="flex w-full mx-2 max-h-full overflow-y-scroll md:mx-0 md:w-2/5 flex-col p-6 gap-4 bg-background-color rounded-2xl border border-background-color-inverse"
+    content-class="flex w-full max-h-full overflow-y-scroll md:mx-0 md:w-2/5 flex-col p-6 gap-4 bg-surface-white rounded-2xl border border-background-color-inverse"
     overlay-transition="vfm-fade"
     content-transition="vfm-fade"
   >
     <template v-if="state === 'wallet'">
-      <h1 class="text-2xl font-semibold text-text-color">{{ t("wallets.selectWallet") }}</h1>
+      <h1 class="text-2xl font-semibold text-text-primary">{{ t("wallets.selectWallet") }}</h1>
       <div class="flex flex-col gap-2">
         <div class="mb-4 flex flex-col gap-3">
           <dot-button
@@ -27,7 +27,7 @@
           </dot-button>
           <div class="flex flex-col gap-2">
             <button class="flex w-full items-center justify-between" @click="showBreakdown = !showBreakdown">
-              <h2 class="text-lg font-semibold text-text-color">{{ t("wallets.other") }}</h2>
+              <h2 class="text-lg font-semibold text-text-primary">{{ t("wallets.other") }}</h2>
               <Icon
                 :name="`mdi:chevron-${showBreakdown ? 'up' : 'down'}`"
                 size="20"
@@ -62,7 +62,7 @@
       </div>
     </template>
     <template v-if="state === 'account'">
-      <h1 class="text-2xl font-semibold text-text-color">{{ t("wallets.selectAccount") }}</h1>
+      <h1 class="text-2xl font-semibold text-text-primary">{{ t("wallets.selectAccount") }}</h1>
       <div class="flex flex-col gap-2">
         <div class="mb-4 flex flex-col gap-3">
           <dot-button

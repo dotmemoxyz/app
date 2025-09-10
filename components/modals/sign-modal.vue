@@ -2,27 +2,27 @@
   <VueFinalModal
     modal-id="sign-modal"
     class="flex items-center justify-center"
-    content-class="flex w-[calc(100vw-20px)] sm:w-2/3 md:w-1/2 xl:w-1/4 flex-col max-h-[calc(100vh-40px)] overflow-y-scroll overflow-x-hidden p-6 gap-4 bg-background-color rounded-2xl border border-background-color-inverse"
+    content-class="flex w-[calc(100vw-20px)] sm:w-2/3 md:w-1/2 xl:w-1/4 flex-col max-h-[calc(100vh-40px)] overflow-y-scroll overflow-x-hidden p-6 gap-4 bg-surface-white rounded-2xl border border-background-color-inverse"
     overlay-transition="vfm-fade"
     content-transition="vfm-fade"
   >
     <!-- Modal header -->
     <div class="flex items-center justify-between pb-1">
-      <h1 class="text-xl font-semibold text-text-color">{{ t("create.dialog.confirm") }}</h1>
+      <h1 class="text-xl font-semibold text-text-primary">{{ t("create.dialog.confirm") }}</h1>
       <button @click="closeModal()">
-        <Icon name="mdi:close" size="32" class="text-text-color" />
+        <Icon name="mdi:close" size="32" class="text-text-primary" />
       </button>
     </div>
 
     <hr class="-mx-6" />
     <!-- User Account -->
     <template v-if="accountStore.hasSelectedAccount">
-      <p class="mt-2 text-text-color opacity-70">{{ t("create.dialog.connectedAs") }}</p>
+      <p class="mt-2 text-text-primary opacity-70">{{ t("create.dialog.connectedAs") }}</p>
 
       <div class="flex items-center gap-3">
         <!-- @vue-ignore -->
         <Identicon :size="28" theme="polkadot" :value="currentAccount?.address" />
-        <p class="text-text-color">{{ currentAccount?.name }}</p>
+        <p class="text-text-primary">{{ currentAccount?.name }}</p>
       </div>
     </template>
     <client-only v-else>
@@ -91,8 +91,8 @@
       <div class="flex h-64 flex-row items-center justify-center gap-4 rounded-2xl bg-stone-600/15">
         <signing-loader />
         <div>
-          <p class="text-2xl font-bold text-text-color">{{ t("create.dialog.settingUp") }}</p>
-          <p class="text-text-color opacity-70">
+          <p class="text-2xl font-bold text-text-primary">{{ t("create.dialog.settingUp") }}</p>
+          <p class="text-text-primary opacity-70">
             {{
               t("create.dialog.txProgress", {
                 status: statusText,
@@ -203,6 +203,7 @@ watch(status, async (status) => {
           image: imageCid.value,
           expiresAt: DateTime.fromJSDate(props.endDate).toSQL(),
           createdAt: DateTime.fromJSDate(props.startDate).toSQL(),
+          creator: accountId.value,
         } as CreateMemoDTO,
       });
     } catch (error) {

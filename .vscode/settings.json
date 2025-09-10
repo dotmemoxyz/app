@@ -4,5 +4,5 @@
     "source.organizeImports": "never",
     "source.fixAll": "explicit"
   },
-  "cSpell.words": ["histoire", "Nuxt", "MEMO"]
+  "cSpell.words": ["histoire", "IPFS", "MEMO", "Nuxt"]
 }

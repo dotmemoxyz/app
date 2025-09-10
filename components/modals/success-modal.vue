@@ -2,25 +2,25 @@
   <vue-final-modal
     modal-id="success-modal"
     class="flex items-center justify-center overflow-hidden"
-    content-class="flex w-[calc(100vw-20px)] sm:w-2/3 overflow-hidden md:w-1/2 xl:w-1/3 flex-col max-h-[calc(100vh-40px)] p-6 gap-4 bg-background-color rounded-2xl border border-background-color-inverse"
+    content-class="flex w-[calc(100vw-20px)] sm:w-2/3 overflow-hidden md:w-1/2 xl:w-1/3 flex-col max-h-[calc(100vh-40px)] p-6 gap-4 bg-surface-white rounded-2xl border border-background-color-inverse"
     overlay-transition="vfm-fade"
     content-transition="vfm-fade"
   >
     <div class="flex items-center justify-between pb-1">
-      <h1 class="text-xl font-semibold text-text-color">{{ t("create.success.title") }}</h1>
+      <h1 class="text-xl font-semibold text-text-primary">{{ t("create.success.title") }}</h1>
       <button @click="closeModal()">
-        <Icon name="mdi:close" size="32" class="text-text-color" />
+        <Icon name="mdi:close" size="32" class="text-text-primary" />
       </button>
     </div>
 
     <hr class="-mx-6" />
 
-    <div class="flex w-full justify-between rounded-xl border border-k-primary bg-emerald-400/10 px-3 py-3">
-      <p class="inline-flex items-center justify-center gap-2 font-medium text-k-primary">
+    <div class="flex w-full justify-between rounded-xl border border-accent-primary bg-emerald-400/10 px-3 py-3">
+      <p class="inline-flex items-center justify-center gap-2 font-medium text-accent-primary">
         <icon name="mdi:check" size="24" />
         <span>{{ t("create.success.confirmed") }}</span>
       </p>
-      <a class="inline-flex items-center justify-center gap-2 text-text-color hover:underline" :href="hashLink">
+      <a class="inline-flex items-center justify-center gap-2 text-text-primary hover:underline" :href="hashLink">
         <span>{{ t("create.success.viewTx") }}</span>
         <icon name="mdi:arrow-top-right" size="24" />
       </a>
@@ -28,9 +28,9 @@
 
     <image-preview :src="imagePreviewSrc" />
 
-    <p class="text-center text-text-color">
-      {{ t("create.success.created1") }} <span class="text-k-primary">{{ props.name }}</span>
-      {{ t("create.success.created2") }} <span class="text-k-primary">{{ props.quantity }}</span>
+    <p class="text-center text-text-primary">
+      {{ t("create.success.created1") }} <span class="text-accent-primary">{{ props.name }}</span>
+      {{ t("create.success.created2") }} <span class="text-accent-primary">{{ props.quantity }}</span>
       {{ t("create.success.created3") }}
     </p>
 
@@ -78,12 +78,13 @@
       </button>
     </div>
 
-    <div class="flex gap-3">
+    <div class="flex items-center gap-3">
       <dot-button variant="tertiary" size="medium" @click="generateQR()">
-        <Icon name="mdi:download" size="32" class="text-text-color" />
+        <Icon name="mdi:download" class="size-[32px] text-text-primary" />
         {{ t("create.success.qr") }}
       </dot-button>
       <dot-button variant="primary" size="medium" class="flex-1" @click="claim()">
+        <span class="h-[28px]" />
         {{ t("create.success.claim") }}
       </dot-button>
     </div>
