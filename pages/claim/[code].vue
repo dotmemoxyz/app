@@ -383,6 +383,7 @@ const claim = async () => {
     const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collection}-${data.sn}`;
     claimed.value = url;
   } catch (error) {
+    console.error("Claim failed:", error);
     claimFailed.value = true;
     if (error instanceof FetchError && error.status === 409) {
       alreadyCollected.value = true;
