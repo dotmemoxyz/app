@@ -70,6 +70,7 @@ export interface ClaimMemoResponse {
   chain: "ahk" | "ahp";
   collectionId: string;
   itemId: string;
+  legacy: boolean;
 }
 
 /**

@@ -381,7 +381,14 @@ const claim = async () => {
       },
     });
     const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collectionId}-${data.itemId}`;
-    claimed.value = url;
+    if (data.legacy) {
+      // In legacy mode, redirect after 1 minute to wait for queue
+      setTimeout(() => {
+        claimed.value = url;
+      }, 60_000);
+    } else {
+      claimed.value = url;
+    }
   } catch (error) {
     console.error("Claim failed:", error);
     claimFailed.value = true;
