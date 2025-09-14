@@ -36,9 +36,12 @@
         <div class="flex flex-col gap-[16px]">
           <div class="flex w-full items-center justify-between">
             <b class="text-base !font-normal">{{ $t("manage.customize.heading") }}</b>
-            <p class="text-xs font-normal">{{ heading.length }}/40</p>
+            <p class="text-xs font-normal" :class="{ '!text-red-500': heading.length > 40 }">{{ heading.length }}/40</p>
           </div>
-          <dot-text-input v-model="heading" :placeholder="$t('common.text')" />
+          <dot-text-input v-model="heading" :placeholder="$t('common.text')" maxlength="40" />
+          <p v-if="heading.length > 40" class="mt-1 text-xs !text-red-500">
+            {{ $t("manage.customize.headingTooLong") }}
+          </p>
         </div>
         <div class="flex flex-col gap-[16px]">
           <div class="flex w-full items-center justify-between">
@@ -46,16 +49,26 @@
               <b class="text-base !font-normal">{{ $t("manage.customize.subheading") }}</b>
               <p class="text-xs !font-normal !text-text-secondary">({{ $t("common.optional") }})</p>
             </span>
-            <p class="text-xs font-normal">{{ subheading.length }}/40</p>
+            <p class="text-xs font-normal" :class="{ '!text-red-500': subheading.length > 300 }">
+              {{ subheading.length }}/300
+            </p>
           </div>
-          <dot-text-area v-model="subheading" :placeholder="$t('common.text')" />
+          <dot-text-area v-model="subheading" :placeholder="$t('common.text')" maxlength="300" />
+          <p v-if="subheading.length > 300" class="mt-1 text-xs !text-red-500">
+            {{ $t("manage.customize.subheadingTooLong") }}
+          </p>
         </div>
         <div class="flex flex-col gap-[16px]">
           <div class="flex w-full items-center justify-between">
             <b class="text-base !font-normal">{{ $t("manage.customize.buttonText") }}</b>
-            <p class="text-xs font-normal">{{ claimText.length }}/40</p>
+            <p class="text-xs font-normal" :class="{ '!text-red-500': claimText.length > 40 }">
+              {{ claimText.length }}/40
+            </p>
           </div>
-          <dot-text-input v-model="claimText" :placeholder="$t('common.claim')" />
+          <dot-text-input v-model="claimText" :placeholder="$t('common.claim')" maxlength="40" />
+          <p v-if="claimText.length > 40" class="mt-1 text-xs !text-red-500">
+            {{ $t("manage.customize.claimTextTooLong") }}
+          </p>
         </div>
       </div>
       <!-- Socials -->
@@ -97,8 +110,13 @@
         </div>
       </div>
       <div class="flex w-full flex-col items-center gap-2">
-        <dot-button :disabled="loading" class="w-full" @click="save">{{ buttonLabel }}</dot-button>
+        <dot-button :disabled="loading || !isValid" class="w-full" @click="save">
+          {{ buttonLabel }}
+        </dot-button>
         <p v-if="updateError" class="text-center text-sm !text-red-500">{{ updateError }}</p>
+        <p v-else-if="!isValid" class="text-center text-sm !text-yellow-500">
+          {{ $t("manage.customize.validationRequired") }}
+        </p>
       </div>
     </div>
     <!-- Customize preview -->
@@ -153,7 +171,31 @@ const editedData = computed<Memo>(() => {
 const loading = ref(false);
 const updateError = ref<string | null>(null);
 
+// Validation computed properties
+const isValid = computed(() => {
+  return heading.value.length <= 40 && subheading.value.length <= 300 && claimText.value.length <= 40;
+});
+
+const validationErrors = computed(() => {
+  const errors: string[] = [];
+  if (heading.value.length > 40) {
+    errors.push(t("manage.customize.headingTooLong"));
+  }
+  if (subheading.value.length > 300) {
+    errors.push(t("manage.customize.subheadingTooLong"));
+  }
+  if (claimText.value.length > 40) {
+    errors.push(t("manage.customize.claimTextTooLong"));
+  }
+  return errors;
+});
+
 const save = async () => {
+  // Validate before saving
+  if (!isValid.value) {
+    updateError.value = validationErrors.value.join(". ");
+    return;
+  }
   const body: MemoCustomize = {
     image: imageIPFS.value || undefined,
     heading: heading.value || undefined,

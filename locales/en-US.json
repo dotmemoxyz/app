@@ -375,7 +375,11 @@
       "accentColor": "Accent color",
       "contrastCheck": "Contrast check",
       "preview": "Preview",
-      "previewHint": "Live preview of claim page"
+      "previewHint": "Live preview of claim page",
+      "headingTooLong": "Heading must be 40 characters or less",
+      "subheadingTooLong": "Subheading must be 300 characters or less",
+      "claimTextTooLong": "Button text must be 40 characters or less",
+      "validationRequired": "Please fix validation errors before saving"
     },
     "settings": {
       "title": "Distribution settings",

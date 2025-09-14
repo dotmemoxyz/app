@@ -69,7 +69,7 @@ export interface ClaimMemoResponse {
   message: string;
   chain: "ahk" | "ahp";
   collectionId: string;
-  memoId: string;
+  itemId: string;
 }
 
 /**

@@ -313,7 +313,7 @@ const claimed = ref<null | string>(null);
 const isClaiming = ref(false);
 
 const claimButtonLabel = computed(() => {
-  return props.data.customize?.claimText || t("claim.claim");
+  return props.data.customize?.claimText?.slice(0, 40) || t("claim.claim");
 });
 
 const { open } = useModal({

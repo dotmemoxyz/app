@@ -9,7 +9,7 @@
     </div>
     <!-- Info -->
     <div v-if="ownership === 'created'" class="flex flex-1 flex-col justify-between py-4">
-      <h2 class="text-[24px]">{{ props.drop.name }}</h2>
+      <h2 class="text-[24px]">{{ props.drop.customize.heading ?? props.drop.name }}</h2>
       <span class="flex items-center gap-8">
         <div v-if="isExpired" class="flex w-[88px] items-center justify-center rounded-full bg-border-default p-[5px]">
           <p class="text-[14px] leading-[17px] !text-text-placeholder">{{ $t("manage.drop.inactive") }}</p>
@@ -38,9 +38,9 @@
         </div>
       </span>
     </div>
-    <div v-else class="flex flex-1 flex-col justify-between py-4">
-      <h2 class="text-[24px]">{{ props.drop.name }}</h2>
-      <div class="flex gap-10">
+    <div v-else class="flex flex-1 flex-col py-4">
+      <h2 class="text-[24px] leading-[24px]">{{ props.drop.customize.heading ?? props.drop.name }}</h2>
+      <div class="mt-[17px] flex gap-x-10">
         <!-- Created by -->
         <p class="text-[14px] !text-[#606060]">
           by:
@@ -58,42 +58,44 @@
           </p>
         </span>
       </div>
-      <div class="flex justify-between">
-        <p class="!text-[#606060]">{{ props.drop.description }}</p>
+      <div class="mt-[21px] flex justify-between">
+        <p class="max-w-[495px] text-[14px] !text-[#606060]">
+          {{ props.drop.customize.subheading ?? props.drop.description }}
+        </p>
         <!-- Socials -->
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-row items-end justify-end gap-3">
           <!-- Telegram -->
           <a
             v-if="props.drop.customize.telegram"
-            :href="props.drop.customize.telegram"
+            :href="getTelegramUrl(props.drop.customize.telegram)"
             target="_blank"
-            class="flex items-center gap-[6px] px-[14px]"
+            class="flex h-[45px] items-center gap-[6px] rounded-xl bg-background px-[14px]"
             rel="noopener noreferrer"
           >
-            <icon name="mdi:telegram" size="16" class="text-text-primary" />
-            <p>@{{ props.drop.customize.telegram.split("/").pop() }}</p>
+            <icon name="mdi:telegram" size="24" class="text-text-primary" />
+            <p class="text-[14px]">@{{ props.drop.customize.telegram.split("/").pop() }}</p>
           </a>
           <!-- Instagram -->
           <a
             v-if="props.drop.customize.instagram"
-            :href="props.drop.customize.instagram"
+            :href="getInstagramUrl(props.drop.customize.instagram)"
             target="_blank"
-            class="flex items-center gap-[6px] px-[14px]"
+            class="flex h-[45px] items-center gap-[6px] rounded-xl bg-background px-[14px]"
             rel="noopener noreferrer"
           >
-            <icon name="mdi:instagram" size="16" class="text-text-primary" />
-            <p>@{{ props.drop.customize.instagram.split("/").pop() }}</p>
+            <icon name="mdi:instagram" size="24" class="text-text-primary" />
+            <p class="text-[14px]">@{{ props.drop.customize.instagram.split("/").pop() }}</p>
           </a>
           <!-- Website -->
           <a
             v-if="props.drop.customize.website"
             :href="props.drop.customize.website"
             target="_blank"
-            class="flex items-center gap-[6px] px-[14px]"
+            class="flex h-[45px] items-center gap-[6px] rounded-xl bg-background px-[14px]"
             rel="noopener noreferrer"
           >
-            <icon name="mdi:web" size="16" class="text-text-primary" />
-            <p>{{ formatWeb(props.drop.customize.website) }}</p>
+            <icon name="mdi:web" size="24" class="text-text-primary" />
+            <p class="text-[14px]">{{ formatWeb(props.drop.customize.website) }}</p>
           </a>
         </div>
       </div>

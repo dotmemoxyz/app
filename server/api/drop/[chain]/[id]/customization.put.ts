@@ -2,15 +2,19 @@ import * as zod from "zod";
 import { FetchError } from "ofetch";
 
 const customizationSchema = zod.object({
-  image: zod.string().optional(),
-  heading: zod.string().optional(),
-  subheading: zod.string().optional(),
-  claimText: zod.string().optional(),
-  telegram: zod.string().url().optional(),
-  instagram: zod.string().url().optional(),
-  website: zod.string().url().optional(),
+  image: zod.string().trim().optional(),
+  heading: zod.string().trim().optional(),
+  subheading: zod.string().trim().optional(),
+  claimText: zod.string().trim().optional(),
+  telegram: zod.string().trim().optional(),
+  instagram: zod.string().trim().optional(),
+  website: zod.string().trim().url().optional(),
   darkMode: zod.boolean().optional(),
-  accentColor: zod.string().optional(),
+  accentColor: zod
+    .string()
+    .trim()
+    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Must be a valid hex color")
+    .optional(),
 });
 
 export default defineEventHandler(async (event) => {
