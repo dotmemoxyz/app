@@ -33,7 +33,7 @@
       <b class="text-center text-[24px] leading-[30px]">{{ props.drop.name }}</b>
     </div>
     <!-- Info -->
-    <div class="flex w-full flex-col gap-[24px]">
+    <div v-if="ownership === 'created'" class="flex w-full flex-col gap-[24px]">
       <div class="flex flex-col gap-[16px]">
         <div class="flex w-full items-center justify-between">
           <p class="text-[14px] leading-[18px] !text-text-secondary">{{ $t("manage.drop.progress") }}</p>
@@ -58,9 +58,18 @@
       </div>
       <a
         class="flex max-h-[45px] w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white px-[14px] py-[16px] hover:opacity-70"
-        :href="`/manage/${props.drop.chain}/${props.drop.id}`"
+        :href="`/manage/${props.drop.chain}/${props.drop.id}?ownership=created`"
       >
         <p class="text-[14px] font-normal leading-[18px]">{{ $t("manage.drop.manageDrop") }}</p>
+        <Icon name="mdi:arrow-right" class="size-[20px] text-text-primary" />
+      </a>
+    </div>
+    <div v-else class="flex w-full flex-col gap-[24px]">
+      <a
+        class="flex max-h-[45px] w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white px-[14px] py-[16px] hover:opacity-70"
+        :href="`/manage/${props.drop.chain}/${props.drop.id}?ownership=collected`"
+      >
+        <p class="text-[14px] font-normal leading-[18px]">{{ $t("manage.drop.viewDrop") }}</p>
         <Icon name="mdi:arrow-right" class="size-[20px] text-text-primary" />
       </a>
     </div>
@@ -70,10 +79,11 @@
 <script lang="ts" setup>
 import type { Prefix } from "@kodadot1/static";
 import { DateTime, Duration } from "luxon";
-import type { Memo } from "~/types/memo";
+import type { Memo, Ownership } from "~/types/memo";
 import { getFreeMints } from "~/utils/sdk/query";
 const props = defineProps<{
   drop: Memo;
+  ownership: Ownership;
 }>();
 const { locale } = useI18n();
 

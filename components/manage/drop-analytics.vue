@@ -7,7 +7,7 @@
           <Icon name="memo:people" class="size-[22px] text-accent-primary-dark" />
         </div>
         <div class="flex flex-col justify-between gap-[6px]">
-          <h3 class="text-[20px] font-medium leading-[25px]">{{ data?.length ?? 0 }}</h3>
+          <h3 class="text-[20px] font-medium leading-[25px]">{{ dropCount ?? 0 }}</h3>
           <p class="text-[14px] font-normal leading-[18px] !text-[#606060]">{{ $t("manage.analytics.totalClaims") }}</p>
         </div>
       </div>
@@ -18,7 +18,7 @@
 
       <div class="flex gap-4">
         <!-- Pagination -->
-        <div v-if="data" class="flex gap-2">
+        <div v-if="drops" class="flex gap-2">
           <dot-button
             :disabled="page === 1"
             variant="tertiary"
@@ -28,7 +28,7 @@
             <Icon name="mdi:chevron-left" class="size-[24px]" />
           </dot-button>
           <dot-button
-            :disabled="data.length < PAGE_SIZE"
+            :disabled="drops.length < PAGE_SIZE"
             variant="tertiary"
             class="flex !h-[45px] items-center gap-1"
             @click="nextPage"
@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="w-full overflow-x-scroll">
-      <table v-if="data" class="transaction-table w-full">
+      <table v-if="drops" class="transaction-table w-full">
         <thead>
           <tr>
             <th>{{ $t("manage.analytics.table.claimId") }}</th>
@@ -52,7 +52,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in data" :key="item.id">
+          <tr v-for="item in drops" :key="item.id">
             <td>#{{ item.id.split("-").at(1) }}</td>
             <td>{{ addressShortener(item.currentOwner) }}</td>
             <td>{{ getTimeFormat(item.createdAt) }}</td>
@@ -65,7 +65,7 @@
           </tr>
         </tbody>
       </table>
-      <div v-if="data?.length === 0" class="flex h-[200px] w-full items-center justify-center">
+      <div v-if="drops?.length === 0" class="flex h-[200px] w-full items-center justify-center">
         <p class="text-[16px] font-medium">{{ $t("manage.analytics.table.noTransactionsYet") }}</p>
       </div>
     </div>
@@ -116,7 +116,7 @@ const prevPage = () => {
   page.value -= 1;
 };
 
-const { data } = await useAsyncData(
+const { data: drops } = await useAsyncData(
   `transactions-drop-${props.drop.id}`,
   () => {
     const client = getClient(props.drop.chain);
@@ -133,6 +133,19 @@ const { data } = await useAsyncData(
     watch: [page],
   },
 );
+
+const { data: dropCount } = await useAsyncData(
+  `transactions-count-drop-${props.drop.id}`,
+  () => {
+    const client = getClient(props.drop.chain);
+    const query = client.itemCountByCollectionId(props.drop.id);
+    return client.fetch<{ itemCount: { totalCount: number } }>(query);
+  },
+  {
+    transform: ({ data }) => data.itemCount.totalCount,
+  },
+);
+
 const { t, locale } = useI18n();
 const getTimeFormat = (dateRaw: string) => {
   const date = DateTime.fromISO(dateRaw);
@@ -157,11 +170,11 @@ const getTimeFormat = (dateRaw: string) => {
 };
 
 const exportCsv = () => {
-  if (!data.value) {
+  if (!drops.value) {
     return;
   }
   const header = `${t("manage.analytics.table.claimId")},${t("manage.analytics.table.address")},${t("manage.analytics.table.time")},${t("manage.analytics.table.transaction")}\n`;
-  const csv = data.value
+  const csv = drops.value
     .map((item) => {
       return `${item.id.split("-").at(1)},${item.currentOwner},${getTimeFormat(item.createdAt)},${item.blockNumber}`;
     })

@@ -1,5 +1,7 @@
 import type { Prefix } from "@kodadot1/static";
 
+export type Ownership = "created" | "collected";
+
 export type MemoCustomize = {
   image?: string;
   heading?: string;
@@ -71,6 +73,16 @@ export type UniqCollection = {
   image: string;
   issuer: string;
   metadata: string;
+  currentOwner: string;
+  createdAt: string;
+};
+
+export type UniqItem = {
+  id: string;
+  name: string;
+  image: string;
+  metadata: string;
+  collection: UniqCollection;
   currentOwner: string;
   createdAt: string;
 };

@@ -8,13 +8,13 @@
         {{ $t("manage.drop.backToDrops") }}
       </dot-button>
     </div>
-    <manage-drop-detail v-if="data" :drop="data" />
+    <manage-drop-detail v-if="data" :ownership="urlParams.ownership" :drop="data" />
     <div v-else class="w-full rounded-xl bg-surface-card p-10" />
     <div v-if="status === 'error'">
       <p>{{ error }}</p>
     </div>
     <!-- Tabs -->
-    <div class="flex w-fit gap-[6px] rounded-[18px] bg-surface-card p-[6px]">
+    <div v-if="urlParams.ownership === 'created'" class="flex w-fit gap-[6px] rounded-[18px] bg-surface-card p-[6px]">
       <div
         v-for="tab in TABS"
         :key="tab.key"
@@ -30,15 +30,40 @@
     </div>
     <hr class="w-full" />
     <!-- Sub containers -->
-    <manage-drop-analytics v-if="selectedTab === 'analytics' && data" :drop="data" />
-    <manage-drop-customize v-if="selectedTab === 'customize' && data" :drop="data" />
-    <manage-drop-settings v-if="selectedTab === 'settings' && data" :drop="data" />
+    <manage-drop-analytics
+      v-if="(selectedTab === 'analytics' || urlParams.ownership === 'collected') && data"
+      :drop="data"
+    />
+    <manage-drop-customize
+      v-if="urlParams.ownership === 'created' && selectedTab === 'customize' && data"
+      :drop="data"
+    />
+    <manage-drop-settings v-if="urlParams.ownership === 'created' && selectedTab === 'settings' && data" :drop="data" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import { useUrlSearchParams } from "@vueuse/core";
+import type { Ownership } from "~/types/memo";
+
 definePageMeta({
   middleware: "auth",
+});
+
+const urlParams = useUrlSearchParams<{
+  ownership: Ownership;
+}>("history", {
+  initialValue: {
+    ownership: "created",
+  },
+  removeFalsyValues: true,
+  removeNullishValues: true,
+});
+
+onMounted(() => {
+  if (!["created", "collected"].includes(urlParams.ownership)) {
+    urlParams.ownership = "created";
+  }
 });
 
 const { t } = useI18n();

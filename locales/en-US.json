@@ -316,6 +316,8 @@
   },
   "manage": {
     "title": "Your MEMOs",
+    "created": "Created",
+    "collected": "Collected",
     "activeDrops": "Active Drops",
     "totalClaims": "Total Claims",
     "createDrop": "+ Create MEMO",
@@ -330,6 +332,7 @@
       "progress": "Progress",
       "claimed": "{part}/{total} claimed",
       "manageDrop": "Manage Drop",
+      "viewDrop": "View Drop",
       "expired": "Expired",
       "backToDrops": "Back to Drops",
       "viewClaimPage": "View Claim Page",

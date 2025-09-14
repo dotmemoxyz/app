@@ -19,7 +19,7 @@
         </div>
         <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
       </span>
-      <span class="flex items-center gap-4">
+      <span v-if="ownership === 'created'" class="flex items-center gap-4">
         <a
           class="flex h-fit cursor-pointer select-none items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
           :href="`/claim/${props.drop.code}`"
@@ -54,10 +54,11 @@
 
 <script lang="ts" setup>
 import { DateTime, Duration } from "luxon";
-import type { MemoWithCode } from "~/types/memo";
+import type { MemoWithCode, Ownership } from "~/types/memo";
 import { emojiBlast } from "emoji-blast";
 const props = defineProps<{
   drop: MemoWithCode;
+  ownership: Ownership;
 }>();
 const { locale } = useI18n();
 // Check if drop is expired

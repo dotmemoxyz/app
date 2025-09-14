@@ -1,7 +1,21 @@
 <template>
   <div class="flex h-full w-full flex-col py-[113px]">
-    <h1 class="mb-[7px] text-center text-[40px] !text-black md:text-left dark:!text-white">
-      {{ $t("manage.title") }}
+    <h1 class="mb-[7px] space-x-3 text-center text-[40px] !text-black md:text-left dark:!text-white">
+      <span
+        class="cursor-pointer font-bold text-text-placeholder"
+        :class="{ 'text-text-primary': urlParams.ownership === 'created' }"
+        @click="urlParams.ownership = 'created'"
+      >
+        {{ $t("manage.created") }}
+      </span>
+      <span class="text-text-placeholder">/</span>
+      <span
+        class="cursor-pointer font-bold text-text-placeholder"
+        :class="{ 'text-text-primary': urlParams.ownership === 'collected' }"
+        @click="urlParams.ownership = 'collected'"
+      >
+        {{ $t("manage.collected") }}
+      </span>
     </h1>
     <div class="my-[35px] flex w-full flex-wrap justify-between gap-8">
       <!-- Statistics -->
@@ -47,7 +61,7 @@
         <dot-skeleton v-for="i in 4" :key="i" class="h-[530px] w-full" roundness="lg" />
       </template>
       <template v-else-if="filteredDrops.length > 0">
-        <manage-drop-card v-for="drop in filteredDrops" :key="drop.id" :drop="drop" />
+        <manage-drop-card v-for="drop in filteredDrops" :key="drop.id" :drop="drop" :ownership="urlParams.ownership" />
       </template>
     </div>
     <div v-if="dropsError" class="flex w-full items-center justify-center">
@@ -65,7 +79,7 @@
 <script lang="ts" setup>
 import { getClient, type Prefix } from "@kodadot1/uniquery";
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
-import type { Memo, UniqCollection } from "~/types/memo";
+import type { Memo, Ownership, UniqCollection, UniqItem } from "~/types/memo";
 import { $purify as purify } from "@kodadot1/minipfs";
 import type { Option } from "~/types/components";
 import { asyncComputed, useUrlSearchParams } from "@vueuse/core";
@@ -79,10 +93,23 @@ const accountStore = useAccountStore();
 
 const urlParams = useUrlSearchParams<{
   chain: Prefix;
+  ownership: Ownership;
 }>("history", {
   initialValue: {
     chain: "ahp",
+    ownership: "created",
   },
+  removeFalsyValues: true,
+  removeNullishValues: true,
+});
+
+onMounted(() => {
+  if (!["created", "collected"].includes(urlParams.ownership)) {
+    urlParams.ownership = "created";
+  }
+  if (!["ahp", "ahk"].includes(urlParams.chain)) {
+    urlParams.chain = "ahp";
+  }
 });
 
 type FilterOptions = "all" | "active" | "inactive";
@@ -97,8 +124,9 @@ const filter = ref<FilterOptions>("all");
 
 const selectedAccount = computed(() => accountStore.selected);
 
-type QueryCollectionsResponse = {
-  collections: UniqCollection[];
+type QueryCollectionsResponse<T extends Ownership> = {
+  collections: T extends "created" ? UniqCollection[] : never;
+  items: T extends "collected" ? UniqItem[] : never;
 };
 
 const chainList = computed<Option[]>(() => [
@@ -122,27 +150,56 @@ const {
       throw new Error("No account selected");
     }
     const address = encodeAddress(decodeAddress(accountStore.selected.address), urlParams.chain === "ahp" ? 0 : 2);
-    const query = client.value.collectionListByOwner(address, {
-      fields: ["id", "name", "image"],
-      orderBy: "createdAt_DESC",
-      kind: "poap",
-    });
-    const resp = await client.value.fetch<QueryCollectionsResponse>(query);
     const memos: Memo[] = [];
-    for (const collection of resp.data.collections) {
-      try {
-        const data = await $fetch(`/api/drop/${urlParams.chain}/${collection.id}`);
-        const image = purify(collection.image).at(0);
-        if (!image) {
-          throw new Error("No image found");
+    if (urlParams.ownership === "collected") {
+      const query = client.value.itemListCollectedBy(address, {
+        fields: ["id", "name", "image"],
+        orderBy: "createdAt_DESC",
+        kind: "poap",
+      });
+      const resp = await client.value.fetch<QueryCollectionsResponse<"collected">>(query);
+      for (const item of resp.data.items) {
+        const id = item.id.split("-")[0];
+        try {
+          const data = await $fetch(`/api/drop/${urlParams.chain}/${id}`);
+          const image = purify(item.image).at(0);
+          if (!image) {
+            throw new Error("No image found");
+          }
+          memos.push({
+            ...data,
+            id,
+            name: item.name,
+            image,
+          });
+        } catch (error) {
+          console.error(`Error fetching drop data for collection ${id}:`, error);
         }
-        memos.push({
-          ...data,
-          name: collection.name,
-          image,
-        });
-      } catch (error) {
-        console.error(`Error fetching drop data for collection ${collection.id}:`, error);
+      }
+    } else {
+      const query = client.value.collectionListByOwner(address, {
+        fields: ["id", "name", "image"],
+        orderBy: "createdAt_DESC",
+        kind: "poap",
+      });
+
+      const resp = await client.value.fetch<QueryCollectionsResponse<"created">>(query);
+
+      for (const collection of resp.data.collections) {
+        try {
+          const data = await $fetch(`/api/drop/${urlParams.chain}/${collection.id}`);
+          const image = purify(collection.image).at(0);
+          if (!image) {
+            throw new Error("No image found");
+          }
+          memos.push({
+            ...data,
+            name: collection.name,
+            image,
+          });
+        } catch (error) {
+          console.error(`Error fetching drop data for collection ${collection.id}:`, error);
+        }
       }
     }
     return memos;
