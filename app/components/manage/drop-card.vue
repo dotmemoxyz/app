@@ -143,7 +143,7 @@ const remaining = ref<number | null>(0);
 const { apiInstanceByPrefix } = useApi(toRef<Prefix>("ahp"));
 const loadingLimitInfo = ref(true);
 watch(
-  props.drop,
+  () => props.drop,
   async (data) => {
     if (data) {
       loadingLimitInfo.value = true;

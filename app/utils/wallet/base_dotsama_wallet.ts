@@ -79,6 +79,9 @@ export class BaseDotsamaWallet implements Wallet {
 
     try {
       const injectedExtension = this.rawExtension;
+      if (!injectedExtension) {
+        throw new Error("Extension not found after installation check");
+      }
       const rawExtension = await injectedExtension.enable?.(DAPP_NAME);
       if (!rawExtension) {
         return;
@@ -96,7 +99,7 @@ export class BaseDotsamaWallet implements Wallet {
       this._metadata = extension.metadata;
       this._provider = extension.provider;
     } catch (err) {
-      logger.error("[ENABLE] Unable to enable :)");
+      logger.error("[ENABLE] Unable to enable :)", err);
     }
   };
 

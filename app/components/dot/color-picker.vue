@@ -162,7 +162,7 @@ watch(
 function updateRGB(index: number, event: Event) {
   const value = parseInt((event.target as HTMLInputElement).value);
   rgbValues.value[index] = value;
-  tempColor.value = rgbToHex(rgbValues.value[0], rgbValues.value[1], rgbValues.value[2]);
+  tempColor.value = rgbToHex(rgbValues.value[0]!, rgbValues.value[1]!, rgbValues.value[2]!);
 }
 
 // Toggle color picker visibility

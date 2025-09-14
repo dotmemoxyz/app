@@ -8,13 +8,13 @@
         {{ $t("manage.drop.backToDrops") }}
       </dot-button>
     </div>
-    <manage-drop-detail v-if="data" :ownership="urlParams.ownership" :drop="data" />
+    <manage-drop-detail v-if="data" :ownership="ownership" :drop="data" />
     <div v-else class="w-full rounded-xl bg-surface-card p-10" />
     <div v-if="status === 'error'">
       <p>{{ error }}</p>
     </div>
     <!-- Tabs -->
-    <div v-if="urlParams.ownership === 'created'" class="flex w-fit gap-[6px] rounded-[18px] bg-surface-card p-[6px]">
+    <div v-if="ownership === 'created'" class="flex w-fit gap-[6px] rounded-[18px] bg-surface-card p-[6px]">
       <div
         v-for="tab in TABS"
         :key="tab.key"
@@ -31,15 +31,12 @@
     <hr class="w-full" />
     <!-- Sub containers -->
     <manage-drop-analytics
-      v-if="(selectedTab === 'analytics' || urlParams.ownership === 'collected') && data"
-      :ownership="urlParams.ownership"
+      v-if="(selectedTab === 'analytics' || ownership === 'collected') && data"
+      :ownership="ownership"
       :drop="data"
     />
-    <manage-drop-customize
-      v-if="urlParams.ownership === 'created' && selectedTab === 'customize' && data"
-      :drop="data"
-    />
-    <manage-drop-settings v-if="urlParams.ownership === 'created' && selectedTab === 'settings' && data" :drop="data" />
+    <manage-drop-customize v-if="ownership === 'created' && selectedTab === 'customize' && data" :drop="data" />
+    <manage-drop-settings v-if="ownership === 'created' && selectedTab === 'settings' && data" :drop="data" />
   </div>
 </template>
 
@@ -50,6 +47,8 @@ import type { Ownership } from "~/types/memo";
 definePageMeta({
   middleware: "auth",
 });
+
+const ownership = ref<Ownership>("created");
 
 const urlParams = useUrlSearchParams<{
   ownership: Ownership;
@@ -65,6 +64,7 @@ onMounted(() => {
   if (!["created", "collected"].includes(urlParams.ownership)) {
     urlParams.ownership = "created";
   }
+  ownership.value = urlParams.ownership;
 });
 
 const { t } = useI18n();
@@ -74,7 +74,7 @@ const TABS = [
   { key: "settings", label: t("manage.drop.tabs.settings") },
 ];
 
-const selectedTab = ref(TABS[0].key);
+const selectedTab = ref(TABS[0]!.key);
 
 const route = useRoute();
 const { data, status, error } = await useFetch(`/api/drop/${route.params.chain}/${route.params.id}`);

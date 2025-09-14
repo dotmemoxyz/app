@@ -3,16 +3,16 @@
     <h1 class="mb-[7px] space-x-3 text-center text-[40px] !text-black md:text-left dark:!text-white">
       <span
         class="cursor-pointer font-bold text-text-placeholder"
-        :class="{ 'text-text-primary': urlParams.ownership === 'created' }"
-        @click="urlParams.ownership = 'created'"
+        :class="{ 'text-text-primary': ownership === 'created' }"
+        @click="ownership = 'created'"
       >
         {{ $t("manage.created") }}
       </span>
       <span class="text-text-placeholder">/</span>
       <span
         class="cursor-pointer font-bold text-text-placeholder"
-        :class="{ 'text-text-primary': urlParams.ownership === 'collected' }"
-        @click="urlParams.ownership = 'collected'"
+        :class="{ 'text-text-primary': ownership === 'collected' }"
+        @click="ownership = 'collected'"
       >
         {{ $t("manage.collected") }}
       </span>
@@ -54,14 +54,14 @@
     <hr class="my-[29px]" />
     <div class="flex gap-[16px]">
       <DotSelect v-model="filter" class="!w-fit" :options="FILTER_OPTIONS" />
-      <DotSelect v-model="urlParams.chain" class="!w-fit" :options="chainList" />
+      <DotSelect v-model="chain" class="!w-fit" :options="chainList" />
     </div>
     <div class="mt-[35px] grid grid-cols-1 gap-[40px] md:grid-cols-3 md:justify-start">
       <template v-if="dropsStatus === 'pending' || !accountStore.loaded">
         <DotSkeleton v-for="i in 4" :key="i" class="h-[530px] w-full" roundness="lg" />
       </template>
       <template v-else-if="filteredDrops.length > 0">
-        <ManageDropCard v-for="drop in filteredDrops" :key="drop.id" :drop="drop" :ownership="urlParams.ownership" />
+        <ManageDropCard v-for="drop in filteredDrops" :key="drop.id" :drop="drop" :ownership="ownership" />
       </template>
     </div>
     <div v-if="dropsError" class="flex w-full items-center justify-center">
@@ -91,6 +91,9 @@ definePageMeta({
 
 const accountStore = useAccountStore();
 
+const ownership = ref<Ownership>("created");
+const chain = ref<Prefix>("ahp");
+
 const urlParams = useUrlSearchParams<{
   chain: Prefix;
   ownership: Ownership;
@@ -110,6 +113,16 @@ onMounted(() => {
   if (!["ahp", "ahk"].includes(urlParams.chain)) {
     urlParams.chain = "ahp";
   }
+  ownership.value = urlParams.ownership;
+  chain.value = urlParams.chain;
+});
+
+watch(ownership, (newVal) => {
+  urlParams.ownership = newVal;
+});
+
+watch(chain, (newVal) => {
+  urlParams.chain = newVal;
 });
 
 type FilterOptions = "all" | "active" | "inactive";
@@ -134,7 +147,7 @@ const chainList = computed<Option[]>(() => [
   { text: "Asset Hub Kusama", value: "ahk", info: "Kusama is a canary network for Polkadot." },
 ]);
 
-const client = computed(() => getClient(urlParams.chain));
+const client = computed(() => getClient(chain.value));
 
 const {
   data: drops,
@@ -149,9 +162,9 @@ const {
     if (!accountStore.selected?.address) {
       throw new Error("No account selected");
     }
-    const address = encodeAddress(decodeAddress(accountStore.selected.address), urlParams.chain === "ahp" ? 0 : 2);
+    const address = encodeAddress(decodeAddress(accountStore.selected.address), chain.value === "ahp" ? 0 : 2);
     const memos: Memo[] = [];
-    if (urlParams.ownership === "collected") {
+    if (ownership.value === "collected") {
       const query = client.value.itemListCollectedBy(address, {
         fields: ["id", "name", "image"],
         orderBy: "createdAt_DESC",
@@ -159,9 +172,9 @@ const {
       });
       const resp = await client.value.fetch<QueryCollectionsResponse<"collected">>(query);
       for (const item of resp.data.items) {
-        const id = item.id.split("-")[0];
+        const id = item.id.split("-")[0]!;
         try {
-          const data = await $fetch(`/api/drop/${urlParams.chain}/${id}`);
+          const data = await $fetch(`/api/drop/${chain.value}/${id}`);
           const image = purify(item.image).at(0);
           if (!image) {
             throw new Error("No image found");
@@ -187,7 +200,7 @@ const {
 
       for (const collection of resp.data.collections) {
         try {
-          const data = await $fetch(`/api/drop/${urlParams.chain}/${collection.id}`);
+          const data = await $fetch(`/api/drop/${chain.value}/${collection.id}`);
           const image = purify(collection.image).at(0);
           if (!image) {
             throw new Error("No image found");

@@ -8,8 +8,7 @@ interface StoreState {
   token: string | null;
 }
 
-export const useAccountStore = defineStore({
-  id: "account",
+export const useAccountStore = defineStore("account", {
   state: (): StoreState => ({
     accounts: [],
     selected: null,
