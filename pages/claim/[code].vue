@@ -46,7 +46,7 @@
           </p>
 
           <p class="text-[14px] font-normal !text-text-placeholder">
-            {{ DateTime.fromISO(data.expiresAt).offsetNameShort }}
+            {{ DateTime.fromISO(data.createdAt).offsetNameShort }}
           </p>
         </span>
         <Icon name="mdi:chevron-down" class="self-center text-text-placeholder" size="16" />
@@ -380,7 +380,7 @@ const claim = async () => {
         address: address.value,
       },
     });
-    const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collection}-${data.sn}`;
+    const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collectionId}-${data.memoId}`;
     claimed.value = url;
   } catch (error) {
     console.error("Claim failed:", error);
@@ -417,9 +417,4 @@ watch(
     immediate: true,
   },
 );
-
-const formatWeb = (url: string) => {
-  const { hostname } = new URL(url);
-  return hostname.replace("www.", "");
-};
 </script>

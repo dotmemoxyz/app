@@ -8,7 +8,7 @@
       <img :src="props.drop.image" class="h-full rounded-full" />
     </div>
     <!-- Info -->
-    <div class="flex flex-1 flex-col justify-between py-4">
+    <div v-if="ownership === 'created'" class="flex flex-1 flex-col justify-between py-4">
       <h2 class="text-[24px]">{{ props.drop.name }}</h2>
       <span class="flex items-center gap-8">
         <div v-if="isExpired" class="flex w-[88px] items-center justify-center rounded-full bg-border-default p-[5px]">
@@ -19,7 +19,7 @@
         </div>
         <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
       </span>
-      <span v-if="ownership === 'created'" class="flex items-center gap-4">
+      <span class="flex items-center gap-4">
         <a
           class="flex h-fit cursor-pointer select-none items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
           :href="`/claim/${props.drop.code}`"
@@ -38,6 +38,66 @@
         </div>
       </span>
     </div>
+    <div v-else class="flex flex-1 flex-col justify-between py-4">
+      <h2 class="text-[24px]">{{ props.drop.name }}</h2>
+      <div class="flex gap-10">
+        <!-- Created by -->
+        <p class="text-[14px] !text-[#606060]">
+          by:
+          <span class="cursor-copy border-b border-dotted border-black" @click="owner ? clipboard.copy(owner) : null">
+            {{ owner ? addressShortener(owner) : "" }}
+          </span>
+        </p>
+        <span class="hidden items-center gap-2 md:flex">
+          <p class="text-[14px] font-normal !text-text-secondary">
+            {{ DateTime.fromISO(props.drop.createdAt).toLocaleString(DateTime.DATE_MED) }} -
+            {{ DateTime.fromISO(props.drop.expiresAt).toLocaleString(DateTime.DATE_MED) }}
+          </p>
+          <p class="text-[14px] font-normal !text-text-placeholder">
+            {{ DateTime.fromISO(props.drop.expiresAt).offsetNameShort }}
+          </p>
+        </span>
+      </div>
+      <div class="flex justify-between">
+        <p class="!text-[#606060]">{{ props.drop.description }}</p>
+        <!-- Socials -->
+        <div class="flex flex-col gap-4">
+          <!-- Telegram -->
+          <a
+            v-if="props.drop.customize.telegram"
+            :href="props.drop.customize.telegram"
+            target="_blank"
+            class="flex items-center gap-[6px] px-[14px]"
+            rel="noopener noreferrer"
+          >
+            <icon name="mdi:telegram" size="16" class="text-text-primary" />
+            <p>@{{ props.drop.customize.telegram.split("/").pop() }}</p>
+          </a>
+          <!-- Instagram -->
+          <a
+            v-if="props.drop.customize.instagram"
+            :href="props.drop.customize.instagram"
+            target="_blank"
+            class="flex items-center gap-[6px] px-[14px]"
+            rel="noopener noreferrer"
+          >
+            <icon name="mdi:instagram" size="16" class="text-text-primary" />
+            <p>@{{ props.drop.customize.instagram.split("/").pop() }}</p>
+          </a>
+          <!-- Website -->
+          <a
+            v-if="props.drop.customize.website"
+            :href="props.drop.customize.website"
+            target="_blank"
+            class="flex items-center gap-[6px] px-[14px]"
+            rel="noopener noreferrer"
+          >
+            <icon name="mdi:web" size="16" class="text-text-primary" />
+            <p>{{ formatWeb(props.drop.customize.website) }}</p>
+          </a>
+        </div>
+      </div>
+    </div>
     <!-- Actions -->
     <!-- TODO: Missing API implementation -->
     <div class="flex gap-4 py-4">
@@ -54,8 +114,13 @@
 
 <script lang="ts" setup>
 import { DateTime, Duration } from "luxon";
-import type { MemoWithCode, Ownership } from "~/types/memo";
+import type { MemoWithCode, Ownership, UniqCollection } from "~/types/memo";
 import { emojiBlast } from "emoji-blast";
+import { getClient } from "@kodadot1/uniquery";
+import { useClipboard } from "@vueuse/core";
+
+const clipboard = useClipboard();
+
 const props = defineProps<{
   drop: MemoWithCode;
   ownership: Ownership;
@@ -89,6 +154,23 @@ const remainingTime = computed<string>(() => {
     return Duration.fromObject({ seconds: diff.seconds }, { locale: locale.value }).toHuman();
   }
 });
+
+const client = computed(() => getClient(props.drop.chain));
+
+type QueryCollectionsResponse = {
+  collection: UniqCollection;
+};
+
+const { data: owner } = useAsyncData(
+  "owner",
+  async () => {
+    const query = client.value.collectionById(props.drop.id, ["currentOwner"]);
+    return client.value.fetch<QueryCollectionsResponse>(query);
+  },
+  {
+    transform: ({ data }) => data.collection.currentOwner,
+  },
+);
 
 // Copy link
 const copyLink = () => {

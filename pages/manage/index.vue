@@ -45,23 +45,23 @@
       </div>
       <div class="flex w-full justify-center gap-2 md:w-auto">
         <!-- Chain select -->
-        <dot-button variant="tertiary" @click="navigateTo('/create')">
+        <DotButton variant="tertiary" @click="navigateTo('/create')">
           <span class="hidden md:block">{{ $t("manage.createDrop") }}</span>
           <Icon name="mdi:plus" size="24" class="md:hidden" />
-        </dot-button>
+        </DotButton>
       </div>
     </div>
     <hr class="my-[29px]" />
     <div class="flex gap-[16px]">
-      <dot-select v-model="filter" class="!w-fit" :options="FILTER_OPTIONS" />
-      <dot-select v-model="urlParams.chain" class="!w-fit" :options="chainList" />
+      <DotSelect v-model="filter" class="!w-fit" :options="FILTER_OPTIONS" />
+      <DotSelect v-model="urlParams.chain" class="!w-fit" :options="chainList" />
     </div>
     <div class="mt-[35px] grid grid-cols-1 gap-[40px] md:grid-cols-3 md:justify-start">
       <template v-if="dropsStatus === 'pending' || !accountStore.loaded">
-        <dot-skeleton v-for="i in 4" :key="i" class="h-[530px] w-full" roundness="lg" />
+        <DotSkeleton v-for="i in 4" :key="i" class="h-[530px] w-full" roundness="lg" />
       </template>
       <template v-else-if="filteredDrops.length > 0">
-        <manage-drop-card v-for="drop in filteredDrops" :key="drop.id" :drop="drop" :ownership="urlParams.ownership" />
+        <ManageDropCard v-for="drop in filteredDrops" :key="drop.id" :drop="drop" :ownership="urlParams.ownership" />
       </template>
     </div>
     <div v-if="dropsError" class="flex w-full items-center justify-center">
@@ -114,11 +114,11 @@ onMounted(() => {
 
 type FilterOptions = "all" | "active" | "inactive";
 
-const FILTER_OPTIONS: Option[] = [
+const FILTER_OPTIONS = computed<Option[]>(() => [
   { text: "Show All", value: "all", info: "Show all drops" },
   { text: "Show Active", value: "active", info: "Show active drops" },
   { text: "Show Inactive", value: "inactive", info: "Show inactive drops" },
-];
+]);
 
 const filter = ref<FilterOptions>("all");
 

@@ -1,19 +1,19 @@
 import { FetchError } from "ofetch";
-import type { MemoDTO } from "~/types/memo";
+import type { ClaimMemoResponse } from "~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   const { code, address } = await readBody(event);
 
-  const [data, err] = await $fetch<MemoDTO>(`${RUNTIME_CONFIG.apiUrl}/memos/${code}/claim`, {
+  const [data, err] = await $fetch<ClaimMemoResponse>(`${RUNTIME_CONFIG.apiUrl}/memos/${code}/claim`, {
     method: "POST",
     body: {
       address,
     },
   })
-    .then((r) => [r, null])
-    .catch((r) => [null, r]);
+    .then((r) => [r, null] as const)
+    .catch((r) => [null, r] as const);
 
   if (err) {
     if (err instanceof FetchError && err.status === 409) {
@@ -29,5 +29,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return data;
+  return data!;
 });

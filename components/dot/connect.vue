@@ -12,9 +12,9 @@
       <!-- @vue-ignore -->
       <Identicon
         :value="accountStore.selected!.address"
-        theme="polkadot"
+        :theme="'polkadot'"
         class="rounded-full border border-black"
-        size="28"
+        :size="28"
       />
       <small class="text-[14px] text-text-primary">{{
         props.long ? accountStore.midAddress : accountStore.shortAddress
@@ -83,7 +83,7 @@ onMounted(async () => {
   if (token) {
     const { verifyToken } = useAuth();
     try {
-      const res = await verifyToken(token);
+      const res = await verifyToken();
       if (!res) {
         logger.warn("Token verification failed, token is invalid or expired");
         localStorage.removeItem("account-token");

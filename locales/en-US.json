@@ -348,6 +348,7 @@
       "totalClaims": "Total Claims",
       "uniqueAddresses": "Unique Addresses",
       "recentClaims": "Recent Claims",
+      "holders": "Holders",
       "exportCsv": "Export CSV",
       "table": {
         "claimId": "Claim #",

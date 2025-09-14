@@ -63,8 +63,8 @@ importers:
         specifier: ^13.5.3
         version: 13.5.3(@polkadot/util@13.5.3)
       '@polkadot/vue-identicon':
-        specifier: ^3.15.2
-        version: 3.15.2(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)(vue@3.5.16(typescript@5.8.3))
+        specifier: ^3.16.1
+        version: 3.16.1(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)(vue@3.5.16(typescript@5.8.3))
       '@types/vue-select':
         specifier: ^3.16.8
         version: 3.16.8
@@ -1810,8 +1810,8 @@ packages:
     resolution: {integrity: sha512-4DqmUiUnNEe2jooQ+wby+st7w2a+2TVeKC9ax0AvowZ5YdKYl+2v+6xeoi8Agm7bmKT9jML+TghF38iGc2QKQQ==}
     engines: {node: '>=18'}
 
-  '@polkadot/ui-shared@3.15.2':
-    resolution: {integrity: sha512-WRS8oQonDZO1iWzHyoS+Rp46vHEtmt87baIfE6jXmh00UdlZrRsugzhirupd8MdxZWCwyjuj6LkKGlJqOiJlEg==}
+  '@polkadot/ui-shared@3.16.1':
+    resolution: {integrity: sha512-SFrnDEFDZ8+owZwCeW8TwHTUJCzvcdQTHEPaqR6ueVc0VqDGy8ilmtWPno2z0Ed/7R0KGQ7uMr4bzXe8IiiZ2A==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/util': '*'
@@ -1827,8 +1827,8 @@ packages:
     resolution: {integrity: sha512-dPqXvkzICTNz9vL85RdPyLzTDgB0/KtmROF8DB8taQksWyQp1RH3uU5mHHOmHtb0IJQBA5O/kumaXUfMQNo9Qw==}
     engines: {node: '>=18'}
 
-  '@polkadot/vue-identicon@3.15.2':
-    resolution: {integrity: sha512-Wi1GI0AAK9MUXd7zVufUKC2uukNZkeXbx/4f3AV1mV6M7SGCIeqAy1ovZyKHq/Wsm6e7srZTgd+9C9j3+8vK0A==}
+  '@polkadot/vue-identicon@3.16.1':
+    resolution: {integrity: sha512-zw1gqWR1w8G8+1dKUvC/1ymfQXG61fqk54FldyHaECPV3HV+zLC1XMHGhuFMEeRqz9w7lpTWJIC4+duLIX3mRg==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/util': '*'
@@ -5847,6 +5847,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
@@ -8954,7 +8955,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@polkadot/ui-shared@3.15.2(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)':
+  '@polkadot/ui-shared@3.16.1(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)':
     dependencies:
       '@polkadot/util': 13.5.3
       '@polkadot/util-crypto': 13.5.3(@polkadot/util@13.5.3)
@@ -8984,9 +8985,9 @@ snapshots:
       bn.js: 5.2.2
       tslib: 2.8.1
 
-  '@polkadot/vue-identicon@3.15.2(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)(vue@3.5.16(typescript@5.8.3))':
+  '@polkadot/vue-identicon@3.16.1(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)(vue@3.5.16(typescript@5.8.3))':
     dependencies:
-      '@polkadot/ui-shared': 3.15.2(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)
+      '@polkadot/ui-shared': 3.16.1(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)
       '@polkadot/util': 13.5.3
       '@polkadot/util-crypto': 13.5.3(@polkadot/util@13.5.3)
       jdenticon: 3.2.0

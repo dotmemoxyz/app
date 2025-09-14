@@ -32,6 +32,7 @@
     <!-- Sub containers -->
     <manage-drop-analytics
       v-if="(selectedTab === 'analytics' || urlParams.ownership === 'collected') && data"
+      :ownership="urlParams.ownership"
       :drop="data"
     />
     <manage-drop-customize

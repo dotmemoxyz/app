@@ -1,12 +1,14 @@
 <template>
-  <vue-select
-    v-model="model"
-    :classes="{
-      control: 'border h-[45px] !rounded-[12px] border-border-default gap-x-[12px] px-[19px]',
-    }"
-    :is-clearable="false"
-    :options="localOptions"
-  />
+  <ClientOnly>
+    <VueSelect
+      v-model="model"
+      :classes="{
+        control: 'border h-[45px] !rounded-[12px] border-border-default gap-x-[12px] px-[19px]',
+      }"
+      :is-clearable="false"
+      :options="localOptions"
+    />
+  </ClientOnly>
 </template>
 
 <script lang="ts" setup>

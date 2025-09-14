@@ -14,7 +14,9 @@
     </div>
     <!-- Table -->
     <div class="flex items-center justify-between">
-      <h2 class="text-[24px]">{{ $t("manage.analytics.recentClaims") }}</h2>
+      <h2 class="text-[24px]">
+        {{ ownership === "created" ? $t("manage.analytics.recentClaims") : $t("manage.analytics.holders") }}
+      </h2>
 
       <div class="flex gap-4">
         <!-- Pagination -->
@@ -28,7 +30,7 @@
             <Icon name="mdi:chevron-left" class="size-[24px]" />
           </dot-button>
           <dot-button
-            :disabled="drops.length < PAGE_SIZE"
+            :disabled="drops.length < PAGE_SIZE || page * PAGE_SIZE >= (dropCount ?? 0)"
             variant="tertiary"
             class="flex !h-[45px] items-center gap-1"
             @click="nextPage"
@@ -75,10 +77,11 @@
 <script lang="ts" setup>
 import { getClient } from "@kodadot1/uniquery";
 import { DateTime, Duration } from "luxon";
-import type { Memo } from "~/types/memo";
+import type { Memo, Ownership } from "~/types/memo";
 
 const props = defineProps<{
   drop: Memo;
+  ownership: Ownership;
 }>();
 
 const getTxLink = (blockNumber: string) => {

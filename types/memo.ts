@@ -64,6 +64,14 @@ export interface MemoDTO extends MemoPureDTO {
   code: string;
 }
 
+export interface ClaimMemoResponse {
+  success: boolean;
+  message: string;
+  chain: "ahk" | "ahp";
+  collectionId: string;
+  memoId: string;
+}
+
 /**
  * Uniquery collection format
  */
