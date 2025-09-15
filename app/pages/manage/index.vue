@@ -17,7 +17,7 @@
         {{ $t("manage.collected") }}
       </span>
     </h1>
-    <div class="my-[35px] flex w-full flex-wrap justify-between gap-8">
+    <div v-if="ownership === 'created'" class="my-[35px] flex w-full flex-wrap justify-between gap-8">
       <!-- Statistics -->
       <div class="flex w-full justify-evenly gap-4 md:w-auto">
         <!-- Active drops -->
@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="flex w-full justify-center gap-2 md:w-auto">
-        <!-- Chain select -->
+        <!-- Create drop button -->
         <DotButton variant="tertiary" @click="navigateTo('/create')">
           <span class="hidden md:block">{{ $t("manage.createDrop") }}</span>
           <Icon name="mdi:plus" size="24" class="md:hidden" />
@@ -53,7 +53,9 @@
     </div>
     <hr class="my-[29px]" />
     <div class="flex gap-[16px]">
+      <!-- Filter select -->
       <DotSelect v-model="filter" class="!w-fit" :options="FILTER_OPTIONS" />
+      <!-- Chain select -->
       <DotSelect v-model="chain" class="!w-fit" :options="chainList" />
     </div>
     <div class="mt-[35px] grid grid-cols-1 gap-[40px] md:grid-cols-3 md:justify-start">
@@ -78,9 +80,7 @@
 
 <script lang="ts" setup>
 import { getClient, type Prefix } from "@kodadot1/uniquery";
-import { decodeAddress, encodeAddress } from "@polkadot/util-crypto";
-import type { Memo, Ownership, UniqCollection, UniqItem } from "~/types/memo";
-import { $purify as purify } from "@kodadot1/minipfs";
+import type { MemoWithCode, Ownership } from "~/types/memo";
 import type { Option } from "~/types/components";
 import { asyncComputed, useUrlSearchParams } from "@vueuse/core";
 import { DateTime } from "luxon";
@@ -135,103 +135,57 @@ const FILTER_OPTIONS = computed<Option[]>(() => [
 
 const filter = ref<FilterOptions>("all");
 
-const selectedAccount = computed(() => accountStore.selected);
-
-type QueryCollectionsResponse<T extends Ownership> = {
-  collections: T extends "created" ? UniqCollection[] : never;
-  items: T extends "collected" ? UniqItem[] : never;
-};
-
 const chainList = computed<Option[]>(() => [
   { text: "Asset Hub Polkadot", value: "ahp", info: "Polkadot is a multi-chain network." },
   { text: "Asset Hub Kusama", value: "ahk", info: "Kusama is a canary network for Polkadot." },
 ]);
 
+const {
+  data: createdMemos,
+  error: createdError,
+  status: createdStatus,
+} = await useFetch<MemoWithCode[]>(() => `/api/drop/${chain.value}`, {
+  key: () => `created-memos-${chain.value}`,
+  watch: [chain],
+});
+const {
+  data: collectedMemos,
+  error: collectedError,
+  status: collectedStatus,
+} = await useFetch<MemoWithCode[]>(() => `/api/drop/collected/${chain.value}`, {
+  key: () => `collected-memos-${chain.value}`,
+  watch: [chain],
+});
+
+// Computed properties to handle status and errors for both endpoints
+const dropsStatus = computed(() => {
+  if (ownership.value === "created") {
+    return createdStatus.value;
+  } else {
+    return collectedStatus.value;
+  }
+});
+
+const dropsError = computed(() => {
+  if (ownership.value === "created") {
+    return createdError.value;
+  } else {
+    return collectedError.value;
+  }
+});
+
 const client = computed(() => getClient(chain.value));
 
-const {
-  data: drops,
-  error: dropsError,
-  status: dropsStatus,
-} = useAsyncData(
-  "drops",
-  async () => {
-    if (!accountStore.loaded) {
-      return [];
-    }
-    if (!accountStore.selected?.address) {
-      throw new Error("No account selected");
-    }
-    const address = encodeAddress(decodeAddress(accountStore.selected.address), chain.value === "ahp" ? 0 : 2);
-    const memos: Memo[] = [];
-    if (ownership.value === "collected") {
-      const query = client.value.itemListCollectedBy(address, {
-        fields: ["id", "name", "image"],
-        orderBy: "createdAt_DESC",
-        kind: "poap",
-      });
-      const resp = await client.value.fetch<QueryCollectionsResponse<"collected">>(query);
-      for (const item of resp.data.items) {
-        const id = item.id.split("-")[0]!;
-        try {
-          const data = await $fetch(`/api/drop/${chain.value}/${id}`);
-          const image = purify(item.image).at(0);
-          if (!image) {
-            throw new Error("No image found");
-          }
-          memos.push({
-            ...data,
-            id,
-            name: item.name,
-            image,
-          });
-        } catch (error) {
-          console.error(`Error fetching drop data for collection ${id}:`, error);
-        }
-      }
-    } else {
-      const query = client.value.collectionListByOwner(address, {
-        fields: ["id", "name", "image"],
-        orderBy: "createdAt_DESC",
-        kind: "poap",
-      });
-
-      const resp = await client.value.fetch<QueryCollectionsResponse<"created">>(query);
-
-      for (const collection of resp.data.collections) {
-        try {
-          const data = await $fetch(`/api/drop/${chain.value}/${collection.id}`);
-          const image = purify(collection.image).at(0);
-          if (!image) {
-            throw new Error("No image found");
-          }
-          memos.push({
-            ...data,
-            name: collection.name,
-            image,
-          });
-        } catch (error) {
-          console.error(`Error fetching drop data for collection ${collection.id}:`, error);
-        }
-      }
-    }
-    return memos;
-  },
-  {
-    watch: [urlParams, selectedAccount],
-    immediate: true,
-  },
-);
-
 const filteredDrops = computed(() => {
-  if (!drops.value) {
+  const drops = ownership.value === "created" ? createdMemos.value : collectedMemos.value;
+  if (!drops) {
     return [];
   }
   if (filter.value === "all") {
-    return drops.value;
+    return drops;
   }
   const now = DateTime.now();
-  return drops.value.filter((drop) => {
+  return drops.filter((drop) => {
     const createdAt = DateTime.fromISO(drop.createdAt);
     const expiredAt = DateTime.fromISO(drop.expiresAt);
     if (filter.value === "active") {
@@ -244,10 +198,11 @@ const filteredDrops = computed(() => {
 });
 
 const totalActiveDrops = computed(() => {
-  if (!drops.value) {
+  const drops = ownership.value === "created" ? createdMemos.value : collectedMemos.value;
+  if (!drops) {
     return 0;
   }
-  return drops.value.reduce((acc, drop) => {
+  return drops.reduce((acc, drop) => {
     // Use createdAt and expiredAt to determine if drop is active
     const createdAt = DateTime.fromISO(drop.createdAt);
     const expiredAt = DateTime.fromISO(drop.expiresAt);
@@ -266,11 +221,12 @@ type QueryCountResponse = {
 };
 
 const totalClaims = asyncComputed(async () => {
-  if (!drops.value) {
+  const drops = ownership.value === "created" ? createdMemos.value : collectedMemos.value;
+  if (!drops) {
     return 0;
   }
   let claims = 0;
-  for (const drop of drops.value) {
+  for (const drop of drops) {
     const query = client.value.itemCountByCollectionId(drop.id);
     const { data } = await client.value.fetch<QueryCountResponse>(query);
     claims += data.itemCount.totalCount;
