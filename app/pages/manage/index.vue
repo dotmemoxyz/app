@@ -144,18 +144,13 @@ const {
   data: createdMemos,
   error: createdError,
   status: createdStatus,
-} = await useFetch<MemoWithCode[]>(() => `/api/drop/${chain.value}`, {
-  key: () => `created-memos-${chain.value}`,
-  watch: [chain],
-});
+} = await useFetch<MemoWithCode[]>(() => `/api/manage/created/${chain.value}`);
+
 const {
   data: collectedMemos,
   error: collectedError,
   status: collectedStatus,
-} = await useFetch<MemoWithCode[]>(() => `/api/drop/collected/${chain.value}`, {
-  key: () => `collected-memos-${chain.value}`,
-  watch: [chain],
-});
+} = await useFetch<MemoWithCode[]>(() => `/api/manage/collected/${chain.value}`);
 
 // Computed properties to handle status and errors for both endpoints
 const dropsStatus = computed(() => {
@@ -168,9 +163,9 @@ const dropsStatus = computed(() => {
 
 const dropsError = computed(() => {
   if (ownership.value === "created") {
-    return createdError.value;
+    return createdStatus.value === "error" ? createdError.value : null;
   } else {
-    return collectedError.value;
+    return collectedStatus.value === "error" ? collectedError.value : null;
   }
 });
 

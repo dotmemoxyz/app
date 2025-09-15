@@ -211,7 +211,7 @@ const save = async () => {
   loading.value = true;
 
   try {
-    await $fetch(`/api/drop/${props.drop.chain}/${props.drop.id}/customization`, {
+    await $fetch(`/api/manage/created/${props.drop.chain}/${props.drop.id}/customization`, {
       method: "PUT",
       body,
     });

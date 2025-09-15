@@ -77,5 +77,5 @@ const TABS = [
 const selectedTab = ref(TABS[0]!.key);
 
 const route = useRoute();
-const { data, status, error } = await useFetch(`/api/drop/${route.params.chain}/${route.params.id}`);
+const { data, status, error } = await useFetch(`/api/manage/created/${route.params.chain}/${route.params.id}`);
 </script>

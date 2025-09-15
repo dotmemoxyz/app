@@ -82,7 +82,7 @@ const onSubmit = handleSubmit(async () => {
   }
   try {
     loading.value = true;
-    const res = await $fetch(`/api/drop/${props.drop.chain}/${props.drop.id}`, {
+    const res = await $fetch(`/api/manage/created/${props.drop.chain}/${props.drop.id}`, {
       method: "PUT",
       body: {
         startsAt: startDate.value.toISOString(),
