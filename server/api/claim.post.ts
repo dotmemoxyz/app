@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
     body: {
       address,
     },
+    timeout: 5 * 60 * 1000, // 5 minutes
   })
     .then((r) => [r, null] as const)
     .catch((r) => [null, r] as const);

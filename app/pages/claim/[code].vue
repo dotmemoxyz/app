@@ -384,6 +384,7 @@ const claim = async () => {
         code: route.params.code,
         address: address.value,
       },
+      timeout: 5 * 60 * 1000, // 5 minutes
     });
     const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collectionId}-${data.itemId}`;
     if (data.legacy) {
