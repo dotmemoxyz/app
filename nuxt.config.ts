@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
+
+// TODO read from env (without https://)
+const selfHostname = "";
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -10,6 +14,9 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
   vite: {
+    server: {
+      allowedHosts: [selfHostname],
+    },
     plugins: [
       VueI18nPlugin({
         include: ["./locales/**"],
@@ -44,6 +51,8 @@ export default defineNuxtConfig({
         coingecko: "",
       },
       chain: "ahp",
+      selfScope: "dot-memo",
+      selfEndpoint: `https://${selfHostname}/api/verify`,
     },
   },
   colorMode: {
@@ -78,6 +87,7 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
+      maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
       runtimeCaching: [
         {

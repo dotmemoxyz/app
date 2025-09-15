@@ -175,6 +175,7 @@
           <p v-else-if="claimFailed" class="w-full text-center !text-red-500">{{ t("claim.claimFailed") }}</p>
         </template>
         <div class="relative flex w-full flex-col gap-2">
+          <dot-button variant="tertiary" @click="openSelfModal()">{{ $t("self.verify") }}</dot-button>
           <dot-button
             :disabled="!canClaim || isClaiming || claimFailed"
             variant="primary"
@@ -255,6 +256,7 @@ import type { Prefix } from "@kodadot1/static";
 import { getFreeMints } from "~/utils/sdk/query";
 
 import { FetchError } from "ofetch";
+import SelfQrcodeModal from "~/components/modals/self-qrcode-modal.vue";
 
 const { shareOnTelegram, shareOnX } = useSocials();
 
@@ -272,6 +274,20 @@ watch(claimType, (type) => {
   }
 });
 
+const selfVerified = ref(false);
+const { open: openSelfModal, close: closeSelfModal } = useModal({
+  component: SelfQrcodeModal,
+  attrs: {
+    onSuccess() {
+      closeSelfModal();
+      selfVerified.value = true;
+    },
+    onError() {
+      closeSelfModal();
+    },
+  },
+});
+
 const address = computed(() => (claimType.value === "address" ? manualAddress.value : accountStore.selected?.address));
 
 const addressError = ref("");
@@ -285,7 +301,13 @@ watch(address, (address) => {
 });
 
 const canClaim = computed(
-  () => address.value && !addressError.value && !isClaiming.value && !allClaimed.value && !tooLate.value,
+  () =>
+    selfVerified.value &&
+    address.value &&
+    !addressError.value &&
+    !isClaiming.value &&
+    !allClaimed.value &&
+    !tooLate.value,
 );
 
 const { data, status, error } = await useFetch("/api/code", {

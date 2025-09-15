@@ -27,7 +27,8 @@
     "text": "Text",
     "saveChanges": "Save Changes",
     "change": "Change",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "close": "Close"
   },
   "landing": {
     "quote1": "Your memories,",
@@ -377,5 +378,11 @@
       "title": "Distribution settings",
       "updateWindow": "Update claim window"
     }
+  },
+  "self": {
+    "verify": "Verify using Self",
+    "verificationSuccess": "Proof verified",
+    "verificationFail": "Proof generation failed",
+    "tryAgain": "Try again"
   }
 }
