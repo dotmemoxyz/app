@@ -4,14 +4,10 @@ import type { ClaimMemoResponse } from "~/types/memo";
 const RUNTIME_CONFIG = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  const { code, address } = await readBody(event);
+  const { id } = getQuery(event);
 
-  const [data, err] = await $fetch<ClaimMemoResponse>(`${RUNTIME_CONFIG.apiUrl}/memos/${code}/claim`, {
-    method: "POST",
-    body: {
-      address,
-    },
-    timeout: 5 * 60 * 1000, // 5 minutes
+  const [data, err] = await $fetch<ClaimMemoResponse>(`${RUNTIME_CONFIG.apiUrl}/memos/check/${id}`, {
+    method: "GET",
   })
     .then((r) => [r, null] as const)
     .catch((r) => [null, r] as const);

@@ -1,0 +1,389 @@
+{
+  "common": {
+    "memo": "MEMO",
+    "offline": "You are offline. Check your internet connection.",
+    "claim": "Claim",
+    "create": "Create",
+    "manage": "Manage",
+    "authenticate": "Authenticate",
+    "authenticating": "Authenticating...",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "learnMore": "Learn More",
+    "continue": "Continue",
+    "searching": "Searching...",
+    "calculating": "Calculating...",
+    "signing": "Signing...",
+    "connect": "Connect",
+    "connectedAccount": "Connected account",
+    "download": "Download",
+    "disconnect": "Disconnect",
+    "back": "Back",
+    "address": "Address",
+    "account": "Account",
+    "error": "Error",
+    "timeAgo": "{time} ago",
+    "optional": "Optional",
+    "text": "Text",
+    "saveChanges": "Save Changes",
+    "change": "Change",
+    "saving": "Saving..."
+  },
+  "landing": {
+    "quote1": "Your memories,",
+    "quote2": "forever onchain",
+    "poweredBy": "Powered by",
+    "captureMoments": "Capture your unforgettable moments as digital badges on the Polkadot network.",
+    "milestonesIntoMemories": "Turn milestones into digital memories",
+    "explanation": {
+      "title": "How Dotmemo Works",
+      "claimDescription": "Receive a digital badge for attending or participating in special events, all securely stored on the Polkadot network.",
+      "createDescription": "Organizers can create unique badges to distribute at their events, giving attendees a tangible way to commemorate their experiences.",
+      "share": "Share & Showcase",
+      "shareDescription": "Show off your achievements by sharing your badges on social media or displaying them in your digital wallet."
+    },
+    "learnMore": "Wanna learn more? Visit our",
+    "featured": "Featured",
+    "partners": "Ecosystem Partners"
+  },
+  "wallets": {
+    "selectWallet": "Select Wallet",
+    "selectAccount": "Select Account",
+    "other": "Other Wallets"
+  },
+  "claim": {
+    "enterCode": "Enter MEMO Code",
+    "enterCodeDescription": "Enter the secret code to proceed",
+    "howThisWorks": "How this works?",
+    "success": "MEMO claimed successfully",
+    "cantLoad": "Couldn't load MEMO",
+    "tryDifferent": "Try a different MEMO?",
+    "enterAddress": "Enter address",
+    "connectWallet": "Connect Wallet",
+    "enterDOTAddress": "Enter DOT address",
+    "alreadyClaimed": "You already claimed this MEMO",
+    "claimFailed": "Failed to claim MEMO, please contact support or try again later.",
+    "claimFree": "Claim for free",
+    "seeInGallery": "See {name} in gallery",
+    "wantToShare": "Would you like to share it?",
+    "allClaimed": "All MEMOs have been claimed",
+    "tooLate": "It's too late to claim this MEMO",
+    "claiming": "Claiming MEMO...",
+    "claim": "Claim MEMO",
+    "loading": "Loading info...",
+    "remaining": "{free} / {total} remaining"
+  },
+  "create": {
+    "title": ".create",
+    "existenceError": "Checking for uniqueness failed. Please contact support or try again later.",
+    "alreadyExists": "This code is already being used",
+    "memo": {
+      "chain": "Chain",
+      "name": "Name",
+      "namePlaceholder": "Enter your MEMO name",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe your MEMO. This description will be displayed for all MEMO users.",
+      "website": "Website address",
+      "websiteHint": "Use this if your memo should be linked to external domain",
+      "websitePlaceholder": "Custom domains are supported.",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "dateHint": "This is the date range when the MEMO will be available for claiming.",
+      "quantity": "Quantity",
+      "quantityHint": "This is the total number of MEMO pieces that will be available for claiming.",
+      "secret": "Secret code",
+      "secretHint": "This is a secret code that will be used to claim the MEMO. It should be shared with the attendees."
+    },
+    "dialog": {
+      "confirm": "Confirm creation",
+      "connectedAs": "Connected as",
+      "network": "Network: {name}",
+      "eventStart": "Event start",
+      "eventEnd": "Event end",
+      "code": "MEMO code",
+      "amount": "Amount",
+      "total": "Total deposit + Fees",
+      "breakdown": "Breakdown",
+      "collectionDeposit": "Collection deposit",
+      "freeMintingDeposit": "Free minting deposit",
+      "fees": "Fees",
+      "proceed": "Proceed to signing",
+      "canceled": "Transaction was canceled. Please try again.",
+      "settingUp": "Setting up your MEMO",
+      "txProgress": "Transaction in progress. (Status: {status})",
+      "rememberCode": "I have written down the MEMO secret code and understand that it is required to claim my MEMO."
+    },
+    "success": {
+      "title": "Purchased",
+      "confirmed": "Confirmed",
+      "viewTx": "View TX",
+      "created1": "Created",
+      "created2": "with",
+      "created3": "pieces!",
+      "qr": "QR Code",
+      "claim": "Claim one for you"
+    },
+    "errors": {
+      "alreadyClaimed": {
+        "description": "The provided NFT has already been used for a holder-based drop and cannot be used again.",
+        "name": "NFT Already Used"
+      },
+      "alreadyExists": {
+        "description": "An item with this ID already exists. Please choose a unique ID when minting.",
+        "name": "Item Already Exists"
+      },
+      "approvalExpired": {
+        "description": "The approval has expired and is no longer valid. Tip: Request a new approval from the item owner.",
+        "name": "Approval Expired"
+      },
+      "attributeNotFound": {
+        "description": "The requested attribute cannot be found.",
+        "name": "Attribute Not Found"
+      },
+      "badWitness": {
+        "description": "The witness data should be provided.",
+        "name": "Witness Required"
+      },
+      "bidTooLow": {
+        "description": "Your bid is too low. Please increase your bid amount. Tip: Check the current highest bid and adjust your bid accordingly.",
+        "name": "Bid Too Low"
+      },
+      "collectionIdInUse": {
+        "description": "The chosen collection ID is already in use. Please select a different ID.",
+        "name": "Collection ID Taken"
+      },
+      "collectionNotEmpty": {
+        "description": "The collection must be empty to be destroyed. Please remove all items first.",
+        "name": "Remove Items First"
+      },
+      "deadlineExpired": {
+        "description": "The deadline for this action has already passed.",
+        "name": "Deadline Expired"
+      },
+      "inconsistentItemConfig": {
+        "description": "The item's configuration is inconsistent with the provided data.",
+        "name": "Inconsistent Item Config"
+      },
+      "incorrectData": {
+        "description": "The provided data needs to be corrected.",
+        "name": "Incorrect Data"
+      },
+      "incorrectMetadata": {
+        "description": "The provided metadata may exceed the allowed length.",
+        "name": "Incorrect Metadata"
+      },
+      "itemLocked": {
+        "description": "This item is locked and cannot be transferred. Please contact the collection owner.",
+        "name": "Item Locked"
+      },
+      "itemsNonTransferable": {
+        "description": "Items in this collection cannot be transferred. Please review the collection settings.",
+        "name": "Items Not Transferable"
+      },
+      "lockedCollectionAttributes": {
+        "description": "The collection's attributes are locked and cannot be modified.",
+        "name": "Locked Collection Attributes"
+      },
+      "lockedCollectionMetadata": {
+        "description": "The collection's metadata is locked and cannot be changed.",
+        "name": "Locked Collection Metadata"
+      },
+      "lockedItemAttributes": {
+        "description": "The item's attributes are locked and cannot be modified.",
+        "name": "Locked Item Attributes"
+      },
+      "lockedItemMetadata": {
+        "description": "The item's metadata is locked and cannot be changed.",
+        "name": "Locked Item Metadata"
+      },
+      "maxAttributesLimitReached": {
+        "description": "The maximum number of attributes per call has been reached.",
+        "name": "Max Attributes Limit Reached"
+      },
+      "maxSupplyLocked": {
+        "description": "The maximum supply for this collection is locked and cannot be changed.",
+        "name": "Max Supply Locked"
+      },
+      "maxSupplyReached": {
+        "description": "This collection has reached its maximum supply. No more items can be minted.",
+        "name": "Collection Is Full"
+      },
+      "maxSupplyTooSmall": {
+        "description": "The provided maximum supply is less than the number of items in the collection. Tip: Increase the maximum supply or remove excess items from the collection.",
+        "name": "Max Supply Too Small"
+      },
+      "metadataNotFound": {
+        "description": "This item has no metadata. Consider adding metadata to enhance its value.",
+        "name": "Item Metadata Not Set"
+      },
+      "methodDisabled": {
+        "description": "This method is currently disabled by system settings.",
+        "name": "Method Disabled"
+      },
+      "mintEnded": {
+        "description": "The minting process has already concluded. No more items can be minted.",
+        "name": "Mint Ended"
+      },
+      "mintNotStarted": {
+        "description": "The minting process hasn't begun yet. Please wait for the mint to start.",
+        "name": "Mint Not Started"
+      },
+      "noConfig": {
+        "description": "The configuration for this collection or item is missing.",
+        "name": "No Config"
+      },
+      "noPermission": {
+        "description": "You don't have permission to perform this action. Please check your account settings.",
+        "name": "No Permission"
+      },
+      "notDelegate": {
+        "description": "The provided account is not a delegate. Please check the account details.",
+        "name": "Not a Delegate"
+      },
+      "notForSale": {
+        "description": "This item is not available for purchase.",
+        "name": "Item Not for Sale"
+      },
+      "reachedApprovalLimit": {
+        "description": "This item has reached its approval limit.",
+        "name": "Reached Approval Limit"
+      },
+      "rolesNotCleared": {
+        "description": "Some roles were not successfully cleared.",
+        "name": "Roles Not Cleared"
+      },
+      "unaccepted": {
+        "description": "The collection owner has not accepted ownership.",
+        "name": "Unaccepted"
+      },
+      "unapproved": {
+        "description": "No approval exists for this transfer. Tip: Ensure you have the necessary approvals before initiating a transfer.",
+        "name": "Unapproved"
+      },
+      "unknownCollection": {
+        "description": "The specified collection doesn't exist. Please verify the collection ID.",
+        "name": "Unknown Collection"
+      },
+      "unknownItem": {
+        "description": "The specified item does not exist. Please check the item ID.",
+        "name": "Unknown Item"
+      },
+      "unknownSwap": {
+        "description": "The specified swap does not exist.",
+        "name": "Unknown Swap"
+      },
+      "witnessRequired": {
+        "description": "The witness data should be provided.",
+        "name": "Witness Required"
+      },
+      "wrongDelegate": {
+        "description": "The delegate information is incorrect. Please verify the delegate details.",
+        "name": "Wrong Delegate"
+      },
+      "wrongDuration": {
+        "description": "The provided duration exceeds the maximum allowed deadline duration.",
+        "name": "Wrong Duration"
+      },
+      "wrongNamespace": {
+        "description": "The provided namespace is not supported for this operation.",
+        "name": "Wrong Namespace"
+      },
+      "wrongOrigin": {
+        "description": "This action was performed by an unauthorized source.",
+        "name": "Wrong Origin"
+      },
+      "wrongOwner": {
+        "description": "The owner information is incorrect. Please double-check the owner details.",
+        "name": "Wrong Owner"
+      },
+      "wrongSetting": {
+        "description": "The provided setting cannot be applied.",
+        "name": "Wrong Setting"
+      },
+      "wrongSignature": {
+        "description": "The provided signature is invalid. Please sign the transaction again.",
+        "name": "Wrong Signature"
+      },
+      "fundsUnavailable": {
+        "description": "You don't have enough funds to create this collection. Please top up your account and try again.",
+        "name": "Insufficient Balance"
+      }
+    },
+    "image": {
+      "chooseArtwork": "Drop your artwork",
+      "chooseDifferent": "Choose a different artwork"
+    }
+  },
+  "manage": {
+    "title": "Your MEMOs",
+    "created": "Created",
+    "collected": "Collected",
+    "activeDrops": "Active Drops",
+    "totalClaims": "Total Claims",
+    "createDrop": "+ Create MEMO",
+    "noDrops": "No MEMOs matched your filters.",
+    "dropsError": "There was an error loading drops. Please contact our support or try again later.",
+    "drop": {
+      "active": "Active",
+      "inactive": "Expired",
+      "upcoming": "Upcoming",
+      "ended": "Ended",
+      "left": "{time} left",
+      "progress": "Progress",
+      "claimed": "{part}/{total} claimed",
+      "manageDrop": "Manage Drop",
+      "viewDrop": "View Drop",
+      "expired": "Expired",
+      "backToDrops": "Back to Drops",
+      "viewClaimPage": "View Claim Page",
+      "copyLink": "Copy Link",
+      "pause": "Pause",
+      "tabs": {
+        "analytics": "Analytics",
+        "customize": "Customize",
+        "settings": "Settings"
+      }
+    },
+    "analytics": {
+      "totalClaims": "Total Claims",
+      "uniqueAddresses": "Unique Addresses",
+      "recentClaims": "Recent Claims",
+      "holders": "Holders",
+      "exportCsv": "Export CSV",
+      "table": {
+        "claimId": "Claim #",
+        "address": "Address",
+        "time": "Time",
+        "transaction": "Transaction",
+        "noTransactionsYet": "No transactions yet"
+      }
+    },
+    "customize": {
+      "title": "Claim page image",
+      "titleHint": "This image will be shown on the claim page. After claiming, users will receive your memo NFT with its own unique image.",
+      "customPreviewImage": "Use custom preview image",
+      "customPreviewImageHint": "Upload a different image for the claim page",
+      "textContent": "Text Content",
+      "heading": "Heading",
+      "subheading": "Subheading",
+      "buttonText": "Button Text",
+      "socials": "Socials",
+      "socialsHint": "Links to socials are displayed under the subheading",
+      "colors": "Colors",
+      "colorsHint": "Choose color that match your brand",
+      "darkMode": "Dark Mode",
+      "accentColor": "Accent color",
+      "contrastCheck": "Contrast check",
+      "preview": "Preview",
+      "previewHint": "Live preview of claim page",
+      "headingTooLong": "Heading must be 40 characters or less",
+      "subheadingTooLong": "Subheading must be 300 characters or less",
+      "claimTextTooLong": "Button text must be 40 characters or less",
+      "validationRequired": "Please fix validation errors before saving"
+    },
+    "settings": {
+      "title": "Distribution settings",
+      "updateWindow": "Update claim window"
+    }
+  }
+}
