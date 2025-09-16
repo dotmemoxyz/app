@@ -19,7 +19,7 @@
         </a>
       </div>
 
-      <p class="text-text-primary">
+      <p class="!text-text-secondary">
         {{ $t("self.description") }}
       </p>
 
