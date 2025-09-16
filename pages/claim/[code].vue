@@ -339,8 +339,7 @@ watch(
         const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.id);
         maxMints.value = maxTokens;
         minted.value = mintedTokens;
-        // remaining.value = remainingMints;
-        remaining.value = 10;
+        remaining.value = remainingMints;
         loadingLimitInfo.value = false;
       } catch (error) {
         console.error("Error fetching minting limits:", error);
