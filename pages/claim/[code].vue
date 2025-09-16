@@ -175,8 +175,11 @@
           <p v-else-if="claimFailed" class="w-full text-center !text-red-500">{{ t("claim.claimFailed") }}</p>
         </template>
         <div class="relative flex w-full flex-col gap-2">
-          <dot-button variant="tertiary" @click="openSelfModal()">{{ $t("self.verify") }}</dot-button>
+          <dot-button v-if="!selfVerified" variant="tertiary" @click="openSelfModal()">{{
+            $t("self.verify")
+          }}</dot-button>
           <dot-button
+            v-else
             :disabled="!canClaim || isClaiming || claimFailed"
             variant="primary"
             :force-color="accentColor"
@@ -336,7 +339,8 @@ watch(
         const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, data.id);
         maxMints.value = maxTokens;
         minted.value = mintedTokens;
-        remaining.value = remainingMints;
+        // remaining.value = remainingMints;
+        remaining.value = 10;
         loadingLimitInfo.value = false;
       } catch (error) {
         console.error("Error fetching minting limits:", error);

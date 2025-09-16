@@ -381,6 +381,8 @@
   },
   "self": {
     "verify": "Verify using Self",
+    "description": "We use Self for ZK proof to ensure access is limited to verified users from approved countries and regions only.",
+    "verifyInstruction": "Scan to continue",
     "verificationSuccess": "Proof verified",
     "verificationFail": "Proof generation failed",
     "tryAgain": "Try again"
