@@ -134,12 +134,16 @@ const selectWallet = async (wallet: BaseDotsamaWallet) => {
 };
 
 const selectedAccount = ref<ExtendedDotsamaAccount | null>(null);
-
+const route = useRoute();
 const saveAndClose = () => {
   if (selectedAccount.value && selectedWallet.value) {
     accountStore.selectAccount(selectedAccount.value);
     localStorage.setItem("account-address", selectedAccount.value.address);
     localStorage.setItem("account-wallet", selectedWallet.value.name);
+    accountStore.clearToken();
+    if (route.path.startsWith("/manage")) {
+      navigateTo("/");
+    }
 
     emit("confirm");
   }

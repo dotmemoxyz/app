@@ -260,6 +260,7 @@ import type { Prefix } from "@kodadot1/static";
 import { getFreeMints } from "~/utils/sdk/query";
 
 import { FetchError } from "ofetch";
+import type { ClaimCheckResponse } from "~/types/memo";
 
 const { shareOnTelegram, shareOnX } = useSocials();
 
@@ -370,6 +371,28 @@ const { open } = useModal({
 
 const SHARE_MESSAGE = "I just claimed a new MEMO on dotmemo.xyz! 🎉";
 
+const startCheckProcess = (claimId: string, collectionId: string, itemId: string) => {
+  const interval = setInterval(async () => {
+    try {
+      const checkData = await $fetch<ClaimCheckResponse>("/api/check", {
+        query: { id: claimId },
+        method: "GET",
+      });
+
+      if (checkData.status === "completed") {
+        claimed.value = `https://kodadot.xyz/${data.value?.chain}/gallery/${collectionId}-${itemId}`;
+        clearInterval(interval);
+      } else if (checkData.status === "failed") {
+        claimFailed.value = true;
+        isClaiming.value = false;
+        clearInterval(interval);
+      }
+    } catch (error) {
+      console.error("Error during claim status check:", error);
+    }
+  }, 5000); // Check every 5 seconds
+};
+
 const claim = async () => {
   if (!address.value) return;
   if (!canClaim.value) return;
@@ -386,15 +409,14 @@ const claim = async () => {
       },
       timeout: 5 * 60 * 1000, // 5 minutes
     });
-    const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collectionId}-${data.itemId}`;
     if (data.legacy) {
-      // In legacy mode, redirect after 1 minute to wait for queue
+      // Wait 1 minute and then redirect to gallery
       setTimeout(() => {
-        claimed.value = url;
-      }, 60_000);
-    } else {
-      claimed.value = url;
+        claimed.value = `https://kodadot.xyz/${data.chain}/gallery/${data.collectionId}-${data.itemId}`;
+      }, 60000);
+      return;
     }
+    startCheckProcess(data.claimId, data.collectionId, data.itemId);
   } catch (error) {
     console.error("Claim failed:", error);
     claimFailed.value = true;

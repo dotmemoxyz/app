@@ -64,11 +64,20 @@ export interface MemoDTO extends MemoPureDTO {
   code: string;
 }
 
+export interface ClaimCheckResponse {
+  id: string;
+  status: "pending" | "completed" | "failed";
+  claimedAt: string;
+  itemId: string;
+  transactionHash?: string;
+}
+
 export interface ClaimMemoResponse {
   success: boolean;
   message: string;
   chain: "ahk" | "ahp";
   collectionId: string;
+  claimId: string;
   itemId: string;
   legacy: boolean;
 }

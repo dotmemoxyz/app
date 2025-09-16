@@ -28,6 +28,9 @@ export const useAccountStore = defineStore("account", {
     setToken(token: string) {
       this.token = token;
     },
+    clearToken() {
+      this.token = null;
+    },
     disconnect() {
       this.selected = null;
     },
