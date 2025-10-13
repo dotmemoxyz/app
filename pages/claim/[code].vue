@@ -380,7 +380,7 @@ const claim = async () => {
         address: address.value,
       },
     });
-    const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collection}-${data.sn}`;
+    const url = `https://beta.chaotic.art/${data.chain}/gallery/${data.collection}-${data.sn}`;
     claimed.value = url;
   } catch (error) {
     console.error("Claim failed:", error);
