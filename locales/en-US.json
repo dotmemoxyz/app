@@ -61,7 +61,7 @@
     "tryDifferent": "Try a different MEMO?",
     "enterAddress": "Enter address",
     "connectWallet": "Connect Wallet",
-    "useEmail": "Use Email",
+    "email": "Email",
     "emailPlaceholder": "Enter your email",
     "sendVerification": "Send Verification",
     "checkEmail": "Check your email for a verification link",

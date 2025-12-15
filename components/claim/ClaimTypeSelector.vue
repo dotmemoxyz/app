@@ -25,7 +25,7 @@
       }"
       @click="claimType = 'email'"
     >
-      {{ t("claim.useEmail") }}
+      {{ t("claim.email") }}
     </button>
   </div>
 </template>
