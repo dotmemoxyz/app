@@ -30,10 +30,7 @@
       </span>
     </span>
 
-    <p v-if="loading" class="hidden text-[14px] font-normal !text-text-secondary md:block">
-      {{ $t("claim.loading") }}...
-    </p>
-    <p v-else-if="maxMints !== null" class="hidden text-[14px] font-normal !text-text-secondary md:block">
+    <p v-if="maxMints !== null" class="hidden text-[14px] font-normal !text-text-secondary md:block">
       {{
         $t("claim.remaining", {
           free: remaining,
@@ -48,8 +45,7 @@
   </div>
   <!-- Mobile remaining mints -->
   <div class="flex w-full items-center justify-center rounded-[12px] bg-surface-card p-[16px] md:hidden">
-    <p v-if="loading" class="text-[14px] font-normal !text-text-secondary">{{ $t("claim.loading") }}...</p>
-    <p v-else class="text-[14px] font-normal !text-text-secondary">
+    <p class="text-[14px] font-normal !text-text-secondary">
       {{
         $t("claim.remaining", {
           free: remaining,
