@@ -35,6 +35,7 @@
             <ClaimTypeSelector v-model="claimType" />
 
             <ClaimTypeContent
+              ref="claimTypeContentRef"
               :type="claimType"
               :manual-address="manualAddress"
               :address-error="addressError"
@@ -46,7 +47,6 @@
               @update:email-address="emailAddress = $event"
               @open-qr-scanner="open()"
               @submit="onSubmit()"
-              @submit-email="initiateEmail"
             />
 
             <p v-if="claimFailed && alreadyCollected" class="w-full text-center !text-red-500">
@@ -56,11 +56,11 @@
           </template>
 
           <ClaimButton
-            :disabled="!canClaim || isClaiming || claimFailed"
+            :disabled="!canClaim || isClaiming || claimFailed || isEmailSending"
             :force-color="accentColor"
             :label="claimButtonLabel"
-            :is-claiming="isClaiming"
-            @click="claim"
+            :is-claiming="isClaiming || isEmailSending"
+            @click="claimType === 'email' ? initiateEmail() : claim()"
           />
 
           <ClaimChainBadge v-if="data.chain && !allClaimed" :chain="data.chain" />
@@ -86,10 +86,11 @@ const manualAddress = ref((route.query.address || "") as string);
 const claimType = ref<ClaimType>("address");
 
 const emailAddress = ref("");
-const emailError = ref("");
+const emailError = ref<string>();
 const isEmailSending = ref(false);
 const emailSent = ref(false);
 const addressError = ref("");
+const claimTypeContentRef = ref<{ validateEmail: () => boolean } | null>(null);
 
 watch(claimType, (type) => {
   if (type !== "address") {
@@ -108,21 +109,24 @@ watch(address, (address) => {
   addressError.value = isValidSubstrateAddress(address ?? "") ? "" : "Invalid address";
 });
 
+const canClaimEmailType = computed(() => emailAddress.value && !emailError.value && !emailSent.value);
+
 const canClaim = computed(
   () =>
-    address.value &&
-    !addressError.value &&
     !isClaiming.value &&
     !allClaimed.value &&
     !tooLate.value &&
-    claimType.value !== "email",
+    (claimType.value === "email" ? canClaimEmailType.value : address.value && !addressError.value),
 );
 
 const initiateEmail = async () => {
-  if (!emailAddress.value) return;
+  if (!canClaimEmailType.value || (claimTypeContentRef.value && !claimTypeContentRef.value.validateEmail())) {
+    return;
+  }
 
   isEmailSending.value = true;
-  emailError.value = "";
+  emailError.value = undefined;
+
   try {
     await $fetch("/api/auth/email/initiate", {
       method: "POST",
@@ -166,6 +170,15 @@ const claimButtonLabel = computed(() => {
   if (loadingLimitInfo.value) return t("claim.loading");
   if (allClaimed.value) return t("claim.allClaimed");
   if (tooLate.value) return t("claim.tooLate");
+
+  if (claimType.value === "email") {
+    if (isEmailSending.value) {
+      return t("common.sending");
+    }
+
+    return t("claim.sendVerification");
+  }
+
   if (isClaiming.value) return t("claim.claiming");
   return data.value?.customize?.claimText || t("claim.claim");
 });

@@ -5,12 +5,7 @@
     class="flex w-full items-start gap-[12px] rounded-[16px] bg-surface-card p-[12px]"
     @submit.prevent="$emit('submit')"
   >
-    <dot-text-input
-      :model-value="manualAddress"
-      :error="addressError"
-      :placeholder="t('common.address')"
-      @update:model-value="(val) => $emit('update:manualAddress', val as string)"
-    />
+    <dot-text-input v-model="manualAddress" :error="addressError" :placeholder="t('common.address')" />
     <dot-button variant="tertiary" size="large" @click="$emit('openQrScanner')">
       <template #icon>
         <icon name="mdi:qrcode" size="24" />
@@ -36,19 +31,17 @@
     </div>
     <form
       v-else
+      ref="emailFormRef"
       class="flex w-full flex-col gap-[12px] rounded-[16px] bg-surface-card p-[12px]"
-      @submit.prevent="$emit('submitEmail')"
+      @submit.prevent="$emit('submit')"
     >
       <dot-text-input
-        :model-value="emailAddress"
+        v-model="emailAddress"
         type="email"
+        required
         :error="emailError"
         :placeholder="t('claim.emailPlaceholder')"
-        @update:model-value="(val) => $emit('update:emailAddress', val as string)"
       />
-      <dot-button type="submit" variant="primary" :disabled="!emailAddress || isEmailSending" class="w-full">
-        {{ isEmailSending ? t("common.sending") : t("claim.sendVerification") }}
-      </dot-button>
     </form>
   </template>
 </template>
@@ -56,23 +49,34 @@
 <script setup lang="ts">
 import type { ClaimType } from "~/types/claim";
 
-const { t } = useI18n();
-
 defineProps<{
   type: ClaimType;
-  manualAddress: string;
   addressError: string;
-  emailAddress: string;
-  emailError: string;
-  isEmailSending: boolean;
   emailSent: boolean;
+  emailError?: string;
+  isEmailSending: boolean;
 }>();
 
 defineEmits<{
-  "update:manualAddress": [value: string];
-  "update:emailAddress": [value: string];
   openQrScanner: [];
   submit: [];
-  submitEmail: [];
 }>();
+
+const { t } = useI18n();
+
+const manualAddress = defineModel<string>("manualAddress", { default: "" });
+const emailAddress = defineModel<string>("emailAddress", { default: "" });
+
+const emailFormRef = ref<HTMLFormElement | null>(null);
+
+const validateEmail = () => {
+  if (emailFormRef.value) {
+    return emailFormRef.value.reportValidity();
+  }
+  return true;
+};
+
+defineExpose({
+  validateEmail,
+});
 </script>
