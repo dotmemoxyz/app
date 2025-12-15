@@ -77,6 +77,7 @@ import { DateTime } from "luxon";
 import { useModal } from "vue-final-modal";
 import { FetchError } from "ofetch";
 import type { ClaimType } from "~/types/claim";
+import { SHARE_MESSAGE } from "~/constants/messages";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -202,8 +203,6 @@ const { open } = useModal({
     },
   },
 });
-
-const SHARE_MESSAGE = "I just claimed a new MEMO on dotmemo.xyz! 🎉";
 
 const claim = async () => {
   if (!address.value) return;

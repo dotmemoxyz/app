@@ -17,6 +17,18 @@
         </div>
       </ClaimPreview>
 
+      <div
+        class="flex w-full items-center justify-start gap-2 rounded-[12px] border border-orange-500/20 bg-orange-500/5 p-[16px]"
+      >
+        <Icon name="mdi:clock-alert-outline" size="20" class="text-orange-500" />
+        <div class="flex flex-col gap-1">
+          <p class="text-sm font-medium text-orange-500">
+            Reservation expires {{ formatTimeRemaining(data.expiresAt) }}
+          </p>
+          <p class="text-xs text-text-secondary">Complete your claim before {{ reservationExpiresAt }}</p>
+        </div>
+      </div>
+
       <ClaimMetadata
         v-if="data.expiresAt"
         :created-at="data.createdAt"
@@ -79,6 +91,9 @@
 import { FetchError } from "ofetch";
 import type { Prefix } from "@kodadot1/static";
 import type { EmailClaimDetails, FinalizeClaimResponse } from "~/types/email-auth";
+import { DateTime } from "luxon";
+import { formatTimeRemaining } from "~/utils/time";
+import { SHARE_MESSAGE } from "~/constants/messages";
 
 const route = useRoute();
 const accountStore = useAccountStore();
@@ -104,7 +119,10 @@ const claimButtonLabel = computed(() => {
   return data.value?.customize?.claimText || t("claim.finalizeClaim");
 });
 
-const SHARE_MESSAGE = "I just claimed a new MEMO on dotmemo.xyz! 🎉";
+const reservationExpiresAt = computed(() => {
+  if (!data.value?.expiresAt) return "";
+  return DateTime.fromISO(data.value.expiresAt).toLocaleString(DateTime.DATETIME_MED);
+});
 
 const finalizeClaim = async () => {
   if (!address.value || !canClaim.value) return;
