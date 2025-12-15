@@ -138,11 +138,20 @@ const initiateEmail = async () => {
     emailSent.value = true;
   } catch (err) {
     console.error("Failed to send verification email:", err);
-    emailError.value = t("claim.emailError");
+    if (err instanceof FetchError && err.data?.message) {
+      emailError.value = err.data.message;
+    } else {
+      emailError.value = t("claim.emailError");
+    }
   } finally {
     isEmailSending.value = false;
   }
 };
+
+watch(emailAddress, () => {
+  emailError.value = undefined;
+  emailSent.value = false;
+});
 
 const { data, status, error } = await useFetch("/api/code", {
   query: { code: route.params.code },
