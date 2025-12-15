@@ -31,6 +31,7 @@ export interface EmailClaimDetails {
   expiresAt: string;
   status: "pending" | "claimed" | "expired";
   customize: MemoCustomize;
+  reservedCount?: number;
 }
 
 export interface FinalizeClaimRequest {

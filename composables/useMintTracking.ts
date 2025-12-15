@@ -6,6 +6,7 @@ interface MintData {
   chain: Prefix | string;
   id?: string;
   collectionId?: string;
+  reservedCount?: number;
 }
 
 export const useMintTracking = (data: Ref<MintData | null | undefined>) => {
@@ -30,7 +31,12 @@ export const useMintTracking = (data: Ref<MintData | null | undefined>) => {
           const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, collectionId);
           maxMints.value = maxTokens;
           minted.value = mintedTokens;
-          remaining.value = remainingMints;
+
+          // Subtract email reservations from remaining mints
+          const reservedCount = data.reservedCount ?? 0;
+          const actualRemaining = Math.max(0, (remainingMints ?? 0) - reservedCount);
+          remaining.value = actualRemaining;
+
           loadingLimitInfo.value = false;
         } catch (error) {
           console.error("Error fetching minting limits:", error);
