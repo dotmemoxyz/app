@@ -28,7 +28,8 @@
     "saveChanges": "Save Changes",
     "change": "Change",
     "saving": "Saving...",
-    "sending": "Sending..."
+    "sending": "Sending...",
+    "checking": "Checking..."
   },
   "landing": {
     "quote1": "Your memories,",
@@ -83,7 +84,8 @@
     "claiming": "Claiming MEMO...",
     "claim": "Claim MEMO",
     "loading": "Loading info...",
-    "remaining": "{free} / {total} remaining"
+    "remaining": "{free} / {total} remaining",
+    "emailAlreadyClaimedMemo": "This email has already claimed this MEMO"
   },
   "create": {
     "title": ".create",

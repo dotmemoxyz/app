@@ -43,3 +43,11 @@ export interface FinalizeClaimResponse {
   collection: string;
   sn: string;
 }
+
+export interface CheckPreviousEmailResponse {
+  hasPreviousClaim: boolean;
+  email?: string;
+  walletAddress?: string;
+  hasClaimedThisMemo?: boolean;
+  claimStatus?: "pending" | "claimed" | "expired";
+}
