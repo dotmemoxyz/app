@@ -1,41 +1,49 @@
 <template>
-  <form class="flex max-w-md flex-col space-y-7 px-4 pb-20 pt-8" @submit="onSubmit">
-    <h2 class="text-xl font-medium">{{ t("manage.settings.title") }}</h2>
-    <div class="relative grid grid-cols-2 gap-8">
-      <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
-        <span>?</span>
-        <span
-          class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
-        >
-          {{ t("create.memo.dateHint") }}
-        </span>
+  <div class="flex flex-col gap-8">
+    <!-- Date Settings -->
+    <form class="flex max-w-md flex-col space-y-7 px-4 pb-8 pt-8" @submit="onSubmit">
+      <h2 class="text-xl font-medium">{{ t("manage.settings.title") }}</h2>
+      <div class="relative grid grid-cols-2 gap-8">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
+          <span>?</span>
+          <span
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+          >
+            {{ t("create.memo.dateHint") }}
+          </span>
+        </div>
+        <dot-label :text="t('create.memo.startDate')">
+          <dot-text-input v-model="startDate" type="date" :error="startDateError || localStartDateError" />
+        </dot-label>
+        <dot-label :text="t('create.memo.endDate')">
+          <dot-text-input v-model="endDate" type="date" :error="endDateError || localEndDateError" />
+        </dot-label>
       </div>
-      <dot-label :text="t('create.memo.startDate')">
-        <dot-text-input v-model="startDate" type="date" :error="startDateError || localStartDateError" />
-      </dot-label>
-      <dot-label :text="t('create.memo.endDate')">
-        <dot-text-input v-model="endDate" type="date" :error="endDateError || localEndDateError" />
-      </dot-label>
-    </div>
-    <div class="flex flex-col gap-2">
-      <dot-button :disabled="!isSubmittable || loading" size="large" submit variant="tertiary" class="w-full">
-        {{ loading ? t("common.saving") : t("manage.settings.updateWindow") }}
-      </dot-button>
-      <small class="text-center !text-red-500">{{ dateRangeError }}</small>
-    </div>
-  </form>
+      <div class="flex flex-col gap-2">
+        <dot-button :disabled="!isSubmittable || loading" size="large" submit variant="tertiary" class="w-full">
+          {{ loading ? t("common.saving") : t("manage.settings.updateWindow") }}
+        </dot-button>
+        <small class="text-center !text-red-500">{{ dateRangeError }}</small>
+      </div>
+    </form>
+
+    <hr class="mx-4" />
+
+    <!-- Rarity Settings -->
+    <manage-drop-rarity :drop="drop" />
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { toTypedSchema } from "@vee-validate/zod";
 import { useField, useForm } from "vee-validate";
 import * as zod from "zod";
-import type { Memo } from "~/types/memo";
+import type { DetailedMemo } from "~/types/memo";
 
 const { t } = useI18n();
 
 const props = defineProps<{
-  drop: Memo;
+  drop: DetailedMemo;
 }>();
 const validationSchema = toTypedSchema(
   zod.object({

@@ -54,10 +54,10 @@
 
 <script lang="ts" setup>
 import { DateTime, Duration } from "luxon";
-import type { MemoWithCode } from "~/types/memo";
+import type { DetailedMemo } from "~/types/memo";
 import { emojiBlast } from "emoji-blast";
 const props = defineProps<{
-  drop: MemoWithCode;
+  drop: DetailedMemo;
 }>();
 const { locale } = useI18n();
 // Check if drop is expired
