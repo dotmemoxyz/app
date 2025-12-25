@@ -116,6 +116,15 @@ export type Memo = {
    * Customization of the memo
    */
   customize: MemoCustomize;
+  /**
+   * Rarity tiers configuration (only for owner)
+   * undefined = tiers not configured/disabled
+   */
+  tiers?: TiersData;
+  /**
+   * Whether tiers are locked (claims exist)
+   */
+  tiersLocked?: boolean;
 };
 
 /**
@@ -143,20 +152,11 @@ export interface TiersData {
   tiers: RarityTier[];
 }
 
-export interface DetailedMemo extends Memo {
+export interface MemoWithCode extends Memo {
   /**
    * Code of the memo
    */
   code: string;
-  /**
-   * Rarity tiers configuration (only for owner)
-   * undefined = tiers not configured/disabled
-   */
-  tiers?: TiersData;
-  /**
-   * Whether tiers are locked (claims exist)
-   */
-  tiersLocked?: boolean;
 }
 
 export type CreateMemoDTO = {
