@@ -12,7 +12,7 @@ export type Metadata = {
   kind: string;
 };
 
-const BASE_URL = "https://ipos.kodadot.workers.dev/";
+const BASE_URL = "https://ipos.chaotic.art/";
 
 const nftStorageApi = $fetch.create({
   baseURL: BASE_URL,

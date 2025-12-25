@@ -147,7 +147,8 @@ const saveAndClose = () => {
 
 const disconnect = () => {
   accountStore.disconnect();
-  localStorage.removeItem("account");
+  localStorage.removeItem("account-address");
+  localStorage.removeItem("account-wallet");
   emit("confirm");
 };
 </script>
