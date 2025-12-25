@@ -1,5 +1,6 @@
 import type { Prefix } from "@kodadot1/static";
 import { chainAssetOf } from "./chain.config";
+import { formatBalance } from "dedot/utils";
 
 /**
  * Formats a raw token amount (in smallest unit) to a human-readable string with symbol.
@@ -8,9 +9,11 @@ import { chainAssetOf } from "./chain.config";
  * @param decimals - Optional precision for decimal places (default: 4)
  * @returns Formatted string like "0.0100 DOT"
  */
-export function formatAmount(amount: number | bigint, prefix: Prefix, decimals: number = 4): string {
+export function formatAmount(amount: number | bigint, prefix: Prefix): string {
   if (!amount) return "";
   const asset = chainAssetOf(prefix);
-  const formatted = (Number(amount) / Math.pow(10, asset.decimals)).toFixed(decimals);
-  return `${formatted} ${asset.symbol}`;
+  return formatBalance(amount, {
+    decimals: asset.decimals,
+    symbol: asset.symbol,
+  });
 }
