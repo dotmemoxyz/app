@@ -49,5 +49,5 @@ export default defineEventHandler(async (event) => {
     ...rawData,
     image,
     description: meta.description,
-  } satisfies Memo; // Ensure the return type matches MemoWithCode
+  } satisfies Memo;
 });
