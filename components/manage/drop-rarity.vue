@@ -19,7 +19,7 @@
     </div>
 
     <!-- Locked Warning -->
-    <div v-if="isLocked" class="flex items-center gap-3 rounded-lg bg-yellow-100 p-4 dark:bg-yellow-900/30">
+    <div v-if="isLocked" class="flex max-w-2xl items-center gap-3 rounded-lg bg-yellow-100 p-4 dark:bg-yellow-900/30">
       <Icon name="mdi:lock" class="size-5 text-yellow-600 dark:text-yellow-400" />
       <p class="text-sm text-yellow-700 dark:text-yellow-300">
         {{ t("manage.rarity.locked") }}
@@ -181,13 +181,28 @@
       </div>
     </div>
 
-    <div class="flex max-w-2xl flex-col gap-2">
+    <div v-if="!isLocked" class="flex max-w-2xl flex-col gap-2">
+      <!-- Estimated Cost -->
+      <div v-if="canSave && tiersEnabled" class="flex items-center justify-between gap-2 py-1">
+        <span class="text-sm text-text-secondary">{{ t("manage.rarity.cost") }}</span>
+        <dot-skeleton v-if="supplyLoading" class="h-5 w-24" roundness="sm" />
+        <div v-else-if="totalCost > 0" class="group relative flex items-center gap-1">
+          <span class="text-sm font-semibold">~{{ formattedCost }}</span>
+          <Icon name="mdi:information-outline" class="size-4 cursor-help text-text-secondary" />
+          <span
+            class="pointer-events-none absolute bottom-6 right-0 z-50 w-56 rounded-lg border border-border-default bg-white px-3 py-2 text-xs text-gray-800 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-gray-800 dark:text-gray-100"
+          >
+            {{ t("manage.rarity.costHint") }}
+          </span>
+        </div>
+      </div>
+
       <dot-button
-        :disabled="!canSave || loading || isLocked"
+        :disabled="!canSave || loading"
         size="large"
         variant="tertiary"
         class="w-full"
-        @click="saveTiers"
+        @click="signAndSaveTiers"
       >
         {{ loading ? t("common.saving") : t("common.saveChanges") }}
       </dot-button>
@@ -198,16 +213,15 @@
 </template>
 
 <script lang="ts" setup>
-import type { DistributionMode, DetailedMemo, RarityTier, TiersData } from "~/types/memo";
+import type { DistributionMode, MemoWithCode, RarityTier, TiersData } from "~/types/memo";
+import { MEMO_BOT } from "~/utils/sdk/constants";
 import { getFreeMints } from "~/utils/sdk/query";
 
 const { t } = useI18n();
 
 const props = defineProps<{
-  drop: DetailedMemo;
+  drop: MemoWithCode;
 }>();
-
-const { apiInstanceByPrefix } = useApi(ref(props.drop.chain));
 
 const DEFAULT_TIERS: RarityTier[] = [
   { name: "Common", weight: 70 },
@@ -216,9 +230,17 @@ const DEFAULT_TIERS: RarityTier[] = [
   { name: "Legendary", weight: 2 },
 ];
 
+const DEFAULT_DISTRIBUTION_MODE = "percentage";
+
+const { apiInstanceByPrefix } = useApi(ref(props.drop.chain));
+const { accountId } = useAuth();
+
+const { howAboutToExecute, initTransactionLoader, status } = useMetaTransaction(computed(() => props.drop.chain));
+
 const tiersEnabled = ref(!!props.drop.tiers);
-const distributionMode = ref<DistributionMode>(props.drop.tiers?.distributionMode ?? "percentage");
+const distributionMode = ref<DistributionMode>(props.drop.tiers?.distributionMode ?? DEFAULT_DISTRIBUTION_MODE);
 const totalSupply = ref<number | null>(null);
+const attributeDeposit = ref<number | null>(null);
 const supplyLoading = ref(true);
 
 const tiers = ref<RarityTier[]>(props.drop.tiers?.tiers?.length ? [...props.drop.tiers.tiers] : [...DEFAULT_TIERS]);
@@ -227,9 +249,9 @@ const loading = ref(false);
 const saveError = ref<string | null>(null);
 const saveSuccess = ref(false);
 
-const initialEnabled = !!props.drop.tiers;
-const initialDistributionMode = props.drop.tiers?.distributionMode ?? "percentage";
-const initialTiers = JSON.stringify(props.drop.tiers?.tiers ?? DEFAULT_TIERS);
+const initialEnabled = ref(!!props.drop.tiers);
+const initialDistributionMode = ref(props.drop.tiers?.distributionMode ?? DEFAULT_DISTRIBUTION_MODE);
+const initialTiers = ref(JSON.stringify(props.drop.tiers?.tiers ?? DEFAULT_TIERS));
 
 const totalWeight = computed(() => {
   return tiers.value.reduce((sum, tier) => sum + (tier.weight || 0), 0);
@@ -245,32 +267,17 @@ const totalWeightClass = computed(() => {
 });
 
 const isDirty = computed(() => {
-  if (tiersEnabled.value !== initialEnabled) return true;
-  if (distributionMode.value !== initialDistributionMode) return true;
-  if (JSON.stringify(tiers.value) !== initialTiers) return true;
+  if (tiersEnabled.value !== initialEnabled.value) return true;
+  if (distributionMode.value !== initialDistributionMode.value) return true;
+  if (JSON.stringify(tiers.value) !== initialTiers.value) return true;
   return false;
 });
 
 const validationError = computed(() => {
   if (!tiersEnabled.value) return null;
 
-  if (distributionMode.value === "percentage") {
-    if (totalWeight.value !== 100) {
-      return t("manage.rarity.errorSum");
-    }
-    if (tiers.value.some((t) => t.weight < 0 || t.weight > 100)) {
-      return t("manage.rarity.errorWeight");
-    }
-  } else {
-    if (totalSupply.value !== null && totalWeight.value !== totalSupply.value) {
-      return t("manage.rarity.errorSumFixed", { total: totalSupply.value?.toLocaleString() ?? "N/A" });
-    }
-    if (tiers.value.some((t) => t.weight < 0)) {
-      return t("manage.rarity.errorQuantity");
-    }
-  }
-
   const names = tiers.value.map((t) => t.name.toLowerCase()).filter((n) => n);
+
   if (new Set(names).size !== names.length) {
     return t("manage.rarity.errorDuplicate");
   }
@@ -279,13 +286,40 @@ const validationError = computed(() => {
     return t("manage.rarity.errorEmptyName");
   }
 
+  if (distributionMode.value === "percentage") {
+    if (totalWeight.value !== 100) {
+      return t("manage.rarity.errorSum");
+    }
+    if (tiers.value.some((t) => t.weight < 1 || t.weight > 100)) {
+      return t("manage.rarity.errorWeight");
+    }
+  } else {
+    if (totalSupply.value !== null && totalWeight.value !== totalSupply.value) {
+      return t("manage.rarity.errorSumFixed", { total: totalSupply.value?.toLocaleString() ?? "N/A" });
+    }
+    if (tiers.value.some((t) => t.weight < 1)) {
+      return t("manage.rarity.errorQuantity");
+    }
+  }
+
   return null;
 });
 
 const canSave = computed(() => {
   if (!isDirty.value) return false;
   if (!tiersEnabled.value) return true;
+  if (!totalSupply.value || !attributeDeposit.value) return false;
   return validationError.value === null && tiers.value.length > 0;
+});
+
+const totalCost = computed(() => {
+  if (!totalSupply.value || !attributeDeposit.value) return 0;
+  return totalSupply.value * attributeDeposit.value;
+});
+
+const formattedCost = computed(() => {
+  if (!totalCost.value) return "";
+  return formatAmount(totalCost.value, props.drop.chain);
 });
 
 function addTier() {
@@ -321,31 +355,85 @@ function getPercentage(weight: number): number {
   return (weight / totalSupply.value) * 100;
 }
 
-async function saveTiers() {
-  if (!canSave.value || isLocked.value) return;
+async function signAndSaveTiers() {
+  if (!canSave.value || isLocked.value || !totalSupply.value || !attributeDeposit.value || !accountId.value) return;
 
+  const api = await apiInstanceByPrefix(props.drop.chain);
+
+  const cb = api.tx.balances.transferKeepAlive;
+  const arg = [MEMO_BOT, totalCost.value];
+
+  initTransactionLoader();
+
+  loading.value = true;
   saveError.value = null;
   saveSuccess.value = false;
-  loading.value = true;
 
+  try {
+    if (!tiersEnabled.value) {
+      return saveTiers();
+    }
+
+    await howAboutToExecute(accountId.value, cb, arg, {
+      onResult({ result }) {
+        if (result.isCompleted && !result.dispatchError) {
+          saveTiers();
+        }
+      },
+      onError(error) {
+        throw error;
+      },
+    });
+  } catch (e) {
+    console.error("Failed to execute transaction. Reason: %s", (e as Error).message);
+    saveError.value = "Failed to execute transaction. Try again later or contact support.";
+    loading.value = false;
+  }
+}
+
+watch(status, (status) => {
+  if (status === TransactionStatus.Cancelled) {
+    loading.value = false;
+  }
+});
+
+function showSuccessMessage() {
+  saveSuccess.value = true;
+
+  setTimeout(() => {
+    saveSuccess.value = false;
+  }, 3000);
+}
+
+function resetDirty() {
+  initialEnabled.value = tiersEnabled.value;
+
+  if (!tiersEnabled.value) {
+    initialDistributionMode.value = DEFAULT_DISTRIBUTION_MODE;
+    initialTiers.value = JSON.stringify(DEFAULT_TIERS);
+  } else {
+    initialDistributionMode.value = distributionMode.value;
+    initialTiers.value = JSON.stringify(tiers.value);
+  }
+}
+
+async function saveTiers() {
   try {
     const body = tiersEnabled.value
       ? {
-          enabled: true as const,
+          enabled: true,
           distributionMode: distributionMode.value,
           tiers: tiers.value,
         }
-      : { enabled: false as const };
+      : { enabled: false };
 
-    await $fetch(`/api/drop/${props.drop.chain}/${props.drop.id}/tiers`, {
+    await $fetch<{ tiers: TiersData }>(`/api/drop/${props.drop.chain}/${props.drop.id}/tiers`, {
       method: "PUT",
       body,
     });
 
-    saveSuccess.value = true;
-    setTimeout(() => {
-      saveSuccess.value = false;
-    }, 3000);
+    showSuccessMessage();
+    resetDirty();
   } catch (error: any) {
     console.error("Error saving tiers:", error);
     saveError.value = error.data?.message || error.message || "Failed to save tiers";
@@ -359,9 +447,11 @@ onMounted(async () => {
     const api = await apiInstanceByPrefix(props.drop.chain);
     const result = await getFreeMints(api, props.drop.id);
     totalSupply.value = result.maxTokens;
+    attributeDeposit.value = api.consts.nfts.attributeDepositBase.toNumber();
   } catch (error) {
     console.error("Error fetching collection supply:", error);
     totalSupply.value = null;
+    attributeDeposit.value = null;
   } finally {
     supplyLoading.value = false;
   }
