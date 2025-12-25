@@ -442,6 +442,13 @@ async function saveTiers() {
   }
 }
 
+watch(tiersEnabled, (enabled) => {
+  if (enabled) {
+    distributionMode.value = DEFAULT_DISTRIBUTION_MODE;
+    tiers.value = structuredClone(DEFAULT_TIERS);
+  }
+});
+
 onMounted(async () => {
   try {
     const api = await apiInstanceByPrefix(props.drop.chain);
