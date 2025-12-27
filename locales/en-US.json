@@ -27,7 +27,9 @@
     "text": "Text",
     "saveChanges": "Save Changes",
     "change": "Change",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "sending": "Sending...",
+    "checking": "Checking..."
   },
   "landing": {
     "quote1": "Your memories,",
@@ -60,6 +62,17 @@
     "tryDifferent": "Try a different MEMO?",
     "enterAddress": "Enter address",
     "connectWallet": "Connect Wallet",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "sendVerification": "Send Verification",
+    "checkEmail": "Check your email for a verification link",
+    "emailSent": "Verification email sent!",
+    "emailError": "Failed to send email. Please try again.",
+    "verifying": "Verifying...",
+    "verificationFailed": "Verification failed. Please try again.",
+    "verificationExpired": "This verification link has expired",
+    "connectWalletToClaim": "Connect your wallet to claim this MEMO",
+    "finalizeClaim": "Claim MEMO",
     "enterDOTAddress": "Enter DOT address",
     "alreadyClaimed": "You already claimed this MEMO",
     "claimFailed": "Failed to claim MEMO, please contact support or try again later.",
@@ -71,7 +84,8 @@
     "claiming": "Claiming MEMO...",
     "claim": "Claim MEMO",
     "loading": "Loading info...",
-    "remaining": "{free} / {total} remaining"
+    "remaining": "{free} / {total} remaining",
+    "emailAlreadyClaimedMemo": "This email has already claimed this MEMO"
   },
   "create": {
     "title": ".create",

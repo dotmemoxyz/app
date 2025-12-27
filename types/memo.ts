@@ -53,6 +53,11 @@ export type MemoPureDTO = {
    * Customization of the memo
    */
   customize: MemoCustomize;
+
+  /**
+   * Number of pending email reservations
+   */
+  reservedCount?: number;
 };
 
 export interface MemoDTO extends MemoPureDTO {
@@ -116,6 +121,11 @@ export type Memo = {
    * Customization of the memo
    */
   customize: MemoCustomize;
+
+  /**
+   * Number of pending email reservations
+   */
+  reservedCount?: number;
 };
 
 export interface MemoWithCode extends Memo {

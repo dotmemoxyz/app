@@ -11,6 +11,8 @@
         :type="props.type ?? 'text'"
         :class="inputClasses"
         :maxlength="limit"
+        :disabled="disabled"
+        :readonly="readonly"
         class="text-text-color min-w-0 flex-1 cursor-pointer appearance-none bg-transparent py-3 placeholder:text-text-placeholder focus:outline-none focus:ring-0"
       />
       <slot name="suffix" />
@@ -40,6 +42,8 @@ const props = defineProps<{
   error?: string;
   type?: string;
   limit?: number;
+  disabled?: boolean;
+  readonly?: boolean;
 }>();
 
 onMounted(() => {
