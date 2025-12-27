@@ -70,7 +70,7 @@
           <ClaimChainBadge v-if="data.chain && !allClaimed" :chain="data.chain" />
         </template>
 
-        <ClaimSuccess :claimed-url="claimed" :memo-name="data?.name" :share-message="SHARE_MESSAGE" />
+        <ClaimSuccess :sn="claimedItemId" :collection="data.id" :chain="data.chain" :memo-name="data?.name" />
       </div>
     </template>
   </ClaimLayout>
@@ -81,7 +81,6 @@ import { DateTime } from "luxon";
 import { useModal } from "vue-final-modal";
 import { FetchError } from "ofetch";
 import type { ClaimType } from "~/types/claim";
-import { SHARE_MESSAGE } from "~/constants/messages";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -164,6 +163,8 @@ const { data, status, error } = await useFetch("/api/code", {
   watch: false,
 });
 
+const { accentColor } = useClaimCustomization(data);
+
 const { maxMints, remaining, loadingLimitInfo, apiError } = useMintTracking(data);
 
 const allClaimed = computed(() => remaining.value === 0);
@@ -178,8 +179,10 @@ const tooLate = computed(() => {
 
 const claimFailed = ref(false);
 const alreadyCollected = ref(false);
-const claimed = ref<null | string>(null);
+const claimedItemId = ref<string>();
 const isClaiming = ref(false);
+
+const claimed = computed(() => Boolean(claimedItemId.value));
 
 const claimButtonLabel = computed(() => {
   if (loadingLimitInfo.value) return t("claim.loading");
@@ -229,15 +232,14 @@ const claim = async () => {
     claimFailed.value = false;
     isClaiming.value = true;
 
-    const data = await $fetch("/api/claim", {
+    const response = await $fetch("/api/claim", {
       method: "POST",
       body: {
         code: route.params.code,
         address: address.value,
       },
     });
-    const url = `https://beta.chaotic.art/${data.chain}/gallery/${data.collection}-${data.sn}`;
-    claimed.value = url;
+    claimedItemId.value = response.sn;
   } catch (error) {
     console.error("Claim failed:", error);
     claimFailed.value = true;
@@ -250,27 +252,4 @@ const claim = async () => {
     isClaiming.value = false;
   }
 };
-
-// Customization
-
-const accentColor = computed(() => {
-  const color = data.value?.customize?.accentColor;
-  if (color) {
-    return color;
-  }
-  return "rgb(85, 243, 154)";
-});
-
-const colorMode = useColorMode();
-watch(
-  () => data.value?.customize?.darkMode,
-  (darkMode) => {
-    if (darkMode !== undefined) {
-      colorMode.value = darkMode ? "dark" : "light";
-    }
-  },
-  {
-    immediate: true,
-  },
-);
 </script>

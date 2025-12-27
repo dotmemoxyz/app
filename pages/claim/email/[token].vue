@@ -82,7 +82,12 @@
           <ClaimChainBadge v-if="data.chain" :chain="data.chain as Prefix" />
         </template>
 
-        <ClaimSuccess :claimed-url="claimed" :memo-name="data.memoName" :share-message="SHARE_MESSAGE" />
+        <ClaimSuccess
+          :sn="claimedItemId"
+          :collection="data.collectionId"
+          :chain="data.chain"
+          :memo-name="data.memoName"
+        />
       </div>
     </template>
   </ClaimLayout>
@@ -94,7 +99,6 @@ import type { Prefix } from "@kodadot1/static";
 import type { EmailClaimDetails, FinalizeClaimResponse } from "~/types/email-auth";
 import { DateTime } from "luxon";
 import { formatTimeRemaining } from "~/utils/time";
-import { SHARE_MESSAGE } from "~/constants/messages";
 
 const route = useRoute();
 const accountStore = useAccountStore();
@@ -104,11 +108,14 @@ const token = computed(() => route.params.token as string);
 
 const { data, status, error } = await useLazyFetch<EmailClaimDetails>(`/api/email-claim/${token.value}`);
 
+const { accentColor } = useClaimCustomization(data);
+
 const address = computed(() => accountStore.selected?.address);
+const claimed = computed(() => Boolean(claimedItemId.value));
 
 const claimFailed = ref(false);
 const alreadyCollected = ref(false);
-const claimed = ref<null | string>(null);
+const claimedItemId = ref<string>();
 const isClaiming = ref(false);
 
 const { maxMints, remaining, loadingLimitInfo, apiError } = useMintTracking(data);
@@ -137,8 +144,7 @@ const finalizeClaim = async () => {
       body: { address: address.value },
     });
 
-    const url = `https://chaotic.art/${response.chain}/gallery/${response.collection}-${response.sn}`;
-    claimed.value = url;
+    claimedItemId.value = response.itemId;
   } catch (err) {
     console.error("Claim failed:", err);
     claimFailed.value = true;
@@ -150,5 +156,7 @@ const finalizeClaim = async () => {
   }
 };
 
-const { accentColor } = useClaimCustomization(data);
+watchEffect(() => {
+  claimedItemId.value = data.value?.itemId.toString();
+});
 </script>

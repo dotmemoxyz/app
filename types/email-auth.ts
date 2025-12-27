@@ -40,8 +40,8 @@ export interface FinalizeClaimRequest {
 
 export interface FinalizeClaimResponse {
   chain: string;
-  collection: string;
-  sn: string;
+  collectionId: string;
+  itemId: string;
 }
 
 export interface CheckPreviousEmailResponse {
