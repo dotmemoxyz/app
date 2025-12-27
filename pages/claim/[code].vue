@@ -63,7 +63,7 @@
             "
             :force-color="accentColor"
             :label="claimButtonLabel"
-            :is-claiming="isClaiming || isEmailDisabled"
+            :show-progress="isClaiming"
             @click="handleClaimClick"
           />
 

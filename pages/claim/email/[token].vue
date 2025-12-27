@@ -74,7 +74,7 @@
             :disabled="!canClaim || isClaiming || claimFailed"
             :force-color="accentColor"
             :label="claimButtonLabel"
-            :is-claiming="isClaiming"
+            :show-progress="isClaiming"
             @click="finalizeClaim"
           />
 
