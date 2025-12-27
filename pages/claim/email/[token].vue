@@ -137,7 +137,7 @@ const finalizeClaim = async () => {
       body: { address: address.value },
     });
 
-    const url = `https://beta.chaotic.art/${response.chain}/gallery/${response.collection}-${response.sn}`;
+    const url = `https://chaotic.art/${response.chain}/gallery/${response.collection}-${response.sn}`;
     claimed.value = url;
   } catch (err) {
     console.error("Claim failed:", err);
