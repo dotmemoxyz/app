@@ -18,6 +18,7 @@
       </ClaimPreview>
 
       <div
+        v-if="!claimed"
         class="flex w-full items-center justify-start gap-2 rounded-[12px] border border-orange-500/20 bg-orange-500/5 p-[16px]"
       >
         <Icon name="mdi:clock-alert-outline" size="20" class="text-orange-500" />
