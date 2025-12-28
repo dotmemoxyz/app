@@ -343,7 +343,7 @@ function getBarColor(index: number): string {
     "bg-teal-500",
     "bg-pink-500",
   ];
-  return colors[index % colors.length];
+  return colors[index % colors.length] || "";
 }
 
 function getPercentage(weight: number): number {
