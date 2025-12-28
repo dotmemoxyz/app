@@ -178,10 +178,8 @@ const tooLate = computed(() => {
   return diff.days && diff.days < 0;
 });
 
-const claimFailed = ref(false);
+const { isClaiming, claimFailed, claimedItemId, startCheckProcess } = useClaimPolling();
 const alreadyCollected = ref(false);
-const claimedItemId = ref<string>();
-const isClaiming = ref(false);
 
 const claimed = computed(() => Boolean(claimedItemId.value));
 
@@ -225,29 +223,6 @@ const { open } = useModal({
   },
 });
 
-const startCheckProcess = (claimId: string, collectionId: string, itemId: string) => {
-  const interval = setInterval(async () => {
-    try {
-      const checkData = await $fetch<ClaimCheckResponse>("/api/check", {
-        query: { id: claimId },
-        method: "GET",
-      });
-
-      if (checkData.status === "completed") {
-        claimedItemId.value = itemId;
-        isClaiming.value = false;
-        clearInterval(interval);
-      } else if (checkData.status === "failed") {
-        claimFailed.value = true;
-        isClaiming.value = false;
-        clearInterval(interval);
-      }
-    } catch (error) {
-      console.error("Error during claim status check:", error);
-    }
-  }, 5000);
-};
-
 const claim = async () => {
   if (!address.value) return;
   if (!canClaim.value) return;
@@ -264,7 +239,7 @@ const claim = async () => {
       },
     });
 
-    startCheckProcess(response.claimId, response.collectionId, response.itemId);
+    startCheckProcess(response.claimId, response.itemId);
   } catch (error) {
     console.error("Claim failed:", error);
     claimFailed.value = true;

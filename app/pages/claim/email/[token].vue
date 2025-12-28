@@ -97,6 +97,7 @@
 import { FetchError } from "ofetch";
 import type { Prefix } from "@kodadot1/static";
 import type { EmailClaimDetails, FinalizeClaimResponse } from "~/types/email-auth";
+import type { ClaimCheckResponse } from "~/types/memo";
 import { DateTime } from "luxon";
 import { formatTimeRemaining } from "~/utils/time";
 
@@ -108,15 +109,14 @@ const token = computed(() => route.params.token as string);
 
 const { data, status, error } = await useLazyFetch<EmailClaimDetails>(`/api/email-claim/${token.value}`);
 
-const { accentColor } = useClaimCustomization(data);
+const { accentColor } = useClaimCustomization(computed(() => data.value ?? null));
 
 const address = computed(() => accountStore.selected?.address);
-const claimed = computed(() => Boolean(claimedItemId.value));
 
-const claimFailed = ref(false);
+const { isClaiming, claimFailed, claimedItemId, startCheckProcess } = useClaimPolling();
 const alreadyCollected = ref(false);
-const claimedItemId = ref<string>();
-const isClaiming = ref(false);
+
+const claimed = computed(() => Boolean(claimedItemId.value));
 
 const { maxMints, remaining, loadingLimitInfo, apiError } = useMintTracking(data);
 
@@ -144,19 +144,18 @@ const finalizeClaim = async () => {
       body: { address: address.value },
     });
 
-    claimedItemId.value = response.itemId;
+    startCheckProcess(response.claimId, response.itemId);
   } catch (err) {
     console.error("Claim failed:", err);
     claimFailed.value = true;
+    isClaiming.value = false;
     if (err instanceof FetchError && err.status === 409) {
       alreadyCollected.value = true;
     }
-  } finally {
-    isClaiming.value = false;
   }
 };
 
 watchEffect(() => {
-  claimedItemId.value = data.value?.itemId.toString();
+  claimedItemId.value = data.value?.itemId?.toString();
 });
 </script>

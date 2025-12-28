@@ -42,6 +42,7 @@ export interface FinalizeClaimResponse {
   chain: string;
   collectionId: string;
   itemId: string;
+  claimId: string;
 }
 
 export interface CheckPreviousEmailResponse {
