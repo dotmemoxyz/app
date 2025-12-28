@@ -1,15 +1,9 @@
-import { web3Enable, web3FromAddress } from "@polkadot/extension-dapp";
 import { getWalletBySource } from "./wallet";
 
-export const enableExtension = async () => await web3Enable("DotMemo");
-
-export const getInjectedExtensions = async () => {
-  const extensions = await web3Enable("DotMemo");
-  return extensions;
-};
-
 export const getAddress = async (address: string) => {
+  if (import.meta.server) return null;
   try {
+    const { web3FromAddress } = await import("@polkadot/extension-dapp");
     const walletName = useAccountStore().selected?.wallet.source;
     const wallet = getWalletBySource(walletName);
     await wallet?.enable();
@@ -25,4 +19,5 @@ export const getAddress = async (address: string) => {
   }
 };
 
-export const isMobileDevice = "ontouchstart" in document.documentElement && /Mobi/.test(navigator.userAgent);
+export const isMobileDevice =
+  import.meta.client && "ontouchstart" in document.documentElement && /Mobi/.test(navigator.userAgent);
