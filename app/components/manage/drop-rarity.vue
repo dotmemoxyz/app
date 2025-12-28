@@ -370,7 +370,9 @@ async function signAndSaveTiers() {
   saveSuccess.value = false;
 
   try {
-    if (!tiersEnabled.value) {
+    // TODO: add drop.tiers.paid
+    const paid = props.drop.tiers;
+    if (!tiersEnabled.value || paid) {
       return saveTiers();
     }
 
