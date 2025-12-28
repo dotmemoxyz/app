@@ -30,10 +30,8 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
   ],
   i18n: {
-    bundle: {
-      optimizeTranslationDirective: false,
-    },
-    vueI18n: "./i18n.config.ts",
+    defaultLocale: "en",
+    locales: [{ code: "en", name: "English", file: "en-US.json" }],
   },
   runtimeConfig: {
     apiUrl: "",
@@ -108,7 +106,7 @@ export default defineNuxtConfig({
     customCollections: [
       {
         prefix: "memo",
-        dir: "./assets/icons",
+        dir: "./app/assets/icons",
         width: 24,
         height: 24,
       },
