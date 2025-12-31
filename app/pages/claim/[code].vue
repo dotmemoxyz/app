@@ -322,6 +322,10 @@ watch(
         minted.value = mintedTokens;
         remaining.value = remainingMints;
         loadingLimitInfo.value = false;
+
+        if (import.meta.client) {
+          trackAnalyticsEvent(data.chain, data.id, "page_view");
+        }
       } catch (error) {
         console.error("Error fetching minting limits:", error);
         apiError.value = "Failed to load minting limits. Please try again later.";
@@ -334,6 +338,24 @@ watch(
     deep: true,
   },
 );
+
+const sessionId = ref("");
+
+if (import.meta.client) {
+  sessionId.value = crypto.randomUUID();
+}
+
+const trackAnalyticsEvent = async (chain: string, memoId: string, eventType: "page_view" | "claim_started") => {
+  if (!import.meta.client || !sessionId.value) return;
+  try {
+    await $fetch(`/api/analytics/${chain}/${memoId}/track`, {
+      method: "POST",
+      body: { eventType, sessionId: sessionId.value },
+    });
+  } catch {
+    // Silently fail
+  }
+};
 
 const allClaimed = computed(() => remaining.value === 0);
 const tooLate = computed(() => {
@@ -396,6 +418,9 @@ const startCheckProcess = (claimId: string, collectionId: string, itemId: string
 const claim = async () => {
   if (!address.value) return;
   if (!canClaim.value) return;
+  if (!data.value) return;
+
+  trackAnalyticsEvent(data.value.chain, data.value.id, "claim_started");
 
   try {
     claimFailed.value = false;
