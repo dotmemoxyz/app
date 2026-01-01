@@ -54,12 +54,12 @@ const { open, close } = useModal({
   component: ConnectModal,
   attrs: {
     onConnect() {
-      redirectIfManage();
       close();
+      redirectIfManage();
     },
     onDisconnect() {
-      redirectIfManage();
       close();
+      redirectIfManage();
     },
     onClose() {
       close();
