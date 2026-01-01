@@ -57,7 +57,7 @@
           </div>
 
           <dot-button variant="tertiary" @click="disconnect"> {{ t("common.disconnect") }} </dot-button>
-          <dot-button variant="tertiary" @click="emit('confirm')"> {{ t("common.cancel") }} </dot-button>
+          <dot-button variant="tertiary" @click="emit('close')"> {{ t("common.cancel") }} </dot-button>
         </div>
       </div>
     </template>
@@ -106,13 +106,14 @@ import { getSupportedWallets } from "~/utils/wallet";
 import type { BaseDotsamaWallet, ExtendedDotsamaAccount } from "~/utils/wallet/base_dotsama_wallet";
 
 const emit = defineEmits<{
-  (e: "confirm"): void;
+  (e: "connect" | "disconnect" | "close"): void;
 }>();
 const { t } = useI18n();
 
 const state = ref<"wallet" | "account">("wallet");
 const showBreakdown = ref(false);
 
+const { logout } = useAuth();
 const accountStore = useAccountStore();
 
 const installedWallets = ref<BaseDotsamaWallet[]>([]);
@@ -134,18 +135,14 @@ const selectWallet = async (wallet: BaseDotsamaWallet) => {
 };
 
 const selectedAccount = ref<ExtendedDotsamaAccount | null>(null);
-const route = useRoute();
+
 const saveAndClose = () => {
   if (selectedAccount.value && selectedWallet.value) {
     accountStore.selectAccount(selectedAccount.value);
     localStorage.setItem("account-address", selectedAccount.value.address);
     localStorage.setItem("account-wallet", selectedWallet.value.name);
     accountStore.clearToken();
-    if (route.path.startsWith("/manage")) {
-      navigateTo("/");
-    }
-
-    emit("confirm");
+    emit("connect");
   }
 };
 
@@ -153,7 +150,8 @@ const disconnect = () => {
   accountStore.disconnect();
   localStorage.removeItem("account-address");
   localStorage.removeItem("account-wallet");
-  emit("confirm");
+  logout();
+  emit("disconnect");
 };
 </script>
 
