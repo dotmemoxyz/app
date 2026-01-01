@@ -42,10 +42,26 @@ const props = defineProps<{
   long?: boolean;
 }>();
 
+const route = useRoute();
+
+const redirectIfManage = () => {
+  if (route.path.startsWith("/manage")) {
+    navigateTo("/");
+  }
+};
+
 const { open, close } = useModal({
   component: ConnectModal,
   attrs: {
-    onConfirm() {
+    onConnect() {
+      redirectIfManage();
+      close();
+    },
+    onDisconnect() {
+      redirectIfManage();
+      close();
+    },
+    onClose() {
       close();
     },
   },
