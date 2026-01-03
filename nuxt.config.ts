@@ -30,6 +30,11 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "@nuxtjs/i18n",
   ],
+  eslint: {
+    config: {
+      standalone: false,
+    },
+  },
   i18n: {
     defaultLocale: "en",
     locales: [{ code: "en", name: "English", file: "en-US.json" }],
