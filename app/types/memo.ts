@@ -1,6 +1,6 @@
 import type { Prefix } from "@kodadot1/static";
 
-export type Ownership = "created" | "collected";
+export type Ownership = "created" | "organized" | "collected";
 
 export type MemoCustomize = {
   image?: string;

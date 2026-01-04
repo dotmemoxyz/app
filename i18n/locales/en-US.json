@@ -317,6 +317,7 @@
   "manage": {
     "title": "Your MEMOs",
     "created": "Created",
+    "organized": "Organized",
     "collected": "Collected",
     "activeDrops": "Active Drops",
     "totalClaims": "Total Claims",

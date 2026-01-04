@@ -8,7 +8,7 @@
       <img :src="props.drop.image" class="h-full rounded-full" />
     </div>
     <!-- Info -->
-    <div v-if="ownership === 'created'" class="flex flex-1 flex-col justify-between py-4">
+    <div v-if="ownership === 'created' || ownership === 'organized'" class="flex flex-1 flex-col justify-between py-4">
       <h2 class="text-[24px]">{{ props.drop.customize.heading ?? props.drop.name }}</h2>
       <span class="flex items-center gap-8">
         <div v-if="isExpired" class="flex w-[88px] items-center justify-center rounded-full bg-border-default p-[5px]">
@@ -19,7 +19,7 @@
         </div>
         <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
       </span>
-      <span class="flex items-center gap-4">
+      <span v-if="ownership === 'created'" class="flex items-center gap-4">
         <a
           class="flex h-fit cursor-pointer select-none items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
           :href="`/claim/${props.drop.code}`"

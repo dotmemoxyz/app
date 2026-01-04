@@ -16,6 +16,14 @@
       >
         {{ $t("manage.collected") }}
       </span>
+      <span class="text-text-placeholder">/</span>
+      <span
+        class="cursor-pointer font-bold text-text-placeholder"
+        :class="{ 'text-text-primary': ownership === 'organized' }"
+        @click="ownership = 'organized'"
+      >
+        {{ $t("manage.organized") }}
+      </span>
     </h1>
     <div v-if="ownership === 'created'" class="my-[35px] flex w-full flex-wrap justify-between gap-8">
       <!-- Statistics -->
@@ -79,10 +87,10 @@
 </template>
 
 <script lang="ts" setup>
-import { getClient, type Prefix } from "@kodadot1/uniquery";
-import type { MemoWithCode, Ownership } from "~/types/memo";
+import { getClient } from "@kodadot1/uniquery";
+import type { MemoWithCode } from "~/types/memo";
 import type { Option } from "~/types/components";
-import { asyncComputed, useUrlSearchParams } from "@vueuse/core";
+import { asyncComputed } from "@vueuse/core";
 import { DateTime } from "luxon";
 
 definePageMeta({
@@ -91,39 +99,7 @@ definePageMeta({
 
 const accountStore = useAccountStore();
 
-const ownership = ref<Ownership>("created");
-const chain = ref<Prefix>("ahp");
-
-const urlParams = useUrlSearchParams<{
-  chain: Prefix;
-  ownership: Ownership;
-}>("history", {
-  initialValue: {
-    chain: "ahp",
-    ownership: "created",
-  },
-  removeFalsyValues: true,
-  removeNullishValues: true,
-});
-
-onMounted(() => {
-  if (!["created", "collected"].includes(urlParams.ownership)) {
-    urlParams.ownership = "created";
-  }
-  if (!["ahp", "ahk"].includes(urlParams.chain)) {
-    urlParams.chain = "ahp";
-  }
-  ownership.value = urlParams.ownership;
-  chain.value = urlParams.chain;
-});
-
-watch(ownership, (newVal) => {
-  urlParams.ownership = newVal;
-});
-
-watch(chain, (newVal) => {
-  urlParams.chain = newVal;
-});
+const { ownership, chain } = useManageParams();
 
 type FilterOptions = "all" | "active" | "inactive";
 
@@ -147,15 +123,22 @@ const {
 } = await useFetch<MemoWithCode[]>(() => `/api/manage/created/${chain.value}`);
 
 const {
+  data: organizedMemos,
+  error: organizedError,
+  status: organizedStatus,
+} = await useFetch<MemoWithCode[]>(() => `/api/manage/organized/${chain.value}`);
+
+const {
   data: collectedMemos,
   error: collectedError,
   status: collectedStatus,
 } = await useFetch<MemoWithCode[]>(() => `/api/manage/collected/${chain.value}`);
 
-// Computed properties to handle status and errors for both endpoints
 const dropsStatus = computed(() => {
   if (ownership.value === "created") {
     return createdStatus.value;
+  } else if (ownership.value === "organized") {
+    return organizedStatus.value;
   } else {
     return collectedStatus.value;
   }
@@ -164,6 +147,8 @@ const dropsStatus = computed(() => {
 const dropsError = computed(() => {
   if (ownership.value === "created") {
     return createdStatus.value === "error" ? createdError.value : null;
+  } else if (ownership.value === "organized") {
+    return organizedStatus.value === "error" ? organizedError.value : null;
   } else {
     return collectedStatus.value === "error" ? collectedError.value : null;
   }
@@ -171,8 +156,18 @@ const dropsError = computed(() => {
 
 const client = computed(() => getClient(chain.value));
 
+const ownershipMemos = computed(() => {
+  if (ownership.value === "created") {
+    return createdMemos.value;
+  } else if (ownership.value === "organized") {
+    return organizedMemos.value;
+  } else {
+    return collectedMemos.value;
+  }
+});
+
 const filteredDrops = computed(() => {
-  const drops = ownership.value === "created" ? createdMemos.value : collectedMemos.value;
+  const drops = ownershipMemos.value;
   if (!drops) {
     return [];
   }
@@ -193,7 +188,7 @@ const filteredDrops = computed(() => {
 });
 
 const totalActiveDrops = computed(() => {
-  const drops = ownership.value === "created" ? createdMemos.value : collectedMemos.value;
+  const drops = ownershipMemos.value;
   if (!drops) {
     return 0;
   }
@@ -216,7 +211,7 @@ type QueryCountResponse = {
 };
 
 const totalClaims = asyncComputed(async () => {
-  const drops = ownership.value === "created" ? createdMemos.value : collectedMemos.value;
+  const drops = ownershipMemos.value;
   if (!drops) {
     return 0;
   }
