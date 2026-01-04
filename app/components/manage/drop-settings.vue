@@ -38,12 +38,12 @@
 import { toTypedSchema } from "@vee-validate/zod";
 import { useField, useForm } from "vee-validate";
 import * as zod from "zod";
-import type { MemoWithCode } from "~/types/memo";
+import type { Memo } from "~/types/memo";
 
 const { t } = useI18n();
 
 const props = defineProps<{
-  drop: MemoWithCode;
+  drop: Memo;
 }>();
 const validationSchema = toTypedSchema(
   zod.object({
