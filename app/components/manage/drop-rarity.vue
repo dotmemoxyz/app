@@ -213,14 +213,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { DistributionMode, MemoWithCode, RarityTier, TiersData } from "~/types/memo";
+import type { DistributionMode, Memo, RarityTier, TiersData } from "~/types/memo";
 import { MEMO_BOT } from "~/utils/sdk/constants";
 import { getFreeMints } from "~/utils/sdk/query";
 
 const { t } = useI18n();
 
 const props = defineProps<{
-  drop: MemoWithCode;
+  drop: Memo;
 }>();
 
 const DEFAULT_TIERS: RarityTier[] = [
