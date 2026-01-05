@@ -1,27 +1,29 @@
 <template>
   <div class="flex w-full flex-col gap-6">
-    <AnalyticsTimeFilter v-model="selectedRange" />
+    <template v-if="showStats">
+      <AnalyticsTimeFilter v-model="selectedRange" />
 
-    <AnalyticsStatsCards
-      :stats-data="dashboardData?.stats"
-      :total-claims="dropCount ?? 0"
-      :loading="dashboardPending"
-    />
-
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <AnalyticsCharts
-        :trend-data="dashboardData?.trend.data || []"
-        :distribution-data="dashboardData?.distribution.data || []"
+      <AnalyticsStatsCards
+        :stats-data="dashboardData?.stats"
+        :total-claims="dropCount ?? 0"
         :loading="dashboardPending"
       />
 
-      <AnalyticsInsights
-        :funnel-steps="funnel"
-        :conversion-rate="dashboardData?.stats.conversionRate ?? 0"
-        :locations="locations"
-        :loading="dashboardPending"
-      />
-    </div>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <AnalyticsCharts
+          :trend-data="dashboardData?.trend.data || []"
+          :distribution-data="dashboardData?.distribution.data || []"
+          :loading="dashboardPending"
+        />
+
+        <AnalyticsInsights
+          :funnel-steps="funnel"
+          :conversion-rate="dashboardData?.stats.conversionRate ?? 0"
+          :locations="locations"
+          :loading="dashboardPending"
+        />
+      </div>
+    </template>
 
     <AnalyticsClaimsTable
       :claims="claims"
@@ -29,6 +31,7 @@
       :page-size="PAGE_SIZE"
       :total-count="dropCount ?? 0"
       :chain="drop.chain"
+      :ownership="ownership"
       @prev-page="prevPage"
       @next-page="nextPage"
       @export="exportCsv"
@@ -40,6 +43,7 @@
 import { getClient } from "@kodadot1/uniquery";
 import type { Memo, Ownership } from "~/types/memo";
 import type { TimeRange, FunnelStep } from "~/types/analytics";
+import type { ClaimItem } from "../analytics/types";
 
 const props = defineProps<{
   drop: Memo;
@@ -51,10 +55,12 @@ const analytics = useAnalytics(props.drop.chain, props.drop.id);
 
 const selectedRange = ref<TimeRange>("7d");
 
+const showStats = computed(() => props.ownership === "created" || props.ownership === "organized");
+
 const { data: dashboardData, pending: dashboardPending } = await useAsyncData(
   `analytics-dashboard-${props.drop.id}`,
   () => analytics.fetchDashboard(selectedRange.value),
-  { watch: [selectedRange] },
+  { watch: [selectedRange], immediate: showStats.value },
 );
 
 const funnel = computed(() => {
@@ -66,14 +72,6 @@ const funnel = computed(() => {
 });
 
 const locations = computed(() => dashboardData.value?.locations.locations || []);
-
-type ClaimItem = {
-  id: string;
-  createdAt: string;
-  currentOwner: string;
-  blockNumber: string;
-};
-
 const PAGE_SIZE = 20;
 const page = ref(1);
 
