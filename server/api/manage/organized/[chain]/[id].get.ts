@@ -6,8 +6,8 @@ import type { Metadata } from "~/services/nftStorage";
 export default defineEventHandler(async (event) => {
   const RUNTIME_CONFIG = useRuntimeConfig();
   const { id, chain } = getRouterParams(event);
-  const token = getCookie(event, "account-token");
 
+  const token = getCookie(event, "account-token");
   if (!token) {
     throw createError({
       statusCode: 401,
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
     console.error(err);
     throw createError({
       statusCode: 500,
-      message: `[API::DROP] Failed to fetch memo details: ${err.message || "Unknown error"}`,
+      message: `[API::ORGANIZED] Failed to fetch memo details: ${err.message || "Unknown error"}`,
     });
   }
 

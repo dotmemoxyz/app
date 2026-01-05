@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   plugins: ["~/plugins/auth-init.client.ts"],
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
+  experimental: { viewTransition: true },
   vite: {
     plugins: [
       VueI18nPlugin({

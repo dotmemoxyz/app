@@ -1,13 +1,12 @@
 import type { ChallengeExchange } from "~/types/auth";
 
-const RUNTIME_CONFIG = useRuntimeConfig();
-
 interface ExchangeTokenRequest {
   challengeId: string;
   signature: string;
 }
 
 export default defineEventHandler(async (event) => {
+  const RUNTIME_CONFIG = useRuntimeConfig();
   const { challengeId, signature } = await readBody(event);
 
   const body: ExchangeTokenRequest = {

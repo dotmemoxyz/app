@@ -168,6 +168,34 @@ const { accentColor } = useClaimCustomization(computed(() => data.value ?? null)
 
 const { maxMints, remaining, loadingLimitInfo, apiError } = useMintTracking(data);
 
+const sessionId = ref("");
+
+if (import.meta.client) {
+  sessionId.value = crypto.randomUUID();
+}
+
+const trackAnalyticsEvent = async (chain: string, memoId: string, eventType: "page_view" | "claim_started") => {
+  if (!import.meta.client || !sessionId.value) return;
+  try {
+    await $fetch(`/api/analytics/${chain}/${memoId}/track`, {
+      method: "POST",
+      body: { eventType, sessionId: sessionId.value },
+    });
+  } catch {
+    // Silently fail
+  }
+};
+
+watch(
+  data,
+  (newData) => {
+    if (newData && import.meta.client) {
+      trackAnalyticsEvent(newData.chain, newData.id, "page_view");
+    }
+  },
+  { immediate: true },
+);
+
 const allClaimed = computed(() => remaining.value === 0);
 const tooLate = computed(() => {
   if (!data.value) return false;
@@ -226,6 +254,9 @@ const { open } = useModal({
 const claim = async () => {
   if (!address.value) return;
   if (!canClaim.value) return;
+  if (!data.value) return;
+
+  trackAnalyticsEvent(data.value.chain, data.value.id, "claim_started");
 
   try {
     claimFailed.value = false;

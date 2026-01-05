@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@view-transition {
-  navigation: auto;
-}
-
 html {
   @apply h-full overflow-hidden;
 }
