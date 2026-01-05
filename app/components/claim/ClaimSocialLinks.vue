@@ -2,7 +2,7 @@
   <div v-if="hasSocials" class="flex w-full flex-wrap items-center justify-center gap-[12px] rounded-[12px] p-[16px]">
     <a
       v-if="telegram"
-      :href="telegram"
+      :href="getTelegramUrl(telegram)"
       target="_blank"
       class="flex items-center gap-[6px] px-[14px]"
       rel="noopener noreferrer"
@@ -13,7 +13,7 @@
 
     <a
       v-if="instagram"
-      :href="instagram"
+      :href="getInstagramUrl(instagram)"
       target="_blank"
       class="flex items-center gap-[6px] px-[14px]"
       rel="noopener noreferrer"
@@ -36,6 +36,8 @@
 </template>
 
 <script setup lang="ts">
+import { getTelegramUrl, getInstagramUrl, formatWeb } from "~/utils/web";
+
 const props = defineProps<{
   telegram?: string;
   instagram?: string;
@@ -43,9 +45,4 @@ const props = defineProps<{
 }>();
 
 const hasSocials = computed(() => props.telegram || props.instagram || props.website);
-
-const formatWeb = (url: string) => {
-  const { hostname } = new URL(url);
-  return hostname.replace("www.", "");
-};
 </script>
