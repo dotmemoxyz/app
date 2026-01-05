@@ -156,7 +156,41 @@ export type Memo = {
    * Customization of the memo
    */
   customize: MemoCustomize;
+  /**
+   * Rarity tiers configuration (only for owner)
+   * undefined = tiers not configured/disabled
+   */
+  tiers?: TiersData;
+  /**
+   * Whether tiers are locked (claims exist)
+   */
+  tiersLocked?: boolean;
 };
+
+/**
+ * Rarity tier definition
+ */
+export interface RarityTier {
+  name: string;
+  weight: number;
+}
+
+/**
+ * Distribution mode for rarity tiers
+ * - 'percentage': Weights represent percentages (must sum to 100)
+ * - 'fixed': Weights represent absolute quantities (must sum to totalSupply)
+ */
+export type DistributionMode = "percentage" | "fixed";
+
+/**
+ * Rarity tiers configuration
+ * Note: The presence of TiersData indicates tiers are enabled.
+ * If tiers are disabled, the value should be undefined instead.
+ */
+export interface TiersData {
+  distributionMode: DistributionMode;
+  tiers: RarityTier[];
+}
 
 export interface MemoWithCode extends Memo {
   /**

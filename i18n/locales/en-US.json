@@ -426,6 +426,38 @@
       "fetchError": "Failed to load organizers",
       "addError": "Failed to add organizer",
       "invalidAddress": "Invalid wallet address"
+    },
+    "rarity": {
+      "title": "Rarity Tiers",
+      "hint": "Define rarity tiers to make your drop more exciting. Each claimed MEMO will be randomly assigned a tier based on the weights you set.",
+      "description": "Configure how rare each tier of your MEMO will be.",
+      "locked": "Rarity tiers are locked because claims have already been made for this MEMO.",
+      "enable": "Enable Rarity Tiers",
+      "enableHint": "When enabled, each claimed MEMO will be assigned a rarity tier.",
+      "distributionMode": "Distribution Mode",
+      "percentage": "Percentage (%)",
+      "absolute": "Absolute (#)",
+      "totalSupply": "Supply",
+      "tiers": "Tier Configuration",
+      "total": "Total",
+      "totalAllocated": "Total Allocated",
+      "allocated": "Allocated",
+      "tierName": "Tier name",
+      "weight": "Weight",
+      "quantity": "Qty",
+      "addTier": "Add Tier",
+      "preview": "Distribution Preview",
+      "saved": "Rarity tiers saved successfully!",
+      "errorSum": "Tier weights must sum to exactly 100%",
+      "errorSumFixed": "Tier quantities must sum to exactly {total}",
+      "errorDuplicate": "Tier names must be unique",
+      "errorEmptyName": "All tiers must have a name",
+      "errorWeight": "Weights must be between 1 and 100",
+      "errorQuantity": "Quantities must be at least 1",
+      "errorTotalSupply": "Total supply must be at least 1",
+      "estimatedCost": "Estimated Cost",
+      "cost": "Cost",
+      "costHint": "This amount is required for on-chain attribute storage."
     }
   }
 }

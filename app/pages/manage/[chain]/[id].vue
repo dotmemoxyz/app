@@ -23,7 +23,7 @@
           'border-black/15 bg-surface-white': selectedTab === tab.key,
           'border-transparent': selectedTab !== tab.key,
         }"
-        @click="selectedTab = tab.key"
+        @click="selectTab(tab.key)"
       >
         <p class="text-[14px] font-normal leading-[18px]">{{ tab.label }}</p>
       </div>
@@ -47,6 +47,7 @@ definePageMeta({
 
 const { ownership } = useManageParams();
 const route = useRoute();
+const router = useRouter();
 const { t } = useI18n();
 
 const TABS = [
@@ -55,7 +56,16 @@ const TABS = [
   { key: "settings", label: t("manage.drop.tabs.settings") },
 ];
 
-const selectedTab = ref(TABS[0]!.key);
+const tabKeys = TABS.map((tab) => tab.key);
+const initialTab = tabKeys.includes(route.query.tab as string) ? (route.query.tab as string) : TABS[0]!.key;
+const selectedTab = ref(initialTab);
+
+const selectTab = (tabKey: string) => {
+  selectedTab.value = tabKey;
+  router.replace({
+    query: { ...route.query, tab: tabKey },
+  });
+};
 
 const { data, status, error } = await useFetch(
   `/api/manage/${ownership.value}/${route.params.chain}/${route.params.id}`,
