@@ -31,7 +31,7 @@
     <hr class="w-full" />
     <!-- Sub containers -->
     <manage-drop-analytics
-      v-if="(selectedTab === 'analytics' || ownership === 'collected') && data"
+      v-if="((ownership === 'created' && selectedTab === 'analytics') || ownership === 'organized') && data"
       :ownership="ownership"
       :drop="data"
     />
@@ -41,44 +41,23 @@
 </template>
 
 <script lang="ts" setup>
-import { useUrlSearchParams } from "@vueuse/core";
-import type { Ownership } from "~/types/memo";
-
 definePageMeta({
   middleware: "auth",
 });
 
-const ownership = ref<Ownership>("created");
-
-const urlParams = useUrlSearchParams<{
-  ownership: Ownership;
-}>("history", {
-  initialValue: {
-    ownership: "created",
-  },
-  removeFalsyValues: true,
-  removeNullishValues: true,
-});
-
-onMounted(() => {
-  if (!["created", "collected"].includes(urlParams.ownership)) {
-    urlParams.ownership = "created";
-  }
-  ownership.value = urlParams.ownership;
-});
-
+const { ownership } = useManageParams();
+const route = useRoute();
+const router = useRouter();
 const { t } = useI18n();
+
 const TABS = [
   { key: "analytics", label: t("manage.drop.tabs.analytics") },
   { key: "customize", label: t("manage.drop.tabs.customize") },
   { key: "settings", label: t("manage.drop.tabs.settings") },
 ];
 
-const route = useRoute();
-const router = useRouter();
-
 const tabKeys = TABS.map((tab) => tab.key);
-const initialTab = tabKeys.includes(route.query.tab as string) ? (route.query.tab as string) : TABS[0].key;
+const initialTab = tabKeys.includes(route.query.tab as string) ? (route.query.tab as string) : TABS[0]!.key;
 const selectedTab = ref(initialTab);
 
 const selectTab = (tabKey: string) => {
@@ -88,5 +67,7 @@ const selectTab = (tabKey: string) => {
   });
 };
 
-const { data, status, error } = await useFetch(`/api/manage/created/${route.params.chain}/${route.params.id}`);
+const { data, status, error } = await useFetch(
+  `/api/manage/${ownership.value}/${route.params.chain}/${route.params.id}`,
+);
 </script>

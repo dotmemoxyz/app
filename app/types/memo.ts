@@ -1,6 +1,6 @@
 import type { Prefix } from "@kodadot1/static";
 
-export type Ownership = "created" | "collected";
+export type Ownership = "created" | "organized" | "collected";
 
 export type MemoCustomize = {
   image?: string;
@@ -55,6 +55,16 @@ export type MemoPureDTO = {
    * Customization of the memo
    */
   customize: MemoCustomize;
+
+  /**
+   * List of organizer addresses (only for creators)
+   */
+  organizers?: string[];
+
+  /**
+   * Whether the current user is an organizer (only true for organizers, undefined otherwise)
+   */
+  isOrganizer?: boolean;
 };
 
 export interface MemoDTO extends MemoPureDTO {

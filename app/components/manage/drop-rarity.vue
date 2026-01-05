@@ -213,14 +213,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { DistributionMode, Memo, RarityTier, TiersData } from "~/types/memo";
+import type { DistributionMode, MemoWithCode, RarityTier, TiersData } from "~/types/memo";
 import { MEMO_BOT } from "~/utils/sdk/constants";
 import { getFreeMints } from "~/utils/sdk/query";
 
 const { t } = useI18n();
 
 const props = defineProps<{
-  drop: Memo;
+  drop: MemoWithCode;
 }>();
 
 const DEFAULT_TIERS: RarityTier[] = [
@@ -340,8 +340,8 @@ function getBarColor(index: number): string {
     "bg-cyan-500",
     "bg-indigo-500",
     "bg-orange-500",
-    "bg-teal-500",
     "bg-pink-500",
+    "bg-teal-500",
   ];
   return colors[index % colors.length] || "";
 }

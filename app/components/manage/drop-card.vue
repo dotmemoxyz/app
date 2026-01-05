@@ -58,7 +58,7 @@
       </div>
       <NuxtLink
         class="flex max-h-[45px] w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white px-[14px] py-[16px] hover:opacity-70"
-        :to="`/manage/${props.drop.chain}/${props.drop.id}?ownership=created`"
+        :to="`/manage/${props.drop.chain}/${props.drop.id}?ownership=${props.ownership}`"
       >
         <p class="text-[14px] font-normal leading-[18px]">{{ $t("manage.drop.manageDrop") }}</p>
         <Icon name="mdi:arrow-right" class="size-[20px] text-text-primary" />
@@ -67,7 +67,7 @@
     <div v-else class="flex w-full flex-col gap-[24px]">
       <NuxtLink
         class="flex max-h-[45px] w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white px-[14px] py-[16px] hover:opacity-70"
-        :to="`/manage/${props.drop.chain}/${props.drop.id}?ownership=collected`"
+        :to="`/manage/${props.drop.chain}/${props.drop.id}?ownership=${props.ownership}`"
       >
         <p class="text-[14px] font-normal leading-[18px]">{{ $t("manage.drop.viewDrop") }}</p>
         <Icon name="mdi:arrow-right" class="size-[20px] text-text-primary" />
