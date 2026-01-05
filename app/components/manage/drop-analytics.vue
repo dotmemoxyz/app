@@ -6,7 +6,7 @@
       <AnalyticsStatsCards
         :stats-data="dashboardData?.stats"
         :total-claims="dropCount ?? 0"
-        :loading="dashboardPending"
+        :loading="dashboardPending || countPending"
       />
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -32,6 +32,7 @@
       :total-count="dropCount ?? 0"
       :chain="drop.chain"
       :ownership="ownership"
+      :loading="dropsPending"
       @prev-page="prevPage"
       @next-page="nextPage"
       @export="exportCsv"
@@ -57,7 +58,7 @@ const selectedRange = ref<TimeRange>("7d");
 
 const showStats = computed(() => props.ownership === "created" || props.ownership === "organized");
 
-const { data: dashboardData, pending: dashboardPending } = await useAsyncData(
+const { data: dashboardData, pending: dashboardPending } = useAsyncData(
   `analytics-dashboard-${props.drop.id}`,
   () => analytics.fetchDashboard(selectedRange.value),
   { watch: [selectedRange], immediate: showStats.value },
@@ -83,7 +84,7 @@ const prevPage = () => {
   page.value -= 1;
 };
 
-const { data: dropsData } = await useAsyncData(
+const { data: dropsData, pending: dropsPending } = useAsyncData(
   `transactions-drop-${props.drop.id}`,
   () => {
     const client = getClient(props.drop.chain);
@@ -103,7 +104,7 @@ const { data: dropsData } = await useAsyncData(
 
 const claims = computed(() => dropsData.value || []);
 
-const { data: dropCount } = await useAsyncData(
+const { data: dropCount, pending: countPending } = useAsyncData(
   `transactions-count-drop-${props.drop.id}`,
   () => {
     const client = getClient(props.drop.chain);

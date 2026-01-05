@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col gap-4">
+  <DotSkeleton v-if="loading" class="h-[400px] w-full" roundness="md" />
+
+  <div v-else class="flex flex-col gap-4">
     <div class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
       <h2 class="text-[24px] font-medium sm:text-[20px]">
         {{ ownership === "created" ? $t("manage.analytics.recentClaims") : $t("manage.analytics.holders") }}
@@ -93,6 +95,7 @@ const props = defineProps<{
   totalCount: number;
   chain: Prefix;
   ownership: Ownership;
+  loading: boolean;
 }>();
 
 defineEmits<{

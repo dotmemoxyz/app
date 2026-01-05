@@ -72,7 +72,5 @@ const selectTab = (tabKey: string) => {
   });
 };
 
-const { data, status, error } = await useFetch(
-  `/api/manage/${ownership.value}/${route.params.chain}/${route.params.id}`,
-);
+const { data, status, error } = useFetch(`/api/manage/${ownership.value}/${route.params.chain}/${route.params.id}`);
 </script>
