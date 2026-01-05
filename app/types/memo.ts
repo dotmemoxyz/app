@@ -57,12 +57,17 @@ export type MemoPureDTO = {
   customize: MemoCustomize;
 
   /**
+   * Number of pending email reservations
+   */
+  reservedCount?: number;
+
+  /**
    * List of organizer addresses (only for creators)
    */
   organizers?: string[];
 
   /**
-   * Whether the current user is an organizer (only true for organizers, undefined otherwise)
+   * Whether the current user is an organizer
    */
   isOrganizer?: boolean;
 };
@@ -156,6 +161,12 @@ export type Memo = {
    * Customization of the memo
    */
   customize: MemoCustomize;
+
+  /**
+   * Number of pending email reservations
+   */
+  reservedCount?: number;
+
   /**
    * Rarity tiers configuration (only for owner)
    * undefined = tiers not configured/disabled
