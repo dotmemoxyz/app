@@ -74,10 +74,6 @@ type ClaimItem = {
   blockNumber: string;
 };
 
-type Query = {
-  items: ClaimItem[];
-};
-
 const PAGE_SIZE = 20;
 const page = ref(1);
 
@@ -99,7 +95,7 @@ const { data: dropsData } = await useAsyncData(
       limit: PAGE_SIZE,
       fields: ["id", "createdAt", "currentOwner", "image", "issuer", "metadata", "name", "blockNumber"],
     });
-    return client.fetch<Query>(query);
+    return client.fetch<{ items: ClaimItem[] }>(query);
   },
   {
     transform: ({ data }) => data.items,
