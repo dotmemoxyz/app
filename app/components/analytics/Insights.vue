@@ -1,8 +1,8 @@
 <template>
   <DotSkeleton v-if="loading" class="h-[280px] w-full" roundness="md" />
 
-  <div v-else class="rounded-[16px] bg-surface-card p-4">
-    <div class="mb-4 flex gap-2 border-b border-border-default pb-2">
+  <div v-else class="flex h-full flex-col rounded-[16px] bg-surface-card p-4">
+    <div class="mb-4 flex flex-none gap-2 border-b border-border-default pb-2">
       <button
         class="rounded-lg px-3 py-2 text-[14px] transition-colors"
         :class="
@@ -27,7 +27,7 @@
 
     <AnalyticsFunnel v-if="activeTab === 'funnel'" :steps="funnelSteps" :conversion-rate="conversionRate" />
 
-    <AnalyticsLocations v-if="activeTab === 'locations'" :locations="locations" />
+    <AnalyticsLocations v-if="activeTab === 'locations'" :locations="locations" class="flex-1" />
   </div>
 </template>
 

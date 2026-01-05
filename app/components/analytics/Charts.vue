@@ -1,8 +1,8 @@
 <template>
   <DotSkeleton v-if="loading" class="h-[280px] w-full" roundness="md" />
 
-  <div v-else class="rounded-[16px] bg-surface-card p-4">
-    <div class="mb-4 flex gap-2 border-b border-border-default pb-2">
+  <div v-else class="flex h-full flex-col rounded-[16px] bg-surface-card p-4">
+    <div class="mb-4 flex flex-none gap-2 border-b border-border-default pb-2">
       <button
         class="rounded-lg px-3 py-2 text-[14px] transition-colors"
         :class="
@@ -23,20 +23,24 @@
       </button>
     </div>
 
-    <div v-if="activeTab === 'trend'" class="h-[200px]">
+    <div v-if="activeTab === 'trend'" class="relative min-h-[200px] w-full flex-1">
       <div v-if="!trendData.length" class="flex h-full flex-col items-center justify-center gap-2 text-text-secondary">
         <Icon name="mdi:chart-line" class="size-10 opacity-50" />
         <span class="text-[14px]">{{ $t("manage.analytics.noData") }}</span>
       </div>
-      <Line v-else :data="trendChartData" :options="chartOptions" />
+      <div v-else class="absolute inset-0">
+        <Line :data="trendChartData" :options="chartOptions" />
+      </div>
     </div>
 
-    <div v-if="activeTab === 'hourly'" class="h-[200px]">
+    <div v-if="activeTab === 'hourly'" class="relative min-h-[200px] w-full flex-1">
       <div v-if="!hasHourlyData" class="flex h-full flex-col items-center justify-center gap-2 text-text-secondary">
         <Icon name="mdi:chart-bar" class="size-10 opacity-50" />
         <span class="text-[14px]">{{ $t("manage.analytics.noData") }}</span>
       </div>
-      <Bar v-else :data="hourlyChartData" :options="chartOptions" />
+      <div v-else class="absolute inset-0">
+        <Bar :data="hourlyChartData" :options="chartOptions" />
+      </div>
     </div>
   </div>
 </template>
