@@ -79,6 +79,7 @@
 
 <script lang="ts" setup>
 import type { Prefix } from "@kodadot1/static";
+import { DateTime, Duration } from "luxon";
 
 interface Claim {
   id: string;
@@ -101,29 +102,33 @@ defineEmits<{
   export: [];
 }>();
 
+const { t, locale } = useI18n();
+
 const shortenAddress = (address: string): string => {
   if (address.length <= 12) return address;
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
 const formatTime = (dateRaw: string): string => {
-  const date = new Date(dateRaw);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
+  const date = DateTime.fromISO(dateRaw);
+  const diff = DateTime.now().diff(date, ["days", "hours", "minutes", "seconds"]);
 
-  if (diffDays > 0) {
-    return date.toISOString().slice(0, 19).replace("T", " ");
+  if (diff.days > 0) {
+    return date.toFormat("yyyy-MM-dd HH:mm:ss");
   }
-  if (diffHours > 0) {
-    return `${diffHours}h ago`;
+  if (diff.hours > 0) {
+    return t("common.timeAgo", {
+      time: Duration.fromObject({ hours: Math.round(diff.hours) }, { locale: locale.value }).toHuman(),
+    });
   }
-  if (diffMins > 0) {
-    return `${diffMins}m ago`;
+  if (diff.minutes > 0) {
+    return t("common.timeAgo", {
+      time: Duration.fromObject({ minutes: Math.round(diff.minutes) }, { locale: locale.value }).toHuman(),
+    });
   }
-  return "Just now";
+  return t("common.timeAgo", {
+    time: Duration.fromObject({ seconds: Math.round(diff.seconds) }, { locale: locale.value }).toHuman(),
+  });
 };
 
 const getTxLink = (blockNumber: string): string => {
