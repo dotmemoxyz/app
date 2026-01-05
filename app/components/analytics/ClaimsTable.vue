@@ -1,7 +1,12 @@
 <template>
-  <div class="flex flex-col gap-4">
+  <DotSkeleton v-if="loading" class="h-[400px] w-full" roundness="md" />
+
+  <div v-else class="flex flex-col gap-4">
     <div class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-      <h2 class="text-[18px] font-medium sm:text-[20px]">{{ $t("manage.analytics.recentClaims") }}</h2>
+      <h2 class="text-[24px] font-medium sm:text-[20px]">
+        {{ ownership === "created" ? $t("manage.analytics.recentClaims") : $t("manage.analytics.holders") }}
+      </h2>
+
       <div class="flex gap-2">
         <div v-if="claims.length" class="flex gap-2">
           <dot-button
@@ -80,20 +85,17 @@
 <script lang="ts" setup>
 import type { Prefix } from "@kodadot1/static";
 import { DateTime, Duration } from "luxon";
-
-interface Claim {
-  id: string;
-  createdAt: string;
-  currentOwner: string;
-  blockNumber: string;
-}
+import type { ClaimItem } from "./types";
+import type { Ownership } from "~/types/memo";
 
 const props = defineProps<{
-  claims: Claim[];
+  claims: ClaimItem[];
   page: number;
   pageSize: number;
   totalCount: number;
   chain: Prefix;
+  ownership: Ownership;
+  loading: boolean;
 }>();
 
 defineEmits<{

@@ -3,10 +3,11 @@ import type { MemoDTO, MemoWithCode } from "~/types/memo";
 import { FetchError } from "ofetch";
 import type { Metadata } from "~/services/nftStorage";
 
-const RUNTIME_CONFIG = useRuntimeConfig();
 export default defineEventHandler(async (event) => {
+  const RUNTIME_CONFIG = useRuntimeConfig();
   const { id, chain } = getRouterParams(event);
   const token = getCookie(event, "account-token");
+
   if (!token) {
     throw createError({
       statusCode: 401,

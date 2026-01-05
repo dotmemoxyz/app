@@ -1,10 +1,10 @@
 import { FetchError } from "ofetch";
 import type { VerifyTokenResponse } from "~/types/auth";
 
-const RUNTIME_CONFIG = useRuntimeConfig();
-
 export default defineEventHandler(async (event) => {
+  const RUNTIME_CONFIG = useRuntimeConfig();
   const token = getCookie(event, "account-token");
+
   if (!token) {
     throw createError({
       statusCode: 401,
