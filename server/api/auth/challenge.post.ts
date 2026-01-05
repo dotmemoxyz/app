@@ -1,8 +1,7 @@
 import type { Challenge } from "~/types/auth";
 
-const RUNTIME_CONFIG = useRuntimeConfig();
-
 export default defineEventHandler(async (event) => {
+  const RUNTIME_CONFIG = useRuntimeConfig();
   const { address } = await readBody(event);
 
   const [data, err] = await $fetch<Challenge>(`${RUNTIME_CONFIG.apiUrl}/auth/message`, {

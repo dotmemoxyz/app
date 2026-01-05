@@ -1,8 +1,6 @@
 import { FetchError } from "ofetch";
 import * as zod from "zod";
 
-const RUNTIME_CONFIG = useRuntimeConfig();
-
 const createMemoValidator = zod.object({
   secret: zod.string(),
   mint: zod.string(),
@@ -16,6 +14,7 @@ const createMemoValidator = zod.object({
 });
 
 export default defineEventHandler(async (event) => {
+  const RUNTIME_CONFIG = useRuntimeConfig();
   const body = await readValidatedBody(event, createMemoValidator.parse);
 
   const [data, err] = await $fetch(`${RUNTIME_CONFIG.apiUrl}/memos`, {

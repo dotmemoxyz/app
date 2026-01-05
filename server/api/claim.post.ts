@@ -1,9 +1,8 @@
 import { FetchError } from "ofetch";
 import type { ClaimMemoResponse } from "~/types/memo";
 
-const RUNTIME_CONFIG = useRuntimeConfig();
-
 export default defineEventHandler(async (event) => {
+  const RUNTIME_CONFIG = useRuntimeConfig();
   const { code, address } = await readBody(event);
 
   const [data, err] = await $fetch<ClaimMemoResponse>(`${RUNTIME_CONFIG.apiUrl}/memos/${code}/claim`, {
