@@ -1,4 +1,5 @@
 import type { MemoCustomize } from "./memo";
+import type { Prefix } from "@kodadot1/static";
 
 export interface InitiateEmailRequest {
   email: string;
@@ -19,17 +20,19 @@ export interface VerifyEmailResponse {
   memoCode: string;
 }
 
+export type EmailClaimStatus = "pending" | "claimed" | "expired";
+
 export interface EmailClaimDetails {
   email: string;
   memoName: string;
   memoImage: string;
   memoDescription: string;
-  chain: string;
+  chain: Prefix;
   collectionId: string;
   itemId: number;
   createdAt: string;
   expiresAt: string;
-  status: "pending" | "claimed" | "expired";
+  status: EmailClaimStatus;
   customize: MemoCustomize;
   reservedCount?: number;
 }
@@ -50,5 +53,5 @@ export interface CheckPreviousEmailResponse {
   email?: string;
   walletAddress?: string;
   hasClaimedThisMemo?: boolean;
-  claimStatus?: "pending" | "claimed" | "expired";
+  claimStatus?: EmailClaimStatus;
 }
