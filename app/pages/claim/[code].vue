@@ -81,7 +81,6 @@ import { DateTime } from "luxon";
 import { useModal } from "vue-final-modal";
 import { FetchError } from "ofetch";
 import type { ClaimType } from "~/types/claim";
-import type { ClaimCheckResponse, ClaimMemoResponse } from "~/types/memo";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -262,7 +261,7 @@ const claim = async () => {
     claimFailed.value = false;
     isClaiming.value = true;
 
-    const response = await $fetch<ClaimMemoResponse>("/api/claim", {
+    const response = await $fetch("/api/claim", {
       method: "POST",
       body: {
         code: route.params.code,
