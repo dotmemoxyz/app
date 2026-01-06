@@ -83,6 +83,7 @@ export interface ClaimCheckResponse {
   id: string;
   status: "pending" | "completed" | "failed";
   claimedAt: string;
+  collectionId: string;
   itemId: string;
   transactionHash?: string;
 }
