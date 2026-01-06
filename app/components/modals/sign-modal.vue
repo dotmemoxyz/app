@@ -192,7 +192,7 @@ watch(status, async (status) => {
   // Save transaction data
   if (status === TransactionStatus.Finalized && !signError.value && !txError.value) {
     try {
-      const _data = await $fetch("/api/create", {
+      await $fetch("/api/create", {
         method: "POST",
         body: {
           secret: props.secret,
