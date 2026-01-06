@@ -116,7 +116,7 @@
 
 <script lang="ts" setup>
 import { DateTime, Duration } from "luxon";
-import type { MemoWithCode, Ownership, UniqCollection } from "~/types/memo";
+import type { MemoDetail, Ownership, UniqCollection } from "~/types/memo";
 import { emojiBlast } from "emoji-blast";
 import { getClient } from "@kodadot1/uniquery";
 import { useClipboard } from "@vueuse/core";
@@ -124,7 +124,7 @@ import { useClipboard } from "@vueuse/core";
 const clipboard = useClipboard();
 
 const props = defineProps<{
-  drop: MemoWithCode;
+  drop: MemoDetail;
   ownership: Ownership;
 }>();
 const { locale } = useI18n();

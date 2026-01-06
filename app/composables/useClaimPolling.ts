@@ -1,5 +1,3 @@
-import type { ClaimCheckResponse } from "~/types/memo";
-
 export const useClaimPolling = () => {
   const isClaiming = ref(false);
   const claimFailed = ref(false);
@@ -11,7 +9,7 @@ export const useClaimPolling = () => {
 
     const interval = setInterval(async () => {
       try {
-        const checkData = await $fetch<ClaimCheckResponse>("/api/check", {
+        const checkData = await $fetch("/api/check", {
           query: { id: claimId },
           method: "GET",
         });

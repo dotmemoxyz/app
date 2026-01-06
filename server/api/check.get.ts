@@ -1,11 +1,11 @@
 import { FetchError } from "ofetch";
-import type { ClaimMemoResponse } from "~/types/memo";
+import type { ClaimCheckResponse } from "~/types/memo";
 
 export default defineEventHandler(async (event) => {
   const RUNTIME_CONFIG = useRuntimeConfig();
   const { id } = getQuery(event);
 
-  const [data, err] = await $fetch<ClaimMemoResponse>(`${RUNTIME_CONFIG.apiUrl}/memos/check/${id}`, {
+  const [data, err] = await $fetch<ClaimCheckResponse>(`${RUNTIME_CONFIG.apiUrl}/memos/check/${id}`, {
     method: "GET",
   })
     .then((r) => [r, null] as const)

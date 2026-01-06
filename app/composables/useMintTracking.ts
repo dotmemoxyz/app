@@ -1,13 +1,12 @@
 import type { Ref } from "vue";
 import type { Prefix } from "@kodadot1/static";
 import { getFreeMints } from "~/utils/sdk/query";
+import type { Memo } from "~/types/memo";
 
-interface MintData {
-  chain: Prefix | string;
-  id?: string;
+type MintData = Pick<Memo, "chain" | "reservedCount"> & {
   collectionId?: string;
-  reservedCount?: number;
-}
+  id?: string;
+};
 
 export const useMintTracking = (data: Ref<MintData | null | undefined>) => {
   const maxMints = ref<number | null>(0);

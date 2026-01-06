@@ -88,7 +88,6 @@
 
 <script lang="ts" setup>
 import { getClient } from "@kodadot1/uniquery";
-import type { MemoWithCode } from "~/types/memo";
 import type { Option } from "~/types/components";
 import { asyncComputed } from "@vueuse/core";
 import { DateTime } from "luxon";
@@ -120,19 +119,19 @@ const {
   data: createdMemos,
   error: createdError,
   status: createdStatus,
-} = await useFetch<MemoWithCode[]>(() => `/api/manage/created/${chain.value}`);
+} = await useFetch(() => `/api/manage/created/${chain.value}`);
 
 const {
   data: organizedMemos,
   error: organizedError,
   status: organizedStatus,
-} = await useFetch<MemoWithCode[]>(() => `/api/manage/organized/${chain.value}`);
+} = await useFetch(() => `/api/manage/organized/${chain.value}`);
 
 const {
   data: collectedMemos,
   error: collectedError,
   status: collectedStatus,
-} = await useFetch<MemoWithCode[]>(() => `/api/manage/collected/${chain.value}`);
+} = await useFetch(() => `/api/manage/collected/${chain.value}`);
 
 const dropsStatus = computed(() => {
   if (ownership.value === "created") {
