@@ -1,5 +1,5 @@
 import { $obtain as obtain, $purify as purify } from "@kodadot1/minipfs";
-import type { MemoDTO, MemoWithCode } from "~/types/memo";
+import type { Memo } from "~/types/memo";
 import { FetchError } from "ofetch";
 import type { Metadata } from "~/services/nftStorage";
 
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const [rawData, err] = await $fetch<MemoDTO[]>(`${RUNTIME_CONFIG.apiUrl}/manage/memos/organized/${chain}`, {
+  const [rawData, err] = await $fetch<Memo[]>(`${RUNTIME_CONFIG.apiUrl}/manage/memos/organized/${chain}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const res: MemoWithCode[] = [];
+  const res: Memo[] = [];
   for (const memo of rawData) {
     const image = purify(memo.image).at(0);
     if (!image) {
@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
         message: "Metadata not found",
       });
     }
-    res.push({ ...memo, image, description: meta.description } as MemoWithCode);
+    res.push({ ...memo, image, description: meta.description } as Memo);
   }
 
   return res;

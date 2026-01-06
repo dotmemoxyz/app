@@ -14,68 +14,30 @@ export type MemoCustomize = {
   accentColor?: string;
 };
 
-/**
- * Local MEMO object
- */
-export type MemoPureDTO = {
-  /**
-   * Chain of the memo
-   */
+export type Memo = {
+  /** Chain of the memo */
   chain: Prefix;
-  /**
-   * Collection ID of the memo
-   */
+  /** Collection ID of the memo */
   id: string;
-  /**
-   * Name of the memo
-   */
+  /** Name of the memo */
   name: string;
-  /**
-   * Description of the memo
-   */
+  /** Description of the memo */
   description: string;
-  /**
-   * Image URL
-   */
+  /** Image URL */
   image: string;
-  /**
-   * IPFS Mint of the memo
-   */
+  /** IPFS Mint of the memo */
   mint: string;
-  /**
-   * Created at
-   */
+  /** Created at */
   createdAt: string;
-  /**
-   * Expires at
-   */
+  /** Expires at */
   expiresAt: string;
-
-  /**
-   * Customization of the memo
-   */
+  /** Customization of the memo */
   customize: MemoCustomize;
-
-  /**
-   * Number of pending email reservations
-   */
+  /** Number of pending email reservations */
   reservedCount?: number;
-
-  /**
-   * List of organizer addresses (only for creators)
-   */
-  organizers?: string[];
-
-  /**
-   * Whether the current user is an organizer
-   */
-  isOrganizer?: boolean;
 };
 
-export interface MemoDTO extends MemoPureDTO {
-  /**
-   * Code of the memo
-   */
+export interface MemoDTO extends Memo {
   code: string;
 }
 
@@ -122,62 +84,15 @@ export type UniqItem = {
 };
 
 /**
- * Local MEMO object
+ * Full MEMO object for dashboard/detail view
  */
-export type Memo = {
-  /**
-   * Chain of the memo
-   */
-  chain: Prefix;
-  /**
-   * Collection ID of the memo
-   */
-  id: string;
-  /**
-   * Name of the memo
-   */
-  name: string;
-  /**
-   * Description of the memo
-   */
-  description: string;
-  /**
-   * Image URL
-   */
-  image: string;
-  /**
-   * IPFS Mint of the memo
-   */
-  mint: string;
-  /**
-   * Created at
-   */
-  createdAt: string;
-  /**
-   * Expires at
-   */
-  expiresAt: string;
-
-  /**
-   * Customization of the memo
-   */
-  customize: MemoCustomize;
-
-  /**
-   * Number of pending email reservations
-   */
-  reservedCount?: number;
-
-  /**
-   * Rarity tiers configuration (only for owner)
-   * undefined = tiers not configured/disabled
-   */
+export interface MemoDetail extends Memo {
+  code?: string;
   tiers?: TiersData;
-  /**
-   * Whether tiers are locked (claims exist)
-   */
   tiersLocked?: boolean;
-};
+  organizers?: string[];
+  isOrganizer?: boolean;
+}
 
 /**
  * Rarity tier definition
@@ -204,10 +119,7 @@ export interface TiersData {
   tiers: RarityTier[];
 }
 
-export interface MemoWithCode extends Memo {
-  /**
-   * Code of the memo
-   */
+export interface MemoWithCode extends MemoDetail {
   code: string;
 }
 

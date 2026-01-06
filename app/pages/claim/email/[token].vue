@@ -96,8 +96,7 @@
 <script setup lang="ts">
 import { FetchError } from "ofetch";
 import type { Prefix } from "@kodadot1/static";
-import type { EmailClaimDetails, FinalizeClaimResponse } from "~/types/email-auth";
-import type { ClaimCheckResponse } from "~/types/memo";
+import type { FinalizeClaimResponse } from "~/types/email-auth";
 import { DateTime } from "luxon";
 import { formatTimeRemaining } from "~/utils/time";
 
@@ -107,7 +106,7 @@ const { t } = useI18n();
 
 const token = computed(() => route.params.token as string);
 
-const { data, status, error } = await useLazyFetch<EmailClaimDetails>(`/api/email-claim/${token.value}`);
+const { data, status, error } = await useLazyFetch(`/api/email-claim/${token.value}`);
 
 const { accentColor } = useClaimCustomization(computed(() => data.value ?? null));
 

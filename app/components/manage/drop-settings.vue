@@ -16,9 +16,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { MemoWithCode } from "~/types/memo";
+import type { MemoDetail } from "~/types/memo";
 
 defineProps<{
-  drop: MemoWithCode;
+  drop: MemoDetail;
 }>();
 </script>
