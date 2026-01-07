@@ -85,7 +85,7 @@
             <Icon name="mdi:instagram" class="text-text-primary" />
           </template>
         </dot-text-input>
-        <dot-text-input v-model="twitterUsername" placeholder="@twitter">
+        <dot-text-input v-model="twitterUsername" placeholder="@x">
           <template #prefix>
             <Icon name="simple-icons:x" class="text-text-primary" />
           </template>
