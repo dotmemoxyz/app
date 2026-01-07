@@ -85,6 +85,11 @@
             <Icon name="mdi:instagram" class="text-text-primary" />
           </template>
         </dot-text-input>
+        <dot-text-input v-model="twitterUsername" placeholder="@twitter">
+          <template #prefix>
+            <Icon name="simple-icons:x" class="text-text-primary" />
+          </template>
+        </dot-text-input>
         <dot-text-input v-model="websiteLink" placeholder="website.com">
           <template #prefix>
             <Icon name="mdi:web" class="text-text-primary" />
@@ -138,6 +143,7 @@ import type { Memo, MemoCustomize } from "~/types/memo";
 const props = defineProps<{
   drop: Memo;
 }>();
+
 const isCustomPreview = ref(false);
 const imageIPFS = ref<string>();
 const darkMode = ref(false);
@@ -145,6 +151,7 @@ const accentColor = ref(props.drop.customize?.accentColor ?? "#4ADE80");
 const heading = ref(props.drop.customize?.heading ?? "");
 const subheading = ref(props.drop.customize?.subheading ?? "");
 const claimText = ref(props.drop.customize?.claimText ?? "");
+const twitterUsername = ref(props.drop.customize?.twitter ?? "");
 const telegramLink = ref(props.drop.customize?.telegram ?? "");
 const instagramLink = ref(props.drop.customize?.instagram ?? "");
 const websiteLink = ref(props.drop.customize?.website ?? "");
@@ -161,6 +168,7 @@ const editedData = computed<Memo>(() => {
       claimText: claimText.value,
       telegram: telegramLink.value,
       instagram: instagramLink.value,
+      twitter: twitterUsername.value,
       website: websiteLink.value,
       darkMode: darkMode.value,
       accentColor: accentColor.value,
@@ -203,8 +211,9 @@ const save = async () => {
     claimText: claimText.value || undefined,
     telegram: telegramLink.value || undefined,
     instagram: instagramLink.value || undefined,
+    twitter: twitterUsername.value || undefined,
     website: websiteLink.value || undefined,
-    darkMode: darkMode.value || undefined,
+    darkMode: darkMode.value,
     accentColor: accentColor.value || undefined,
   };
   updateError.value = null; // Reset error message

@@ -8,7 +8,7 @@
       rel="noopener noreferrer"
     >
       <icon name="mdi:telegram" size="16" class="text-text-primary" />
-      <p>@{{ telegram.split("/").pop() }}</p>
+      <p>@{{ parseUsername(telegram) }}</p>
     </a>
 
     <a
@@ -19,7 +19,18 @@
       rel="noopener noreferrer"
     >
       <icon name="mdi:instagram" size="16" class="text-text-primary" />
-      <p>@{{ instagram.split("/").pop() }}</p>
+      <p>@{{ parseUsername(instagram) }}</p>
+    </a>
+
+    <a
+      v-if="twitter"
+      :href="getXUrl(twitter)"
+      target="_blank"
+      class="flex items-center gap-[6px] px-[14px]"
+      rel="noopener noreferrer"
+    >
+      <icon name="simple-icons:x" size="16" class="text-text-primary" />
+      <p>@{{ parseUsername(twitter) }}</p>
     </a>
 
     <a
@@ -36,13 +47,14 @@
 </template>
 
 <script setup lang="ts">
-import { getTelegramUrl, getInstagramUrl, formatWeb } from "~/utils/web";
+import { getTelegramUrl, getInstagramUrl, getXUrl, formatWeb, parseUsername } from "~/utils/web";
 
 const props = defineProps<{
   telegram?: string;
   instagram?: string;
   website?: string;
+  twitter?: string;
 }>();
 
-const hasSocials = computed(() => props.telegram || props.instagram || props.website);
+const hasSocials = computed(() => props.telegram || props.instagram || props.website || props.twitter);
 </script>

@@ -3,13 +3,14 @@ import { FetchError } from "ofetch";
 
 const customizationSchema = zod.object({
   image: zod.string().trim().optional(),
-  heading: zod.string().trim().optional(),
-  subheading: zod.string().trim().optional(),
-  claimText: zod.string().trim().optional(),
-  telegram: zod.string().trim().optional(),
-  instagram: zod.string().trim().optional(),
+  heading: zod.string().trim().max(40).optional(),
+  subheading: zod.string().trim().max(300).optional(),
+  claimText: zod.string().trim().max(40).optional(),
+  telegram: zod.string().trim().max(50).optional(),
+  instagram: zod.string().trim().max(50).optional(),
+  twitter: zod.string().trim().max(50).optional(),
   website: zod.string().trim().url().optional(),
-  darkMode: zod.boolean().optional(),
+  darkMode: zod.boolean(),
   accentColor: zod
     .string()
     .trim()
