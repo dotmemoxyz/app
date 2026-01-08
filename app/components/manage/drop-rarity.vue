@@ -1,21 +1,15 @@
 <template>
-  <div class="flex max-w-6xl flex-col gap-8 px-4 pb-20 pt-8">
-    <!-- Header -->
-    <div class="flex flex-col gap-2">
-      <div class="flex items-center gap-2">
-        <h2 class="text-xl font-medium">{{ t("manage.rarity.title") }}</h2>
-        <div
-          class="group relative flex h-[20px] w-[20px] cursor-default items-center justify-center rounded-full border-2 border-text-secondary px-2"
-        >
-          <span class="text-[12px] text-text-secondary">?</span>
-          <span
-            class="pointer-events-none absolute bottom-5 right-0 z-50 mt-2 w-64 rounded-lg border border-border-default bg-white px-3 py-2 text-sm text-gray-800 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-gray-800 dark:text-gray-100"
-          >
-            {{ t("manage.rarity.hint") }}
-          </span>
+  <div class="flex max-w-6xl flex-col gap-8 px-4 py-8">
+    <!-- Section Header -->
+    <div class="flex max-w-2xl items-center justify-between">
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <h2 class="text-xl font-medium text-text-primary">{{ t("manage.rarity.title") }}</h2>
+          <dot-tooltip :text="t('manage.rarity.hint')" position="top" />
         </div>
+        <p class="text-sm text-text-secondary">{{ t("manage.rarity.description") }}</p>
       </div>
-      <p class="text-sm text-text-secondary">{{ t("manage.rarity.description") }}</p>
+      <dot-switch v-model="tiersEnabled" :disabled="isLocked" />
     </div>
 
     <!-- Locked Warning -->
@@ -26,174 +20,165 @@
       </p>
     </div>
 
-    <!-- Configuration Card -->
-    <div class="flex max-w-2xl flex-col rounded-lg border border-border-default bg-surface-card">
-      <!-- Enable Toggle Row -->
-      <div class="flex items-center justify-between p-4">
-        <span class="font-medium">{{ t("manage.rarity.enable") }}</span>
-        <dot-switch v-model="tiersEnabled" :disabled="isLocked" />
-      </div>
-
-      <!-- Distribution Mode & Total Supply Row -->
-      <div
-        v-if="tiersEnabled"
-        class="flex flex-wrap items-center justify-between gap-4 border-t border-border-default p-4"
-      >
-        <!-- Distribution Mode Toggle -->
-        <div class="flex overflow-hidden rounded-lg border border-border-default">
-          <button
-            type="button"
-            :disabled="isLocked"
-            :class="[
-              'px-3 py-1.5 text-sm transition-colors',
-              distributionMode === 'percentage'
-                ? 'bg-accent-primary text-white'
-                : 'bg-surface-card hover:bg-gray-100 dark:hover:bg-gray-700',
-              isLocked && 'cursor-not-allowed opacity-50',
-            ]"
-            @click="distributionMode = 'percentage'"
-          >
-            Percentage
-          </button>
-          <button
-            type="button"
-            :disabled="isLocked"
-            :class="[
-              'px-3 py-1.5 text-sm transition-colors',
-              distributionMode === 'fixed'
-                ? 'bg-accent-primary text-white'
-                : 'bg-surface-card hover:bg-gray-100 dark:hover:bg-gray-700',
-              isLocked && 'cursor-not-allowed opacity-50',
-            ]"
-            @click="distributionMode = 'fixed'"
-          >
-            Absolute
-          </button>
-        </div>
-
-        <!-- Total Supply (read-only) -->
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-text-secondary">{{ t("manage.rarity.totalSupply") }}:</span>
-          <span v-if="supplyLoading" class="text-sm text-text-secondary">Loading...</span>
-          <span v-else-if="totalSupply" class="font-medium">{{ totalSupply.toLocaleString() }}</span>
-          <span v-else class="text-sm text-text-secondary">Unknown</span>
-        </div>
-      </div>
-    </div>
-
+    <!-- Section Content -->
     <div v-if="tiersEnabled" class="flex flex-col gap-8 lg:flex-row lg:items-start">
-      <!-- Tier Configuration -->
-      <div class="flex w-full max-w-2xl flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <h3 class="font-medium">{{ t("manage.rarity.tiers") }}</h3>
-          <span class="text-sm" :class="totalWeightClass">
-            <template v-if="distributionMode === 'percentage'">
-              {{ t("manage.rarity.total") }}: {{ totalWeight }}%
-            </template>
-            <template v-else-if="totalSupply">
-              {{ totalWeight.toLocaleString() }} / {{ totalSupply.toLocaleString() }} {{ t("manage.rarity.allocated") }}
-            </template>
-            <template v-else> {{ totalWeight.toLocaleString() }} {{ t("manage.rarity.allocated") }} </template>
-          </span>
+      <!-- Left Column -->
+      <div class="flex w-full max-w-2xl flex-col gap-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <dot-segment-control v-model="distributionMode" :options="distributionModeOptions" :disabled="isLocked" />
+
+          <div class="flex items-center gap-2 rounded-lg border border-border-default bg-surface-card px-3 py-1.5">
+            <span class="text-sm text-text-secondary">{{ t("manage.rarity.totalSupply") }}:</span>
+            <span v-if="supplyLoading" class="text-sm text-text-secondary">Loading...</span>
+            <span v-else-if="totalSupply" class="text-sm font-medium text-text-primary">{{
+              totalSupply.toLocaleString()
+            }}</span>
+            <span v-else class="text-sm text-text-secondary">Unknown</span>
+          </div>
         </div>
 
-        <!-- Tier Items -->
-        <div class="flex flex-col gap-3">
+        <!-- Tiers List -->
+        <div class="flex flex-col gap-4">
           <div
-            v-for="(tier, index) in tiers"
-            :key="index"
-            class="flex items-center gap-3 rounded-lg border border-border-default bg-surface-card p-3"
+            class="divide-y divide-border-default overflow-hidden rounded-xl border border-border-default bg-surface-card"
           >
-            <dot-text-input
-              v-model="tier.name"
-              :placeholder="t('manage.rarity.tierName')"
-              :disabled="isLocked"
-              class="flex-1"
-            />
-            <div class="flex items-center gap-1">
-              <dot-text-input
-                v-model.number="tier.weight"
-                type="number"
-                :placeholder="
-                  distributionMode === 'percentage' ? t('manage.rarity.weight') : t('manage.rarity.quantity')
-                "
-                :disabled="isLocked"
-                class="w-20"
-                :min="0"
-                :max="distributionMode === 'percentage' ? 100 : undefined"
-              />
-              <span class="w-10 text-center text-sm text-text-secondary">{{
-                distributionMode === "percentage" ? "%" : "Qty"
-              }}</span>
-            </div>
-            <button
-              v-if="!isLocked && tiers.length > 1"
-              type="button"
-              class="size-7 flex-shrink-0 rounded-full p-1 text-text-secondary transition-colors hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-900/30"
-              @click="removeTier(index)"
+            <div
+              v-for="(tier, index) in tiers"
+              :key="index"
+              class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center"
             >
-              <Icon name="mdi:close" class="size-5" />
-            </button>
+              <div class="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <dot-text-input
+                  v-model="tier.name"
+                  :placeholder="t('manage.rarity.tierName')"
+                  :disabled="isLocked"
+                  class="flex-1"
+                />
+
+                <div class="flex items-center gap-2">
+                  <dot-text-input
+                    v-model.number="tier.weight"
+                    type="number"
+                    :placeholder="distributionMode === 'percentage' ? '0-100' : 'Qty'"
+                    :disabled="isLocked"
+                    class="w-24"
+                    :min="0"
+                    :max="distributionMode === 'percentage' ? 100 : undefined"
+                  />
+                  <span v-if="distributionMode === 'percentage'" class="w-8 text-sm font-medium text-text-secondary">
+                    %
+                  </span>
+                </div>
+              </div>
+
+              <button
+                v-if="!isLocked && tiers.length > 1"
+                type="button"
+                :title="t('common.remove')"
+                class="self-end p-1 text-text-secondary opacity-50 transition-opacity hover:text-red-500 hover:opacity-100 sm:self-center sm:opacity-100"
+                @click="removeTier(index)"
+              >
+                <Icon name="mdi:close" class="size-5" />
+              </button>
+            </div>
           </div>
-        </div>
 
-        <!-- Add Tier Button -->
-        <button
-          v-if="!isLocked && tiers.length < 10"
-          type="button"
-          class="flex items-center justify-center gap-2 rounded-lg border border-dashed border-border-default p-3 text-text-secondary transition-colors hover:border-accent-primary hover:text-accent-primary"
-          @click="addTier"
-        >
-          <Icon name="mdi:plus" class="size-5" />
-          <span>{{ t("manage.rarity.addTier") }}</span>
-        </button>
+          <!-- Add Tier Button -->
+          <button
+            v-if="!isLocked && tiers.length < MAX_TIERS"
+            type="button"
+            class="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border-default py-3 text-sm font-medium text-text-secondary transition-colors hover:border-accent-primary hover:bg-accent-primary/5 hover:text-accent-primary dark:hover:bg-accent-primary/10"
+            @click="addTier"
+          >
+            <Icon name="mdi:plus" class="size-5" />
+            <span>{{ t("manage.rarity.addTier") }}</span>
+          </button>
 
-        <!-- Validation Message -->
-        <div v-if="validationError" class="flex items-center gap-2 text-sm text-red-500">
-          <Icon name="mdi:alert-circle" class="size-4" />
-          <span>{{ validationError }}</span>
+          <!-- Validation Error -->
+          <div
+            v-if="validationError"
+            class="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400"
+          >
+            <Icon name="mdi:alert-circle" class="size-5 flex-shrink-0" />
+            <span class="font-medium">{{ validationError }}</span>
+          </div>
         </div>
       </div>
 
-      <!-- Distribution Preview -->
-      <div v-if="tiers.length > 0" class="lg:sticky lg:top-24 lg:h-fit lg:w-[300px] lg:flex-shrink-0">
-        <div class="flex flex-col gap-3 rounded-lg border border-border-default bg-surface-card p-4">
-          <h4 class="text-sm font-medium text-text-secondary">{{ t("manage.rarity.preview") }}</h4>
-          <div class="flex flex-col gap-2">
-            <div v-for="(tier, index) in tiers" :key="index" class="flex items-center gap-3">
-              <span class="w-24 truncate text-sm">{{ tier.name || `Tier ${index + 1}` }}</span>
-              <div class="h-3 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                <div
-                  class="h-full rounded-full transition-all duration-300"
-                  :class="getBarColor(index)"
-                  :style="{ width: `${getPercentage(tier.weight)}%` }"
-                />
+      <!-- Right Column  -->
+      <aside class="flex w-full flex-col gap-4 lg:sticky lg:top-24 lg:w-[320px] lg:flex-shrink-0">
+        <div class="flex flex-col gap-4 rounded-xl border border-border-default bg-surface-card p-5 shadow-sm">
+          <h4 class="font-medium text-text-primary">{{ t("manage.rarity.preview") }}</h4>
+
+          <!-- Empty State -->
+          <div v-if="tiers.length === 0" class="py-8 text-center text-sm text-text-secondary">
+            {{ t("manage.rarity.noTiers") }}
+          </div>
+
+          <!-- Visual Bar Chart -->
+          <div v-else class="flex flex-col gap-4">
+            <div class="flex h-4 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+              <div
+                v-for="(tier, index) in tiers"
+                :key="index"
+                class="h-full transition-all duration-500"
+                :class="getBarColor(index)"
+                :style="{ width: `${getPercentage(tier.weight)}%` }"
+                :title="`${tier.name}: ${getPercentage(tier.weight).toFixed(1)}%`"
+              />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <div v-for="(tier, index) in tiers" :key="index" class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2 overflow-hidden">
+                  <div class="size-3 flex-shrink-0 rounded-full" :class="getBarColor(index)" />
+                  <span class="truncate font-medium text-text-secondary" :title="tier.name">{{
+                    tier.name || `Tier ${index + 1}`
+                  }}</span>
+                </div>
+
+                <!-- Details -->
+                <div class="flex flex-col items-end text-xs sm:flex-row sm:gap-2">
+                  <span v-if="totalSupply" class="text-text-secondary">
+                    <template v-if="distributionMode === 'percentage'">
+                      ~{{ Math.floor((tier.weight / 100) * totalSupply).toLocaleString() }}
+                    </template>
+                    <template v-else>
+                      {{ tier.weight.toLocaleString() }}
+                    </template>
+                  </span>
+                  <span class="font-mono font-medium text-text-primary">
+                    {{ getPercentage(tier.weight).toFixed(1) }}%
+                  </span>
+                </div>
               </div>
-              <span class="w-20 text-right text-sm text-text-secondary">
-                <template v-if="distributionMode === 'fixed'">
-                  {{ tier.weight.toLocaleString() }} ({{ getPercentage(tier.weight).toFixed(0) }}%)
-                </template>
-                <template v-else> {{ tier.weight }}% </template>
-              </span>
+            </div>
+
+            <div class="mt-2 border-t border-border-default pt-3">
+              <div class="flex justify-between text-sm">
+                <span class="text-text-secondary">{{ t("manage.rarity.totalAllocated") }}</span>
+                <span class="font-bold" :class="totalWeightClass"> {{ getPercentage(totalWeight).toFixed(1) }}% </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </aside>
     </div>
 
     <div v-if="!isLocked" class="flex max-w-2xl flex-col gap-2">
-      <!-- Estimated Cost -->
-      <div v-if="canSave && tiersEnabled" class="flex items-center justify-between gap-2 py-1">
-        <span class="text-sm text-text-secondary">{{ t("manage.rarity.cost") }}</span>
-        <dot-skeleton v-if="supplyLoading" class="h-5 w-24" roundness="sm" />
-        <div v-else-if="totalCost > 0" class="group relative flex items-center gap-1">
-          <span class="text-sm font-semibold">~{{ formattedCost }}</span>
-          <Icon name="mdi:information-outline" class="size-4 cursor-help text-text-secondary" />
-          <span
-            class="pointer-events-none absolute bottom-6 right-0 z-50 w-56 rounded-lg border border-border-default bg-white px-3 py-2 text-xs text-gray-800 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-gray-800 dark:text-gray-100"
-          >
-            {{ t("manage.rarity.costHint") }}
-          </span>
+      <div v-if="canSave && tiersEnabled" class="flex items-center justify-between text-sm">
+        <div class="flex items-center gap-1.5 text-text-secondary">
+          <span>{{ t("manage.rarity.cost") }}</span>
+          <dot-tooltip :text="t('manage.rarity.costHint')" position="top" width="w-56">
+            <template #trigger>
+              <Icon name="mdi:help-circle-outline" class="size-4 text-text-secondary" />
+            </template>
+          </dot-tooltip>
+        </div>
+        <div>
+          <dot-skeleton v-if="supplyLoading" class="h-4 w-16" roundness="sm" />
+          <span v-else-if="totalCost > 0" class="font-medium text-text-primary">~{{ formattedCost }}</span>
+          <span v-else class="text-text-secondary">--</span>
         </div>
       </div>
 
@@ -206,8 +191,11 @@
       >
         {{ loading ? t("common.saving") : t("common.saveChanges") }}
       </dot-button>
-      <small v-if="saveError" class="text-center text-red-500">{{ saveError }}</small>
-      <small v-if="saveSuccess" class="text-center text-green-500">{{ t("manage.rarity.saved") }}</small>
+
+      <div v-if="saveError || saveSuccess" class="flex flex-col gap-1">
+        <small v-if="saveError" class="text-center text-red-500">{{ saveError }}</small>
+        <small v-if="saveSuccess" class="text-center text-green-500">{{ t("manage.rarity.saved") }}</small>
+      </div>
     </div>
   </div>
 </template>
@@ -222,6 +210,21 @@ const { t } = useI18n();
 const props = defineProps<{
   drop: MemoDetail;
 }>();
+
+const MAX_TIERS = 10;
+const SUCCESS_MESSAGE_TIMEOUT = 3000;
+const BAR_COLORS = [
+  "bg-blue-500",
+  "bg-purple-500",
+  "bg-amber-500",
+  "bg-emerald-500",
+  "bg-rose-500",
+  "bg-cyan-500",
+  "bg-indigo-500",
+  "bg-orange-500",
+  "bg-pink-500",
+  "bg-teal-500",
+];
 
 const DEFAULT_TIERS: RarityTier[] = [
   { name: "Common", weight: 70 },
@@ -239,11 +242,15 @@ const { howAboutToExecute, initTransactionLoader, status } = useMetaTransaction(
 
 const tiersEnabled = ref(!!props.drop.tiers);
 const distributionMode = ref<DistributionMode>(props.drop.tiers?.distributionMode ?? DEFAULT_DISTRIBUTION_MODE);
+const distributionModeOptions = computed(() => [
+  { value: "percentage", label: t("manage.rarity.percentage") },
+  { value: "fixed", label: t("manage.rarity.absolute") },
+]);
 const totalSupply = ref<number | null>(null);
 const attributeDeposit = ref<number | null>(null);
 const supplyLoading = ref(true);
 
-const tiers = ref<RarityTier[]>(props.drop.tiers?.tiers?.length ? [...props.drop.tiers.tiers] : [...DEFAULT_TIERS]);
+const tiers = ref<RarityTier[]>(structuredClone(props.drop.tiers?.tiers ?? DEFAULT_TIERS));
 const isLocked = computed(() => props.drop.tiersLocked ?? false);
 const loading = ref(false);
 const saveError = ref<string | null>(null);
@@ -331,19 +338,7 @@ function removeTier(index: number) {
 }
 
 function getBarColor(index: number): string {
-  const colors = [
-    "bg-blue-500",
-    "bg-purple-500",
-    "bg-amber-500",
-    "bg-emerald-500",
-    "bg-rose-500",
-    "bg-cyan-500",
-    "bg-indigo-500",
-    "bg-orange-500",
-    "bg-pink-500",
-    "bg-teal-500",
-  ];
-  return colors[index % colors.length] || "";
+  return BAR_COLORS[index % BAR_COLORS.length] ?? "bg-gray-500";
 }
 
 function getPercentage(weight: number): number {
@@ -373,7 +368,8 @@ async function signAndSaveTiers() {
     // TODO: add drop.tiers.paid
     const paid = props.drop.tiers;
     if (!tiersEnabled.value || paid) {
-      return saveTiers();
+      await saveTiers();
+      return;
     }
 
     await howAboutToExecute(accountId.value, cb, arg, {
@@ -388,7 +384,7 @@ async function signAndSaveTiers() {
     });
   } catch (e) {
     console.error("Failed to execute transaction. Reason: %s", (e as Error).message);
-    saveError.value = "Failed to execute transaction. Try again later or contact support.";
+    saveError.value = t("manage.rarity.transactionError");
     loading.value = false;
   }
 }
@@ -404,7 +400,7 @@ function showSuccessMessage() {
 
   setTimeout(() => {
     saveSuccess.value = false;
-  }, 3000);
+  }, SUCCESS_MESSAGE_TIMEOUT);
 }
 
 function resetDirty() {
