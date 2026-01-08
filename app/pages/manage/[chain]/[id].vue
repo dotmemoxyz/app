@@ -20,20 +20,7 @@
       <manage-drop-detail v-if="data" :ownership="ownership" :drop="data" />
 
       <!-- Tabs -->
-      <div v-if="ownership === 'created'" class="flex w-fit gap-[6px] rounded-[18px] bg-surface-card p-[6px]">
-        <div
-          v-for="tab in TABS"
-          :key="tab.key"
-          class="cursor-pointer items-center justify-center rounded-xl border px-[16px] py-[14px]"
-          :class="{
-            'border-black/15 bg-surface-white': selectedTab === tab.key,
-            'border-transparent': selectedTab !== tab.key,
-          }"
-          @click="selectTab(tab.key)"
-        >
-          <p class="text-[14px] font-normal leading-[18px]">{{ tab.label }}</p>
-        </div>
-      </div>
+      <dot-tabs v-if="ownership === 'created'" v-model="selectedTab" :options="TABS" size="lg" />
 
       <hr class="w-full border-border-default" />
 
@@ -56,21 +43,20 @@ const router = useRouter();
 const { t } = useI18n();
 
 const TABS = [
-  { key: "analytics", label: t("manage.drop.tabs.analytics") },
-  { key: "customize", label: t("manage.drop.tabs.customize") },
-  { key: "settings", label: t("manage.drop.tabs.settings") },
+  { value: "analytics", label: t("manage.drop.tabs.analytics") },
+  { value: "customize", label: t("manage.drop.tabs.customize") },
+  { value: "settings", label: t("manage.drop.tabs.settings") },
 ];
 
-const tabKeys = TABS.map((tab) => tab.key);
-const initialTab = tabKeys.includes(route.query.tab as string) ? (route.query.tab as string) : TABS[0]!.key;
+const tabValues = TABS.map((tab) => tab.value);
+const initialTab = tabValues.includes(route.query.tab as string) ? (route.query.tab as string) : TABS[0]!.value;
 const selectedTab = ref(initialTab);
 
-const selectTab = (tabKey: string) => {
-  selectedTab.value = tabKey;
+watch(selectedTab, (tabValue) => {
   router.replace({
-    query: { ...route.query, tab: tabKey },
+    query: { ...route.query, tab: tabValue },
   });
-};
+});
 
 const { data, status, error } = useFetch(`/api/manage/${ownership.value}/${route.params.chain}/${route.params.id}`);
 </script>

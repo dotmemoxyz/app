@@ -453,13 +453,10 @@
       "enable": "Enable Rarity Tiers",
       "enableHint": "When enabled, each claimed MEMO will be assigned a rarity tier.",
       "distributionMode": "Distribution Mode",
-      "percentage": "Percentage (%)",
-      "absolute": "Absolute (#)",
+      "percentage": "Percentage",
+      "absolute": "Absolute",
       "totalSupply": "Supply",
-      "tiers": "Tier Configuration",
-      "total": "Total",
       "totalAllocated": "Total Allocated",
-      "allocated": "Allocated",
       "tierName": "Tier name",
       "weight": "Weight",
       "quantity": "Qty",
@@ -475,7 +472,8 @@
       "errorTotalSupply": "Total supply must be at least 1",
       "estimatedCost": "Estimated Cost",
       "cost": "Cost",
-      "costHint": "This amount is required for on-chain attribute storage."
+      "costHint": "This amount is required for on-chain attribute storage.",
+      "transactionError": "Failed to execute transaction. Try again later or contact support."
     }
   }
 }
