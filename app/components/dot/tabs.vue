@@ -8,7 +8,7 @@
       :class="[
         baseClasses,
         sizeClasses,
-        model === option.value ? 'border-black/15 bg-surface-white' : 'border-transparent',
+        model === option.value ? 'border-black/15 bg-surface-white dark:border-white/15' : 'border-transparent',
         disabled && 'cursor-not-allowed opacity-50',
       ]"
       @click="model = option.value"
