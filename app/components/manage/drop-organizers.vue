@@ -1,7 +1,7 @@
 <template>
   <div class="flex max-w-md flex-col space-y-6 px-4 pb-10 pt-8">
     <div class="flex flex-col gap-2">
-      <h2 class="text-xl font-medium">{{ t("manage.organizers.title") }}</h2>
+      <h2 class="text-xl font-medium text-text-primary">{{ t("manage.organizers.title") }}</h2>
       <p class="text-sm text-text-secondary">{{ t("manage.organizers.description") }}</p>
     </div>
 
@@ -38,7 +38,7 @@
         class="group flex items-center justify-between rounded-xl border border-border-default bg-surface-white px-4 py-3"
       >
         <div class="flex flex-col gap-1">
-          <span class="font-mono text-sm" :title="organizer.address">
+          <span class="font-mono text-sm text-text-primary" :title="organizer.address">
             {{ shortenAddress(organizer.address) }}
           </span>
           <span class="text-xs text-text-secondary">
