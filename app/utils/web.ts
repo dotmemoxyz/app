@@ -1,3 +1,12 @@
+export const normalizeUrl = (url: string): string => {
+  if (!url.trim()) return "";
+  const trimmed = url.trim();
+  if (!/^https?:\/\//i.test(trimmed)) {
+    return `https://${trimmed}`;
+  }
+  return trimmed;
+};
+
 export const formatWeb = (url: string) => {
   try {
     const { hostname } = new URL(url);
@@ -9,6 +18,10 @@ export const formatWeb = (url: string) => {
 
 export const parseUsername = (handle: string): string => {
   return handle.replace("@", "");
+};
+
+export const normalizeHandle = (val: unknown): string => {
+  return typeof val === "string" ? parseUsername(val.trim()) : "";
 };
 
 export const getInstagramUrl = (handle: string) => {
