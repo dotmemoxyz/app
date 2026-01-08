@@ -9,6 +9,7 @@ export type MemoCustomize = {
   claimText?: string;
   telegram?: string;
   instagram?: string;
+  twitter?: string; // rename to x ?
   website?: string;
   darkMode?: boolean;
   accentColor?: string;

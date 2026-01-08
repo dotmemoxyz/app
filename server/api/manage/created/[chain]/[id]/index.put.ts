@@ -1,10 +1,15 @@
 import * as zod from "zod";
 import { FetchError } from "ofetch";
 
-const customizationSchema = zod.object({
-  startsAt: zod.coerce.date(),
-  endsAt: zod.coerce.date(),
-});
+const customizationSchema = zod
+  .object({
+    startsAt: zod.coerce.date(),
+    endsAt: zod.coerce.date(),
+  })
+  .refine((data) => data.startsAt < data.endsAt, {
+    message: "Start date must be before end date",
+    path: ["endsAt"],
+  });
 
 export default defineEventHandler(async (event) => {
   const { chain, id } = getRouterParams(event);

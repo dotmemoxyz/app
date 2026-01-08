@@ -20,6 +20,7 @@
       :telegram="props.data.customize?.telegram"
       :instagram="props.data.customize?.instagram"
       :website="props.data.customize?.website"
+      :twitter="props.data.customize?.twitter"
     />
 
     <div class="flex flex-col space-y-[16px] self-stretch">

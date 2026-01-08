@@ -373,7 +373,6 @@
       "days30": "30 days",
       "days90": "90 days",
       "allTime": "All time",
-      "live": "Live",
       "trend": "Trend",
       "hourly": "Hourly",
       "funnel": "Funnel",
@@ -423,7 +422,12 @@
       "headingTooLong": "Heading must be 40 characters or less",
       "subheadingTooLong": "Subheading must be 300 characters or less",
       "claimTextTooLong": "Button text must be 40 characters or less",
-      "validationRequired": "Please fix validation errors before saving"
+      "validationRequired": "Please fix validation errors before saving",
+      "invalidTelegram": "Telegram username must be 5-32 characters: letters, digits, or underscores",
+      "invalidInstagram": "Instagram username must be 1-30 characters: letters, digits, underscores, or periods",
+      "invalidTwitter": "Twitter/X username must be 4-15 characters: letters, digits, or underscores",
+      "invalidUrl": "Please enter a valid URL",
+      "invalidHexColor": "Please enter a valid hex color (e.g., #FF5500)"
     },
     "settings": {
       "title": "Distribution settings",

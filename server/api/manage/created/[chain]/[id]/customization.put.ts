@@ -1,25 +1,8 @@
-import * as zod from "zod";
 import { FetchError } from "ofetch";
-
-const customizationSchema = zod.object({
-  image: zod.string().trim().optional(),
-  heading: zod.string().trim().optional(),
-  subheading: zod.string().trim().optional(),
-  claimText: zod.string().trim().optional(),
-  telegram: zod.string().trim().optional(),
-  instagram: zod.string().trim().optional(),
-  website: zod.string().trim().url().optional(),
-  darkMode: zod.boolean().optional(),
-  accentColor: zod
-    .string()
-    .trim()
-    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Must be a valid hex color")
-    .optional(),
-});
 
 export default defineEventHandler(async (event) => {
   const { chain, id } = getRouterParams(event);
-  const body = await readValidatedBody(event, customizationSchema.parse);
+  const body = await readBody(event);
 
   const token = getCookie(event, "account-token");
   if (!token) {
