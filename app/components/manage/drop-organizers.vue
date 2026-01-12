@@ -130,16 +130,11 @@ const addOrganizer = async () => {
     newAddress.value = "";
   } catch (error: unknown) {
     console.error("Failed to add organizer:", error);
-    if (error && typeof error === "object" && "statusCode" in error) {
-      const fetchErr = error as { statusCode: number; statusMessage?: string };
-      if (fetchErr.statusCode === 400) {
-        inputError.value = fetchErr.statusMessage || t("manage.organizers.invalidAddress");
-      } else {
-        inputError.value = t("manage.organizers.addError");
-      }
-    } else {
-      inputError.value = t("manage.organizers.addError");
-    }
+    const fetchErr = error as { statusCode?: number; statusMessage?: string };
+    inputError.value =
+      fetchErr.statusCode === 400
+        ? fetchErr.statusMessage || t("manage.organizers.invalidAddress")
+        : t("manage.organizers.addError");
   } finally {
     isAdding.value = false;
   }
