@@ -72,11 +72,15 @@ import VueSelect from "vue3-select-component";
 import type { MemoDetail } from "~/types/memo";
 import { COUNTRIES, getCountryByCode, type Country } from "~/utils/countries";
 
-const { t } = useI18n();
-
 const props = defineProps<{
   drop: MemoDetail;
 }>();
+
+const emit = defineEmits<{
+  (e: "saved"): void;
+}>();
+
+const { t } = useI18n();
 
 const SUCCESS_MESSAGE_TIMEOUT = 3000;
 
@@ -125,6 +129,8 @@ async function saveLocation() {
     });
 
     initialCountry.value = selectedCountry.value;
+
+    emit("saved");
 
     saveSuccess.value = true;
     setTimeout(() => {
