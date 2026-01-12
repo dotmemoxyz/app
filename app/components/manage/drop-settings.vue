@@ -12,6 +12,11 @@
 
     <!-- Organizers -->
     <manage-drop-organizers :drop="drop" />
+
+    <hr class="mx-4 max-w-md border-border-default" />
+
+    <!-- Location Restriction -->
+    <manage-drop-location :drop="drop" />
   </div>
 </template>
 

@@ -474,6 +474,17 @@
       "cost": "Cost",
       "costHint": "This amount is required for on-chain attribute storage.",
       "transactionError": "Failed to execute transaction. Try again later or contact support."
+    },
+    "location": {
+      "title": "Location Restriction",
+      "hint": "Restrict claims to users connecting from a specific country. Uses IP-based detection.",
+      "description": "Limit claims to a specific region",
+      "country": "Country",
+      "searchPlaceholder": "Search country...",
+      "clear": "Clear",
+      "restrictedTo": "Only users from {country} can claim this MEMO",
+      "globalAccessHint": "No restriction selected. This drop can be claimed by anyone, anywhere.",
+      "saved": "Location restriction saved successfully!"
     }
   }
 }
