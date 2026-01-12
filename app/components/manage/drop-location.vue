@@ -88,6 +88,7 @@ const selectedCountry = ref<string | null>(props.drop.locationCountry ?? null);
 const loading = ref(false);
 const saveError = ref<string | null>(null);
 const saveSuccess = ref(false);
+const successTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 
 const initialCountry = ref(props.drop.locationCountry ?? null);
 
@@ -133,7 +134,7 @@ async function saveLocation() {
     emit("saved");
 
     saveSuccess.value = true;
-    setTimeout(() => {
+    successTimeout.value = setTimeout(() => {
       saveSuccess.value = false;
     }, SUCCESS_MESSAGE_TIMEOUT);
   } catch (error: any) {
@@ -143,4 +144,10 @@ async function saveLocation() {
     loading.value = false;
   }
 }
+
+onBeforeUnmount(() => {
+  if (successTimeout.value) {
+    clearTimeout(successTimeout.value);
+  }
+});
 </script>
