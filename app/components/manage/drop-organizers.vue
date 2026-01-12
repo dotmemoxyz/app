@@ -15,7 +15,7 @@
         class="flex-1"
         @keydown.enter="addOrganizer"
       />
-      <dot-button :disabled="!newAddress.trim() || isAdding" variant="tertiary" @click="addOrganizer">
+      <dot-button :disabled="!newAddress.trim() || !!inputError || isAdding" variant="tertiary" @click="addOrganizer">
         <template v-if="isAdding">
           <Icon name="mdi:loading" class="size-4 animate-spin" />
         </template>
@@ -115,9 +115,8 @@ const fetchOrganizers = async () => {
 
 const addOrganizer = async () => {
   const address = newAddress.value.trim();
-  if (!address || isAdding.value) return;
+  if (!address || isAdding.value || inputError.value || !isValidSubstrateAddress(address)) return;
 
-  inputError.value = undefined;
   isAdding.value = true;
 
   try {
@@ -174,6 +173,15 @@ const formatDate = (dateString: string): string => {
     day: "numeric",
   });
 };
+
+watch(newAddress, (address) => {
+  const trimmed = address.trim();
+  if (trimmed && !isValidSubstrateAddress(trimmed)) {
+    inputError.value = t("manage.organizers.invalidAddress");
+  } else {
+    inputError.value = undefined;
+  }
+});
 
 onMounted(fetchOrganizers);
 </script>
