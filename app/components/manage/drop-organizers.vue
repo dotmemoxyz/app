@@ -35,7 +35,7 @@
       <div
         v-for="organizer in organizers"
         :key="organizer.address"
-        class="group flex items-center justify-between rounded-xl border border-border-default bg-surface-white px-4 py-3"
+        class="group flex items-center justify-between rounded-xl border border-border-default bg-surface-card px-4 py-3"
       >
         <div class="flex flex-col gap-1">
           <span class="font-mono text-sm text-text-primary" :title="organizer.address">
