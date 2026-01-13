@@ -27,7 +27,11 @@
       <!-- Sub containers -->
       <manage-drop-analytics v-if="selectedTab === 'analytics' && data" :ownership="ownership" :drop="data" />
       <manage-drop-customize v-if="ownership === 'created' && selectedTab === 'customize' && data" :drop="data" />
-      <manage-drop-settings v-if="ownership === 'created' && selectedTab === 'settings' && data" :drop="data" />
+      <manage-drop-settings
+        v-if="ownership === 'created' && selectedTab === 'settings' && data"
+        :drop="data"
+        @saved="refresh"
+      />
     </template>
   </div>
 </template>
@@ -58,5 +62,7 @@ watch(selectedTab, (tabValue) => {
   });
 });
 
-const { data, status, error } = useFetch(`/api/manage/${ownership.value}/${route.params.chain}/${route.params.id}`);
+const { data, status, error, refresh } = useFetch(
+  `/api/manage/${ownership.value}/${route.params.chain}/${route.params.id}`,
+);
 </script>

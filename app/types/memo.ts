@@ -93,6 +93,7 @@ export interface MemoDetail extends Memo {
   tiersLocked?: boolean;
   organizers?: string[];
   isOrganizer?: boolean;
+  locationCountry?: string; // ISO 3166-1 alpha-2 country code
 }
 
 /**

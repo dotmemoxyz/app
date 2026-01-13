@@ -65,61 +65,6 @@ import { Chart } from "vue-chartjs";
 import { usePointerSwipe } from "@vueuse/core";
 import type { LocationData } from "~/types/analytics";
 
-const countryNameMap: Record<string, string> = {
-  US: "United States of America",
-  DE: "Germany",
-  GB: "United Kingdom",
-  CZ: "Czech Republic",
-  FR: "France",
-  ES: "Spain",
-  IT: "Italy",
-  NL: "Netherlands",
-  PL: "Poland",
-  JP: "Japan",
-  KR: "South Korea",
-  CN: "China",
-  IN: "India",
-  BR: "Brazil",
-  CA: "Canada",
-  AU: "Australia",
-  RU: "Russia",
-  UA: "Ukraine",
-  TR: "Turkey",
-  SE: "Sweden",
-  CH: "Switzerland",
-  MX: "Mexico",
-  AR: "Argentina",
-  ZA: "South Africa",
-  SG: "Singapore",
-  HK: "Hong Kong",
-  TW: "Taiwan",
-  TH: "Thailand",
-  ID: "Indonesia",
-  MY: "Malaysia",
-  PH: "Philippines",
-  VN: "Vietnam",
-  AE: "United Arab Emirates",
-  SA: "Saudi Arabia",
-  IL: "Israel",
-  EG: "Egypt",
-  NG: "Nigeria",
-  KE: "Kenya",
-  AT: "Austria",
-  BE: "Belgium",
-  DK: "Denmark",
-  FI: "Finland",
-  GR: "Greece",
-  IE: "Ireland",
-  NO: "Norway",
-  PT: "Portugal",
-  RO: "Romania",
-  HU: "Hungary",
-  CL: "Chile",
-  CO: "Colombia",
-  PE: "Peru",
-  NZ: "New Zealand",
-};
-
 ChartJS.register(
   Title,
   Tooltip,
@@ -190,7 +135,7 @@ const chartData = computed(() => {
         data: countries.value.map((d) => {
           const countryName = d.properties.name;
           const loc = props.locations.find((l) => {
-            const mappedName = countryNameMap[l.countryCode];
+            const mappedName = getCountryName(l.countryCode);
             return mappedName === countryName || l.countryCode === countryName;
           });
           return { feature: d, value: loc ? loc.count : 0 };

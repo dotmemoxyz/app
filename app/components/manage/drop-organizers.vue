@@ -1,7 +1,7 @@
 <template>
   <div class="flex max-w-md flex-col space-y-6 px-4 pb-10 pt-8">
     <div class="flex flex-col gap-2">
-      <h2 class="text-xl font-medium">{{ t("manage.organizers.title") }}</h2>
+      <h2 class="text-xl font-medium text-text-primary">{{ t("manage.organizers.title") }}</h2>
       <p class="text-sm text-text-secondary">{{ t("manage.organizers.description") }}</p>
     </div>
 
@@ -15,7 +15,7 @@
         class="flex-1"
         @keydown.enter="addOrganizer"
       />
-      <dot-button :disabled="!newAddress.trim() || isAdding" variant="tertiary" @click="addOrganizer">
+      <dot-button :disabled="!newAddress.trim() || !!inputError || isAdding" variant="tertiary" @click="addOrganizer">
         <template v-if="isAdding">
           <Icon name="mdi:loading" class="size-4 animate-spin" />
         </template>
@@ -35,10 +35,10 @@
       <div
         v-for="organizer in organizers"
         :key="organizer.address"
-        class="group flex items-center justify-between rounded-xl border border-border-default bg-surface-white px-4 py-3"
+        class="group flex items-center justify-between rounded-xl border border-border-default bg-surface-card px-4 py-3"
       >
         <div class="flex flex-col gap-1">
-          <span class="font-mono text-sm" :title="organizer.address">
+          <span class="font-mono text-sm text-text-primary" :title="organizer.address">
             {{ shortenAddress(organizer.address) }}
           </span>
           <span class="text-xs text-text-secondary">
@@ -115,9 +115,8 @@ const fetchOrganizers = async () => {
 
 const addOrganizer = async () => {
   const address = newAddress.value.trim();
-  if (!address || isAdding.value) return;
+  if (!address || isAdding.value || inputError.value || !isValidSubstrateAddress(address)) return;
 
-  inputError.value = undefined;
   isAdding.value = true;
 
   try {
@@ -131,16 +130,11 @@ const addOrganizer = async () => {
     newAddress.value = "";
   } catch (error: unknown) {
     console.error("Failed to add organizer:", error);
-    if (error && typeof error === "object" && "statusCode" in error) {
-      const fetchErr = error as { statusCode: number; statusMessage?: string };
-      if (fetchErr.statusCode === 400) {
-        inputError.value = fetchErr.statusMessage || t("manage.organizers.invalidAddress");
-      } else {
-        inputError.value = t("manage.organizers.addError");
-      }
-    } else {
-      inputError.value = t("manage.organizers.addError");
-    }
+    const fetchErr = error as { statusCode?: number; statusMessage?: string };
+    inputError.value =
+      fetchErr.statusCode === 400
+        ? fetchErr.statusMessage || t("manage.organizers.invalidAddress")
+        : t("manage.organizers.addError");
   } finally {
     isAdding.value = false;
   }
@@ -174,6 +168,15 @@ const formatDate = (dateString: string): string => {
     day: "numeric",
   });
 };
+
+watch(newAddress, (address) => {
+  const trimmed = address.trim();
+  if (trimmed && !isValidSubstrateAddress(trimmed)) {
+    inputError.value = t("manage.organizers.invalidAddress");
+  } else {
+    inputError.value = undefined;
+  }
+});
 
 onMounted(fetchOrganizers);
 </script>
