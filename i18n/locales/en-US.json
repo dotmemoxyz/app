@@ -484,7 +484,8 @@
       "clear": "Clear",
       "restrictedTo": "Only users from {country} can claim this MEMO",
       "globalAccessHint": "No restriction selected. This drop can be claimed by anyone, anywhere.",
-      "saved": "Location restriction saved successfully!"
+      "saved": "Location restriction saved successfully!",
+      "saveError": "Failed to save location restriction"
     }
   }
 }

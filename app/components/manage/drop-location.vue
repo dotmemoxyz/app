@@ -70,7 +70,6 @@
 <script lang="ts" setup>
 import VueSelect from "vue3-select-component";
 import type { MemoDetail } from "~/types/memo";
-import { COUNTRIES, getCountryByCode, type Country } from "~/utils/countries";
 
 const props = defineProps<{
   drop: MemoDetail;
@@ -139,7 +138,7 @@ async function saveLocation() {
     }, SUCCESS_MESSAGE_TIMEOUT);
   } catch (error: any) {
     console.error("Error saving location:", error);
-    saveError.value = error.data?.message || error.message || "Failed to save location restriction";
+    saveError.value = error.data?.message || error.message || t("manage.location.saveError");
   } finally {
     loading.value = false;
   }
