@@ -353,10 +353,10 @@ function getPercentage(weight: number): number {
 async function signAndSaveTiers() {
   if (!canSave.value || isLocked.value || !totalSupply.value || !attributeDeposit.value || !accountId.value) return;
 
-  const api = await apiInstanceByPrefix(props.drop.chain);
+  const client = await apiInstanceByPrefix(props.drop.chain);
 
-  const cb = api.tx.balances.transferKeepAlive;
-  const arg = [MEMO_BOT, totalCost.value];
+  const cb = (dest: string, value: bigint) => client.tx.balances.transferKeepAlive(dest, value);
+  const arg: [string, bigint] = [MEMO_BOT, BigInt(totalCost.value)];
 
   initTransactionLoader();
 
@@ -374,7 +374,7 @@ async function signAndSaveTiers() {
 
     await howAboutToExecute(accountId.value, cb, arg, {
       onResult({ result }) {
-        if (result.isCompleted && !result.dispatchError) {
+        if (result.status.type === "Finalized" && !result.dispatchError) {
           saveTiers();
         }
       },
@@ -449,10 +449,10 @@ watch(tiersEnabled, (enabled) => {
 
 onMounted(async () => {
   try {
-    const api = await apiInstanceByPrefix(props.drop.chain);
-    const result = await getFreeMints(api, props.drop.id);
+    const client = await apiInstanceByPrefix(props.drop.chain);
+    const result = await getFreeMints(client, Number(props.drop.id));
     totalSupply.value = result.maxTokens;
-    attributeDeposit.value = api.consts.nfts.attributeDepositBase.toNumber();
+    attributeDeposit.value = Number(client.consts.nfts.attributeDepositBase);
   } catch (error) {
     console.error("Error fetching collection supply:", error);
     totalSupply.value = null;

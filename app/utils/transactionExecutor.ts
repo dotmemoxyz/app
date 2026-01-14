@@ -1,12 +1,11 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
-import type { Callback, ISubmittableResult } from "@polkadot/types/types";
 import { getAddress } from "@/utils/extension";
 import { toDefaultAddress } from "@/utils/account";
-import type { DispatchError, Hash } from "@polkadot/types/interfaces";
-import { MEMO_BOT } from "./sdk/constants";
-import type { Extrinsic } from "@kodadot1/sub-api";
+import type { ISubmittableResult, ISubmittableExtrinsic } from "dedot/types";
+import type { PolkadotAssetHubApi } from "@dedot/chaintypes";
+
+type DispatchError = PolkadotAssetHubApi["types"]["SpRuntimeDispatchError"];
 
 export interface KeyringPair$Meta {
   [index: string]: any;
@@ -19,93 +18,69 @@ export interface KeyringAccount {
   type: string;
 }
 
-export type ExecResult = UnsubscribeFn | string;
-export type UnsubscribeFn = () => string;
-type ExtrinsicFunction<T> = (...arg: T[]) => Extrinsic;
-export type StatusCb = (result: ISubmittableResult) => void | Promise<void>;
+export type ExecResult = (() => void) | string;
+export type StatusCb = (result: ISubmittableResult<DispatchError>) => void | Promise<void>;
 
 export const execResultValue = (execResult: ExecResult): string => {
   if (typeof execResult === "function") {
-    return execResult();
+    execResult();
+    return "";
   }
-
   return execResult;
 };
 
 const exec = async <T>(
   account: KeyringAccount | string,
-  password: string | null,
-  callback: ExtrinsicFunction<T>,
+  _password: string | null,
+  callback: (...arg: T[]) => ISubmittableExtrinsic<any>,
   params: T[],
-  statusCb: Callback<any>,
+  statusCb: StatusCb,
 ): Promise<ExecResult> => {
   try {
-    const transfer = await callback(...params);
+    const tx = callback(...params);
     const address = typeof account === "string" ? account : account.address;
     const injector = await getAddress(toDefaultAddress(address));
-    const hasCallback = typeof statusCb === "function";
 
-    const options = injector ? { signer: injector.signer } : undefined;
-    const signer: AddressOrPair = address;
+    if (!injector?.signer) {
+      throw new Error("No signer available");
+    }
 
-    const tx = await transfer.signAsync(signer, options);
-    const hash = await getHash(hasCallback, tx, transfer, statusCb);
-    return typeof hash === "function" ? constructCallback(hash, tx.hash.toHex()) : hash.toHex();
+    const unsub = await tx.signAndSend(address, { signer: injector.signer as any }, (result: any) => {
+      statusCb(result);
+      if (result.status.type === "Finalized" || result.status.type === "Invalid") {
+        unsub();
+      }
+    });
+
+    return unsub;
   } catch (err) {
     console.warn(err);
     throw err;
   }
 };
 
-const getHash = async (hasCallback: boolean, tx: Extrinsic, transfer: Extrinsic, statusCb: StatusCb) => {
-  return hasCallback ? await tx.send(statusCb) : await transfer.send();
-};
-
-const constructCallback = (cb: () => void, result: string) => {
-  return () => {
-    cb();
-    return result;
-  };
-};
-
-export type TxCbOnSuccessParams = { blockHash: Hash; txHash: Hash };
+export type TxCbOnSuccessParams = { blockHash: string; txHash: string; blockNumber: number };
 
 export const txCb =
   (
-    onSuccess: (prams: TxCbOnSuccessParams) => void,
+    onSuccess: (params: TxCbOnSuccessParams) => void,
     onError: (err: DispatchError | Error) => void,
-    onResult: (result: ISubmittableResult) => void = console.log,
+    onResult: (result: ISubmittableResult<DispatchError>) => void = console.log,
   ) =>
-  (result: ISubmittableResult): void => {
+  (result: ISubmittableResult<DispatchError>): void => {
     onResult(result);
 
     if (result.dispatchError) {
       console.warn("[EXEC] dispatchError", result);
       onError(result.dispatchError);
-    } else if (result.internalError) {
-      console.warn("[EXEC] internalError", result);
-      onError(result.internalError);
     }
 
-    if (result.status.isFinalized) {
+    if (result.status.type === "Finalized") {
       console.log("[EXEC] Finalized", result);
-      console.log(`[EXEC] blockHash ${result.status.asFinalized}`);
-      onSuccess({ blockHash: result.status.asFinalized, txHash: result.txHash });
+      const { blockHash, blockNumber } = result.status.value ?? { blockHash: "", blockNumber: 0 };
+      console.log(`[EXEC] blockHash ${blockHash}, blockNumber ${blockNumber}`);
+      onSuccess({ blockHash, blockNumber, txHash: result.txHash.toString() });
     }
   };
-
-export const estimate = async (
-  account: KeyringAccount | string,
-  callback: (...params: any) => SubmittableExtrinsic<"promise">,
-  params: any[],
-): Promise<string> => {
-  const transfer = await callback(...params);
-  const address = typeof account === "string" ? (account ?? MEMO_BOT) : account.address;
-  // if user have not connect wallet, we provide a mock address to estimate fee
-  const injector = await getAddress(toDefaultAddress(address));
-
-  const info = await transfer.paymentInfo(address, injector ? { signer: injector.signer } : {});
-  return info.partialFee.toString();
-};
 
 export default exec;

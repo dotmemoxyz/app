@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ISubmittableResult } from "@polkadot/types/types";
+import type { ISubmittableResult, ISubmittableExtrinsic } from "dedot/types";
 import useAPI from "./useApi";
 import useTransactionStatus, { TransactionStatus } from "./useTransactionStatus";
 import exec, { execResultValue, txCb } from "@/utils/transactionExecutor";
 import type { ExecResult, TxCbOnSuccessParams } from "@/utils/transactionExecutor";
-import type { Extrinsic } from "@kodadot1/sub-api";
 import type { Prefix } from "@kodadot1/static";
-import type { DispatchError } from "@polkadot/types/interfaces";
+import type { PolkadotAssetHubApi } from "@dedot/chaintypes";
 import camelCase from "lodash/camelCase";
+
+type DispatchError = PolkadotAssetHubApi["types"]["SpRuntimeDispatchError"];
 
 //github.com/dotmemoxyz/app/pull/149
 
@@ -18,7 +19,7 @@ export type HowAboutToExecuteOnSuccessParam = {
 
 export type HowAboutToExecuteOnResultParam = {
   txHash: string;
-  result: ISubmittableResult;
+  result: ISubmittableResult<DispatchError>;
 };
 
 type HowAboutToExecuteOptions = {
@@ -35,7 +36,7 @@ export type SignError = {
 
 export type HowAboutToExecute = (
   account: string,
-  cb: (...params: any[]) => Extrinsic,
+  cb: (...params: any[]) => ISubmittableExtrinsic<any>,
   args: any[],
   options?: HowAboutToExecuteOptions,
 ) => Promise<void>;
@@ -228,10 +229,9 @@ export const MODULE_ERRORS_CONFIG: Record<string, { level: string; reportable: b
 };
 
 function useMetaTransaction(prefix: Ref<Prefix>) {
-  // const { $i18n } = useNuxtApp()
   const { isLoading, resolveStatus, initTransactionLoader, status, stopLoader, statusText } = useTransactionStatus();
   const error = ref<string | null>(null);
-  const { apiInstance } = useAPI(prefix);
+  useAPI(prefix); // Keep composable initialization for side effects
   const tx = ref<ExecResult>();
   const isError = ref(false);
 
@@ -248,15 +248,22 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
     }
   };
 
+  // TODO: will remove
   const extractErrorMetadata = async (dispatchError: DispatchError) => {
-    const api = await apiInstance.value;
-    const { name, docs, section } = api.registry.findMetaError(dispatchError.asModule);
-
+    if (dispatchError.type === "Module") {
+      const { name, pallet } = dispatchError.value;
+      return {
+        key: `${pallet}.${name}`,
+        name,
+        description: "",
+        section: pallet,
+      };
+    }
     return {
-      key: `${section}.${name}`,
-      name,
-      description: docs.join(" "),
-      section,
+      key: dispatchError.type,
+      name: dispatchError.type,
+      description: "",
+      section: "",
     };
   };
 
@@ -271,11 +278,12 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
       };
     }
 
-    if (!dispatchError.isModule) {
-      const dispatchErrorStr = dispatchError.toString();
+    if (dispatchError.type !== "Module") {
+      const dispatchErrorStr = JSON.stringify(dispatchError);
 
       try {
-        const { token } = JSON.parse(dispatchErrorStr);
+        const parsed = JSON.parse(dispatchErrorStr);
+        const token = parsed.type || "";
         if (token in MODULE_ERRORS_CONFIG) {
           return {
             level: "warning",
@@ -284,10 +292,10 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
           };
         }
         throw new Error(`Unknown key '${token}'`);
-      } catch (error) {
+      } catch {
         return {
           title: "Error",
-          message: dispatchError.toString(),
+          message: dispatchError.type,
           level: "warning",
         };
       }
@@ -309,15 +317,13 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
 
   const successCb =
     (onSuccess?: (param: HowAboutToExecuteOnSuccessParam) => void) =>
-    async ({ blockHash, txHash }: TxCbOnSuccessParams) => {
-      const api = await apiInstance.value;
-
-      tx.value && execResultValue(tx.value);
-      const header = await api.rpc.chain.getHeader(blockHash);
-      const blockNumber = header.number.toString();
+    async ({ txHash, blockNumber }: TxCbOnSuccessParams) => {
+      if (tx.value) {
+        execResultValue(tx.value);
+      }
 
       if (onSuccess) {
-        onSuccess({ txHash: txHash.toString(), blockNumber });
+        onSuccess({ txHash: txHash.toString(), blockNumber: String(blockNumber) });
       }
 
       isLoading.value = false;
@@ -325,7 +331,9 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
     };
 
   const errorCb = (onError?: (err: SignError) => void) => (dispatchError: DispatchError | Error) => {
-    tx.value && execResultValue(tx.value);
+    if (tx.value) {
+      execResultValue(tx.value);
+    }
     onTxError(dispatchError);
     isLoading.value = false;
     isError.value = true;
@@ -336,10 +344,11 @@ function useMetaTransaction(prefix: Ref<Prefix>) {
     }
   };
 
-  const resultCb = (onResult?: (result: HowAboutToExecuteOnResultParam) => void) => (result: ISubmittableResult) => {
-    resolveStatus(result.status);
-    onResult?.({ txHash: result.txHash.toString(), result });
-  };
+  const resultCb =
+    (onResult?: (result: HowAboutToExecuteOnResultParam) => void) => (result: ISubmittableResult<DispatchError>) => {
+      resolveStatus(result.status);
+      onResult?.({ txHash: result.txHash.toString(), result });
+    };
 
   const onCatchError = (e: Error | any) => {
     if (e instanceof Error) {

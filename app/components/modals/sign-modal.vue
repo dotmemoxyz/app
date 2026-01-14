@@ -110,7 +110,8 @@ import { VueFinalModal, useVfm } from "vue-final-modal";
 import { useAccountStore } from "@/stores/account";
 import useAuth from "~/composables/useAuth";
 import { collectionDeposit, itemDeposit, metadataDeposit } from "~/utils/sdk/constants";
-import { onApiConnect } from "@kodadot1/sub-api";
+import { onClientConnect } from "@/utils/dedot/client";
+import { getChainEndpointByPrefix } from "@/utils/chain";
 import Identicon from "@polkadot/vue-identicon";
 import type { Prefix } from "@kodadot1/static";
 import { useMemoSign } from "~/composables/useMemoSign";
@@ -155,10 +156,11 @@ const depositForCollection = ref(0);
 const totalPayableDeposit = ref(BigInt(0));
 const loadingApi = ref(true);
 // Hook to load chain data
-onApiConnect(props.chain, async (api) => {
-  const collectionFee = collectionDeposit(api);
-  const itemFee = itemDeposit(api);
-  const metadataFee = metadataDeposit(api);
+const endpoint = getChainEndpointByPrefix(props.chain) || "";
+onClientConnect(endpoint, (client) => {
+  const collectionFee = collectionDeposit(client);
+  const itemFee = itemDeposit(client);
+  const metadataFee = metadataDeposit(client);
   const decimals = Number(`1e${properties.value.decimals}`);
   depositForCollection.value = (collectionFee + metadataFee) / decimals;
   depositPerItem.value = (itemFee + metadataFee) / decimals;

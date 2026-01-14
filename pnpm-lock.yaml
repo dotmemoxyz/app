@@ -8,15 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@dedot/chaintypes':
+        specifier: ^0.211.0
+        version: 0.211.0(dedot@1.0.2(typescript@5.9.2)(zod@3.25.42))
       '@kodadot1/minipfs':
         specifier: 0.4.3-rc.2
         version: 0.4.3-rc.2
       '@kodadot1/static':
         specifier: ^0.0.7
         version: 0.0.7
-      '@kodadot1/sub-api':
-        specifier: 0.4.0-rc.2
-        version: 0.4.0-rc.2(@polkadot/api@16.4.1)(@polkadot/types-codec@16.4.1)
       '@kodadot1/uniquery':
         specifier: ^0.7.2-rc.1
         version: 0.7.2-rc.1
@@ -50,9 +50,6 @@ importers:
       '@polkadot/extension-dapp':
         specifier: ^0.61.3
         version: 0.61.3(@polkadot/api@16.4.1)(@polkadot/util-crypto@13.5.3(@polkadot/util@13.5.3))(@polkadot/util@13.5.3)
-      '@polkadot/types-codec':
-        specifier: ^16.4.1
-        version: 16.4.1
       '@polkadot/util-crypto':
         specifier: ^13.5.3
         version: 13.5.3(@polkadot/util@13.5.3)
@@ -718,6 +715,11 @@ packages:
     resolution: {integrity: sha512-jzRHIL3CCIQHe0JkZ1FD66MXgktzwBeR2qdqXkqSZrwsXKSqV7Z+7r64KWt10wdaBRFeeV+t4/4v1rqKtoZlkA==}
     engines: {node: '>=18'}
 
+  '@dedot/chaintypes@0.211.0':
+    resolution: {integrity: sha512-A0tsJKI/uLyazJC1PUcx658JwDEEpt1jNJtxvzKabT3GJdDBl5ybiIPrMeXo22v4r4BxPqcdLmvw/vodt9XCTg==}
+    peerDependencies:
+      dedot: '>=1.0.1'
+
   '@dedot/cli@1.0.2':
     resolution: {integrity: sha512-/BC4Gohb9mPbUycTANCgPeEE+aGUQvHcBL1vzcl15bcfDy7ykRcHd31XNcUZPE4Es6pqcxbZk9MF7sNpsS1yMQ==}
     engines: {node: '>=18'}
@@ -1122,17 +1124,8 @@ packages:
   '@kodadot1/minipfs@0.4.3-rc.2':
     resolution: {integrity: sha512-tUiJawjaxd40sm+FHRQi66jlkV+K7np6ZhC+SL5jQ2xXmu6RPYL03pazFydM9rDfpPnIiddaAM+DTttk45B+AQ==}
 
-  '@kodadot1/static@0.0.6':
-    resolution: {integrity: sha512-zmse14vpMHZx+ZN5n6ryBnBWjfuxCb3mNeynsNiUma0NGJRlhQWPzy7xwSQu/Mn8tgviNfOikZI1yLyJ7+ZCUQ==}
-
   '@kodadot1/static@0.0.7':
     resolution: {integrity: sha512-pb7uaDXGJdwCkvf8pZ/6mUrg7TNpEkWdbiKc2bPcQoJOfq7FZHrAEF+30lQrHB+woOT76kodFEoLioLwDt8cqg==}
-
-  '@kodadot1/sub-api@0.4.0-rc.2':
-    resolution: {integrity: sha512-kys7ZXg6mpWIz8pc1I74RwM2Cx4kZgwKdSjV9kejSnYk+i6SSv7+/AJ2KFNtkfL6+UdPlrpLqYMrAmOhfeNyiQ==}
-    peerDependencies:
-      '@polkadot/api': '>= 11.2'
-      '@polkadot/types-codec': '>= 11.2'
 
   '@kodadot1/uniquery@0.7.2-rc.1':
     resolution: {integrity: sha512-eT9vspRQIvEdAvl5dev3T9coRrBJnNXwK6HAGXOMvt6JTXxIhbJjNmPQG1aPZWUW8CNfbdEadpcayg7+YfayPQ==}
@@ -7555,6 +7548,10 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
+  '@dedot/chaintypes@0.211.0(dedot@1.0.2(typescript@5.9.2)(zod@3.25.42))':
+    dependencies:
+      dedot: 1.0.2(typescript@5.9.2)(zod@3.25.42)
+
   '@dedot/cli@1.0.2(typescript@5.9.2)(zod@3.25.42)':
     dependencies:
       '@dedot/api': 1.0.2
@@ -7982,15 +7979,7 @@ snapshots:
     dependencies:
       ofetch: 1.4.1
 
-  '@kodadot1/static@0.0.6': {}
-
   '@kodadot1/static@0.0.7': {}
-
-  '@kodadot1/sub-api@0.4.0-rc.2(@polkadot/api@16.4.1)(@polkadot/types-codec@16.4.1)':
-    dependencies:
-      '@kodadot1/static': 0.0.6
-      '@polkadot/api': 16.4.1
-      '@polkadot/types-codec': 16.4.1
 
   '@kodadot1/uniquery@0.7.2-rc.1':
     dependencies:

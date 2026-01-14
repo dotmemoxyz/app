@@ -14,9 +14,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@dedot/chaintypes": "^0.211.0",
     "@kodadot1/minipfs": "0.4.3-rc.2",
     "@kodadot1/static": "^0.0.7",
-    "@kodadot1/sub-api": "0.4.0-rc.2",
     "@kodadot1/uniquery": "^0.7.2-rc.1",
     "@nuxt/eslint": "^1.4.1",
     "@nuxt/icon": "^2.0.0",
@@ -28,7 +28,6 @@
     "@pinia/nuxt": "^0.11.2",
     "@polkadot/api": "^16.4.1",
     "@polkadot/extension-dapp": "^0.61.3",
-    "@polkadot/types-codec": "^16.4.1",
     "@polkadot/util-crypto": "^13.5.3",
     "@polkadot/vue-identicon": "^3.16.1",
     "@types/vue-select": "^3.16.8",

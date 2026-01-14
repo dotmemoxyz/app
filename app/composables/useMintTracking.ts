@@ -22,12 +22,12 @@ export const useMintTracking = (data: Ref<MintData | null | undefined>) => {
       if (data) {
         loadingLimitInfo.value = true;
         try {
-          const api = await apiInstanceByPrefix(data.chain as Prefix);
+          const client = await apiInstanceByPrefix(data.chain as Prefix);
           const collectionId = data.id || data.collectionId;
           if (!collectionId) {
             throw new Error("No collection ID provided");
           }
-          const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(api, collectionId);
+          const { maxTokens, mintedTokens, remainingMints } = await getFreeMints(client, Number(collectionId));
           maxMints.value = maxTokens;
           minted.value = mintedTokens;
 

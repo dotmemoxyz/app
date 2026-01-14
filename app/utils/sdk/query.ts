@@ -1,52 +1,40 @@
-import "@polkadot/api-augment";
-import type { ApiPromise } from "@polkadot/api";
-import { BN } from "@polkadot/util";
+import type { ChainClient } from "@/utils/dedot/client";
 
 const logger = createLogger("Utils/SDK/Query");
 
-export async function nextCollectionId(api: ApiPromise) {
+export async function nextCollectionId(client: ChainClient) {
   try {
-    const result = await api.query.nfts.nextCollectionId();
-
-    return result.unwrap().toNumber();
+    const result = await client.query.nfts.nextCollectionId();
+    return result ?? null;
   } catch (error) {
     logger.error("Error getting collection id", error);
     return null;
   }
 }
 
-export async function getFreeMints(api: ApiPromise, collectionId: string) {
-  const collectionInfo = await api.query.nfts.collection(collectionId);
-  const configInfo = await api.query.nfts.collectionConfigOf(collectionId);
+export async function getFreeMints(client: ChainClient, collectionId: number) {
+  const collectionInfo = await client.query.nfts.collection(collectionId);
+  const configInfo = await client.query.nfts.collectionConfigOf(collectionId);
 
-  if (collectionInfo.isSome && configInfo.isSome) {
-    const collection = collectionInfo.unwrap();
-    const config = configInfo.unwrap();
-
-    // Get max tokens
-    const maxTokens = config.maxSupply.isSome ? new BN(config.maxSupply.toString()) : null;
-
-    // Get minted tokens
-    const mintedTokens = new BN(collection.items.toString());
-
-    // Calculate remaining mints
-    const remainingMints = maxTokens?.sub(mintedTokens) ?? null;
+  if (collectionInfo && configInfo) {
+    const maxTokens = configInfo.maxSupply ?? null;
+    const mintedTokens = collectionInfo.items;
+    const remainingMints = maxTokens !== null ? maxTokens - mintedTokens : null;
 
     return {
-      maxTokens: maxTokens?.toNumber() ?? null,
-      mintedTokens: mintedTokens.toNumber(),
-      remainingMints: remainingMints?.toNumber() ?? null,
+      maxTokens,
+      mintedTokens,
+      remainingMints,
     };
   } else {
     throw new Error("Collection not found");
   }
 }
 
-export async function latestBlock(api: ApiPromise) {
+export async function latestBlock(client: ChainClient) {
   try {
-    const result = await api.rpc.chain.getHeader();
-
-    return result.number.toNumber();
+    const result = await client.rpc.chain_getHeader();
+    return result?.number ?? null;
   } catch (error) {
     logger.error("Error getting latest block", error);
     return null;
