@@ -155,9 +155,9 @@ const depositPerItem = ref(0);
 const depositForCollection = ref(0);
 const totalPayableDeposit = ref(BigInt(0));
 const loadingApi = ref(true);
+
 // Hook to load chain data
-const endpoint = getChainEndpointByPrefix(props.chain) || "";
-onClientConnect(endpoint, (client) => {
+onClientConnect(getChainEndpointByPrefix(props.chain), (client) => {
   const collectionFee = collectionDeposit(client);
   const itemFee = itemDeposit(client);
   const metadataFee = metadataDeposit(client);

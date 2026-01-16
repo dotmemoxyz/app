@@ -10,8 +10,8 @@ export default function (prefix: Ref<Prefix>) {
 
   const apiInstance = computed<Promise<ChainClient>>(() => getClient(apiUrl.value));
 
-  const apiInstanceByPrefix = (_prefix: string) => {
-    const endpoint: string = getChainEndpointByPrefix(_prefix) || "";
+  const apiInstanceByPrefix = (prefix: string) => {
+    const endpoint: string = getChainEndpointByPrefix(prefix) || "";
     return getClient(endpoint);
   };
 
