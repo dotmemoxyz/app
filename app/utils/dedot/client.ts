@@ -24,10 +24,14 @@ export async function getClient(endpoint: string | string[]): Promise<ChainClien
     connectionPromise,
   });
 
-  const client = await connectionPromise;
-  clientCache.set(cacheKey, { client, connectionPromise: Promise.resolve(client) });
-
-  return client;
+  try {
+    const client = await connectionPromise;
+    clientCache.set(cacheKey, { client, connectionPromise: Promise.resolve(client) });
+    return client;
+  } catch (error) {
+    clientCache.delete(cacheKey);
+    throw error;
+  }
 }
 
 async function createClient(endpoints: string | string[]): Promise<ChainClient> {
