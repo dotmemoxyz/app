@@ -1,4 +1,4 @@
-import { $purify as purify, $obtain as obtain } from "@kodadot1/minipfs";
+import { $purifyOne as purify, $obtain as obtain } from "@kodadot1/minipfs";
 import type { MemoDTO, Memo } from "~/types/memo";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
@@ -30,12 +30,12 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const image = purify(rawData?.image).at(0);
+  const image = purify(rawData?.image, "chaotic");
   if (!image) {
     throw new Error("Image not found");
   }
 
-  const meta = await obtain<Metadata>(rawData.mint);
+  const meta = await obtain<Metadata>(rawData.mint, ["chaotic"]);
   if (!meta) {
     throw new Error("Metadata not found");
   }
