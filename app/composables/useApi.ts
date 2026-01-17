@@ -1,22 +1,22 @@
-import { getChainEndpointByPrefix } from "@/utils/chain";
+import { getChainEndpointsByPrefix } from "@/utils/chain";
 import { getClient, type ChainClient } from "@/utils/dedot/client";
 import type { Prefix } from "@kodadot1/static";
 
 export default function (prefix: Ref<Prefix>) {
-  const apiUrl = computed(() => {
-    const endpoint: string = getChainEndpointByPrefix(prefix.value) || "";
-    return endpoint;
+  const apiUrls = computed(() => {
+    const endpoints = getChainEndpointsByPrefix(prefix.value);
+    return endpoints;
   });
 
-  const apiInstance = computed<Promise<ChainClient>>(() => getClient(apiUrl.value));
+  const apiInstance = computed<Promise<ChainClient>>(() => getClient(apiUrls.value));
 
   const apiInstanceByPrefix = (prefix: string) => {
-    const endpoint: string = getChainEndpointByPrefix(prefix) || "";
-    return getClient(endpoint);
+    const endpoints = getChainEndpointsByPrefix(prefix);
+    return getClient(endpoints);
   };
 
   return {
-    apiUrl,
+    apiUrls,
     apiInstance,
     apiInstanceByPrefix,
   };

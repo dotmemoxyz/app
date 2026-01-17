@@ -110,8 +110,6 @@ import { VueFinalModal, useVfm } from "vue-final-modal";
 import { useAccountStore } from "@/stores/account";
 import useAuth from "~/composables/useAuth";
 import { collectionDeposit, itemDeposit, metadataDeposit } from "~/utils/sdk/constants";
-import { onClientConnect } from "@/utils/dedot/client";
-import { getChainEndpointByPrefix } from "@/utils/chain";
 import Identicon from "@polkadot/vue-identicon";
 import type { Prefix } from "@kodadot1/static";
 import { useMemoSign } from "~/composables/useMemoSign";
@@ -156,8 +154,11 @@ const depositForCollection = ref(0);
 const totalPayableDeposit = ref(BigInt(0));
 const loadingApi = ref(true);
 
-// Hook to load chain data
-onClientConnect(getChainEndpointByPrefix(props.chain), (client) => {
+const { apiInstance } = useApi(chainRef);
+
+// Hook to load chain data when client is ready
+watchEffect(async () => {
+  const client = await apiInstance.value;
   const collectionFee = collectionDeposit(client);
   const itemFee = itemDeposit(client);
   const metadataFee = metadataDeposit(client);
@@ -169,7 +170,6 @@ onClientConnect(getChainEndpointByPrefix(props.chain), (client) => {
 });
 
 // Transaction composables
-const { apiInstance } = useApi(chainRef);
 const { accountId, isLogIn } = useAuth();
 const {
   sign,
