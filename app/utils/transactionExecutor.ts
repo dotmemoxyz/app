@@ -79,7 +79,7 @@ export const txCb =
 
     if (result.status.type === "Finalized") {
       console.log("[EXEC] Finalized", result);
-      const { blockHash, blockNumber } = result.status.value ?? { blockHash: "", blockNumber: 0 };
+      const { blockHash, blockNumber } = result.status.value;
       console.log(`[EXEC] blockHash ${blockHash}, blockNumber ${blockNumber}`);
       onSuccess({ blockHash, blockNumber, txHash: result.txHash.toString() });
     }
