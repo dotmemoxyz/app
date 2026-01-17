@@ -3,13 +3,13 @@ import { createArgsForNftPallet } from "@/utils/sdk/create";
 import { nextCollectionId } from "~/utils/sdk/query";
 import { MEMO_BOT } from "~/utils/sdk/constants";
 import { pinFileToIPFS, pinJson, type Metadata } from "~/services/nftStorage";
-import type { ApiPromise } from "@polkadot/api";
+import type { ChainClient } from "@/utils/dedot/client";
 
 const logger = createLogger("useMemoSign");
 export const useMemoSign = (
   chainRef: Ref<Prefix>,
-  apiInstance: Ref<Promise<ApiPromise>>,
-  totalPayableDeposit: Ref<bigint>,
+  apiInstance: Ref<Promise<ChainClient>>,
+  totalAmount: Ref<bigint>,
   accountId: Ref<string | undefined>,
   onError?: (err: SignError) => void,
 ) => {
@@ -79,9 +79,9 @@ export const useMemoSign = (
       }
     }
 
-    let api: ApiPromise;
+    let client: ChainClient;
     try {
-      api = await apiInstance.value;
+      client = await apiInstance.value;
     } catch (e) {
       logger.error("Failed to get API instance. Reason: %s", (e as Error).message);
       signError.value = "Failed to get API instance. Try again later or contact support.";
@@ -93,14 +93,14 @@ export const useMemoSign = (
     logger.info("Creating collection with args: %O", createArgs);
     let nextId: number | null = null;
     try {
-      nextId = await nextCollectionId(api);
+      nextId = await nextCollectionId(client);
     } catch (e) {
       logger.error("Failed to get next collection id. Reason: %s", (e as Error).message);
       signError.value = "Failed to get next collection id. Try again later or contact support.";
       isSigning.value = false;
       return;
     }
-    if (!nextId) {
+    if (nextId === null) {
       signError.value = "Failed to get next collection id. Try again later or contact support.";
       isSigning.value = false;
       return;
@@ -108,22 +108,22 @@ export const useMemoSign = (
 
     futureCollection.value = nextId;
 
-    const cb = api.tx.utility.batchAll;
-    const args = [
-      [
-        api.tx.nfts.create(...createArgs),
-        api.tx.nfts.setCollectionMetadata(nextId, toMint.value),
-        api.tx.nfts.setTeam(nextId, MEMO_BOT, MEMO_BOT, accountId.value),
-        // DEV: this does not cover tx fee, we will sponsor it for a whilegs
-        api.tx.balances.transferKeepAlive(MEMO_BOT, totalPayableDeposit.value),
-        // DEV: this is for tracking purposes
-        api.tx.system.remarkWithEvent("dotmemo.xyz"),
-      ],
+    const calls = [
+      client.tx.nfts.create(...createArgs).call,
+      client.tx.nfts.setCollectionMetadata(nextId, toMint.value!).call,
+      client.tx.nfts.setTeam(nextId, MEMO_BOT, MEMO_BOT, accountId.value).call,
+      // DEV: this does not cover tx fee, we will sponsor it for a while
+      client.tx.balances.transferKeepAlive(MEMO_BOT, totalAmount.value).call,
+      // DEV: this is for tracking purposes
+      client.tx.system.remarkWithEvent("dotmemo.xyz").call,
     ];
+    const cb = (txCalls: typeof calls) => client.tx.utility.batchAll(txCalls);
+    const args = [calls];
 
     initTransactionLoader();
     try {
-      await howAboutToExecute(accountId.value, cb, args, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await howAboutToExecute(accountId.value, cb as any, args, {
         onSuccess(param) {
           txHash.value = param.txHash;
         },

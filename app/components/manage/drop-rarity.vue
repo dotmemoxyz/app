@@ -247,7 +247,7 @@ const distributionModeOptions = computed(() => [
   { value: "fixed", label: t("manage.rarity.absolute") },
 ]);
 const totalSupply = ref<number | null>(null);
-const attributeDeposit = ref<number | null>(null);
+const attributeDeposit = ref<bigint | null>(null);
 const supplyLoading = ref(true);
 
 const tiers = ref<RarityTier[]>(structuredClone(props.drop.tiers?.tiers ?? DEFAULT_TIERS));
@@ -319,9 +319,9 @@ const canSave = computed(() => {
   return validationError.value === null && tiers.value.length > 0;
 });
 
-const totalCost = computed(() => {
-  if (!totalSupply.value || !attributeDeposit.value) return 0;
-  return totalSupply.value * attributeDeposit.value;
+const totalCost = computed<bigint>(() => {
+  if (!totalSupply.value || !attributeDeposit.value) return 0n;
+  return BigInt(totalSupply.value) * attributeDeposit.value;
 });
 
 const formattedCost = computed(() => {
@@ -353,10 +353,10 @@ function getPercentage(weight: number): number {
 async function signAndSaveTiers() {
   if (!canSave.value || isLocked.value || !totalSupply.value || !attributeDeposit.value || !accountId.value) return;
 
-  const api = await apiInstanceByPrefix(props.drop.chain);
+  const client = await apiInstanceByPrefix(props.drop.chain);
 
-  const cb = api.tx.balances.transferKeepAlive;
-  const arg = [MEMO_BOT, totalCost.value];
+  const cb = (dest: string, value: bigint) => client.tx.balances.transferKeepAlive(dest, value);
+  const arg: [string, bigint] = [MEMO_BOT, totalCost.value];
 
   initTransactionLoader();
 
@@ -374,7 +374,7 @@ async function signAndSaveTiers() {
 
     await howAboutToExecute(accountId.value, cb, arg, {
       onResult({ result }) {
-        if (result.isCompleted && !result.dispatchError) {
+        if (result.status.type === "Finalized" && !result.dispatchError) {
           saveTiers();
         }
       },
@@ -449,10 +449,10 @@ watch(tiersEnabled, (enabled) => {
 
 onMounted(async () => {
   try {
-    const api = await apiInstanceByPrefix(props.drop.chain);
-    const result = await getFreeMints(api, props.drop.id);
+    const client = await apiInstanceByPrefix(props.drop.chain);
+    const result = await getFreeMints(client, Number(props.drop.id));
     totalSupply.value = result.maxTokens;
-    attributeDeposit.value = api.consts.nfts.attributeDepositBase.toNumber();
+    attributeDeposit.value = client.consts.nfts.attributeDepositBase;
   } catch (error) {
     console.error("Error fetching collection supply:", error);
     totalSupply.value = null;

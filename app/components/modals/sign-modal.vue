@@ -63,8 +63,8 @@
         :secret="props.secret"
         :description="props.description"
         :chain="props.chain"
-        :symbol-value="symbolValue"
-        :dollar-value="dollarValue"
+        :total-deposit="totalDeposit"
+        :total-deposit-usd="dollarValue"
         :price-loading="priceLoading || loadingApi"
         :price-error="priceError"
         :deposit-per-item="depositPerItem"
@@ -110,7 +110,6 @@ import { VueFinalModal, useVfm } from "vue-final-modal";
 import { useAccountStore } from "@/stores/account";
 import useAuth from "~/composables/useAuth";
 import { collectionDeposit, itemDeposit, metadataDeposit } from "~/utils/sdk/constants";
-import { onApiConnect } from "@kodadot1/sub-api";
 import Identicon from "@polkadot/vue-identicon";
 import type { Prefix } from "@kodadot1/static";
 import { useMemoSign } from "~/composables/useMemoSign";
@@ -150,24 +149,27 @@ const codeWroteDown = ref(false);
 // Chain properties
 const chainRef = computed(() => props.chain);
 const properties = computed(() => chainAssetOf(props.chain));
-const depositPerItem = ref(0);
-const depositForCollection = ref(0);
-const totalPayableDeposit = ref(BigInt(0));
+const depositPerItem = ref(0n);
+const depositForCollection = ref(0n);
 const loadingApi = ref(true);
-// Hook to load chain data
-onApiConnect(props.chain, async (api) => {
-  const collectionFee = collectionDeposit(api);
-  const itemFee = itemDeposit(api);
-  const metadataFee = metadataDeposit(api);
-  const decimals = Number(`1e${properties.value.decimals}`);
-  depositForCollection.value = (collectionFee + metadataFee) / decimals;
-  depositPerItem.value = (itemFee + metadataFee) / decimals;
-  totalPayableDeposit.value = BigInt(itemFee + metadataFee) * BigInt(props.quantity);
+
+const { apiInstance } = useApi(chainRef);
+
+// Hook to load chain data when client is ready
+watchEffect(async () => {
+  const client = await apiInstance.value;
+  const collectionFee = collectionDeposit(client);
+  const itemFee = itemDeposit(client);
+  const metadataFee = metadataDeposit(client);
+
+  depositForCollection.value = collectionFee + metadataFee;
+  depositPerItem.value = itemFee + metadataFee;
   loadingApi.value = false;
 });
 
+const totalDeposit = computed(() => depositPerItem.value * BigInt(props.quantity) + depositForCollection.value);
+
 // Transaction composables
-const { apiInstance } = useApi(chainRef);
 const { accountId, isLogIn } = useAuth();
 const {
   sign,
@@ -181,7 +183,7 @@ const {
   toMint,
   imageCid,
   txHash,
-} = useMemoSign(chainRef, apiInstance, totalPayableDeposit, accountId, (err) => emit("error", err));
+} = useMemoSign(chainRef, apiInstance, totalDeposit, accountId, (err) => emit("error", err));
 
 // Handle transaction status
 watch(status, async (status) => {
@@ -221,8 +223,7 @@ watch(status, async (status) => {
 });
 
 // Price
-const totalDeposit = computed(() => depositPerItem.value * props.quantity + depositForCollection.value);
-const { dollarValue, priceError, symbolValue, priceLoading } = usePriceApi(totalDeposit, properties);
+const { dollarValue, priceError, priceLoading } = usePriceApi(totalDeposit, properties);
 
 const canSign = computed(() => isLogIn.value && !priceError.value && !isSigning.value && codeWroteDown.value);
 </script>

@@ -1,4 +1,4 @@
-import type { ExtrinsicStatus } from "@polkadot/types/interfaces";
+import type { TxStatus } from "dedot/types";
 
 export enum TransactionStatus {
   Broadcast = "loader.broadcast",
@@ -15,22 +15,17 @@ function useTransactionStatus() {
   const status = ref<TransactionStatus>(TransactionStatus.Unknown);
   const isLoading = ref(false);
 
-  const resolveStatus = (extrinsicStatus: ExtrinsicStatus, omitFinalized?: boolean): void => {
-    if (extrinsicStatus.isBroadcast) {
+  const resolveStatus = (extrinsicStatus: TxStatus, omitFinalized?: boolean): void => {
+    if (extrinsicStatus.type === "Broadcasting") {
       status.value = TransactionStatus.Broadcast;
       return;
     }
-    if (extrinsicStatus.isReady) {
-      status.value = TransactionStatus.Casting;
-      return;
-    }
-
-    if (extrinsicStatus.isInBlock) {
+    if (extrinsicStatus.type === "BestChainBlockIncluded") {
       status.value = TransactionStatus.Block;
       return;
     }
 
-    if (extrinsicStatus.isFinalized) {
+    if (extrinsicStatus.type === "Finalized") {
       status.value = omitFinalized ? TransactionStatus.Unknown : TransactionStatus.Finalized;
       return;
     }

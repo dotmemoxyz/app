@@ -1,4 +1,4 @@
-import type { ApiPromise } from "@polkadot/api";
+import type { ChainClient } from "@/utils/dedot/client";
 
 export const MEMO_BOT = "E6eji2dKDtQ6irDmf6kbfEV1c7ZiRyMhFx6iyEijGXzcqWW";
 
@@ -11,6 +11,6 @@ export const calculateFee = (amount: number, fee: Fee) => {
   return amount * fee;
 };
 
-export const collectionDeposit = (api: ApiPromise) => api.consts.nfts.collectionDeposit.toNumber();
-export const itemDeposit = (api: ApiPromise) => api.consts.nfts.itemDeposit.toNumber();
-export const metadataDeposit = (api: ApiPromise) => api.consts.nfts.metadataDepositBase.toNumber();
+export const collectionDeposit = (client: ChainClient) => BigInt(client.consts.nfts.collectionDeposit.toString());
+export const itemDeposit = (client: ChainClient) => BigInt(client.consts.nfts.itemDeposit.toString());
+export const metadataDeposit = (client: ChainClient) => BigInt(client.consts.nfts.metadataDepositBase.toString());
