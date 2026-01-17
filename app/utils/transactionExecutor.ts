@@ -47,10 +47,15 @@ const exec = async <T>(
     }
 
     const signer: Signer = injector.signer;
-    const unsub = await tx.signAndSend(address, { signer }, (result: any) => {
-      statusCb(result);
-      if (result.status.type === "Finalized" || result.status.type === "Invalid") {
-        unsub();
+    const unsub = await tx.signAndSend(address, { signer }, async (result: ISubmittableResult<DispatchError>) => {
+      try {
+        await Promise.resolve(statusCb(result));
+      } catch (err) {
+        console.warn(err);
+      } finally {
+        if (result.status.type === "Finalized" || result.status.type === "Invalid") {
+          unsub();
+        }
       }
     });
 
