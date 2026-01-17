@@ -4,6 +4,7 @@ import { getAddress } from "@/utils/extension";
 import { toDefaultAddress } from "@/utils/account";
 import type { ISubmittableResult, ISubmittableExtrinsic } from "dedot/types";
 import type { PolkadotAssetHubApi } from "@dedot/chaintypes";
+import type { Signer } from "@polkadot/api/types";
 
 type DispatchError = PolkadotAssetHubApi["types"]["SpRuntimeDispatchError"];
 
@@ -45,7 +46,8 @@ const exec = async <T>(
       throw new Error("No signer available");
     }
 
-    const unsub = await tx.signAndSend(address, { signer: injector.signer as any }, (result: any) => {
+    const signer: Signer = injector.signer;
+    const unsub = await tx.signAndSend(address, { signer }, (result: any) => {
       statusCb(result);
       if (result.status.type === "Finalized" || result.status.type === "Invalid") {
         unsub();
