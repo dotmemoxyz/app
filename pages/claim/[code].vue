@@ -290,7 +290,7 @@ const claim = async () => {
     });
 
     setTimeout(() => {
-      const url = `https://kodadot.xyz/${data.chain}/gallery/${data.collection}-${data.sn}`;
+      const url = `https://chaotic.art/${data.chain}/gallery/${data.collection}-${data.sn}`;
       claimed.value = url;
       isClaiming.value = false;
     }, 60_000);
