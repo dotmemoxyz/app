@@ -117,7 +117,7 @@
           target="_blank"
         >
           <img
-            :src="$purifyOne(collection.image, 'kodadot')"
+            :src="$purifyOne(collection.image, 'chaotic')"
             alt="collection image"
             class="h-full w-full rounded-xl object-cover"
           />
@@ -193,7 +193,7 @@ const result = await client.fetch<{ collections: Collection[] }>(query).catch((e
 
 collections.value = result?.data?.collections ?? [];
 
-const kodaUrl = (id: string) => `https://kodadot.xyz/${prefix.value}/collection/${id}`;
+const kodaUrl = (id: string) => `https://chaotic.art/${prefix.value}/collection/${id}`;
 
 const networkStatus = ref(true);
 onMounted(() => {
