@@ -44,11 +44,11 @@
   <div class="grid grid-cols-2 gap-3">
     <p class="text-sm text-text-primary">{{ $t("create.dialog.total") }}</p>
     <p class="text-right text-sm text-text-primary">
-      <span class="ml-2 font-bold text-text-primary/70"> {{ symbolValue }} {{ properties.symbol }} </span>
-      <span v-if="dollarValue === null || priceLoading" class="animate-pulse text-xs text-text-primary/50">
+      <span class="ml-2 font-bold text-text-primary/70"> {{ formattedTotalDeposit }} {{ properties.symbol }} </span>
+      <span v-if="totalDepositUsd === null || priceLoading" class="animate-pulse text-xs text-text-primary/50">
         ({{ $t("common.calculating") }})
       </span>
-      <span v-else-if="!priceError" class="text-xs text-text-primary/50"> ({{ dollarValue.toFixed(2) }}$) </span>
+      <span v-else-if="!priceError" class="text-xs text-text-primary/50"> ({{ totalDepositUsd.toFixed(2) }}$) </span>
     </p>
 
     <button class="col-span-2 flex items-center gap-2" @click="showBreakdown = !showBreakdown">
@@ -58,10 +58,10 @@
 
     <template v-if="showBreakdown">
       <p class="text-sm text-text-primary">{{ $t("create.dialog.collectionDeposit") }}</p>
-      <p class="text-right text-sm text-text-primary/70">{{ depositForCollection }} {{ properties.symbol }}</p>
+      <p class="text-right text-sm text-text-primary/70">{{ formattedDepositForCollection }} {{ properties.symbol }}</p>
       <p class="text-sm text-text-primary">{{ $t("create.dialog.freeMintingDeposit") }}</p>
       <p class="text-right text-sm text-text-primary/70">
-        {{ props.quantity }} x {{ depositPerItem }} {{ properties.symbol }}
+        {{ props.quantity }} x {{ formattedDepositPerItem }} {{ properties.symbol }}
       </p>
       <p class="text-sm text-text-primary">{{ $t("create.dialog.fees") }}</p>
       <p class="text-right text-sm text-text-primary/70">0.02 {{ properties.symbol }}</p>
@@ -81,12 +81,12 @@ const props = defineProps<{
   secret: string;
   description?: string;
   chain: Prefix;
-  symbolValue: number;
-  dollarValue: number | null;
   priceLoading: boolean;
   priceError: string | null;
-  depositPerItem: number;
-  depositForCollection: number;
+  totalDeposit: bigint;
+  totalDepositUsd: number | null;
+  depositPerItem: bigint;
+  depositForCollection: bigint;
 }>();
 
 const showBreakdown = ref(false);
@@ -98,6 +98,12 @@ const chainName = getChainName(props.chain);
 
 // Image
 const imagePreview = ref("");
+
+const formattedTotalDeposit = computed(() => formatAmount(props.totalDeposit, props.chain, { withSymbol: false }));
+const formattedDepositPerItem = computed(() => formatAmount(props.depositPerItem, props.chain, { withSymbol: false }));
+const formattedDepositForCollection = computed(() =>
+  formatAmount(props.depositForCollection, props.chain, { withSymbol: false }),
+);
 
 onMounted(() => {
   const reader = new FileReader();

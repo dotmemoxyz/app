@@ -9,7 +9,7 @@ const logger = createLogger("useMemoSign");
 export const useMemoSign = (
   chainRef: Ref<Prefix>,
   apiInstance: Ref<Promise<ChainClient>>,
-  totalPayableDeposit: Ref<bigint>,
+  totalAmount: Ref<bigint>,
   accountId: Ref<string | undefined>,
   onError?: (err: SignError) => void,
 ) => {
@@ -112,8 +112,8 @@ export const useMemoSign = (
       client.tx.nfts.create(...createArgs).call,
       client.tx.nfts.setCollectionMetadata(nextId, toMint.value!).call,
       client.tx.nfts.setTeam(nextId, MEMO_BOT, MEMO_BOT, accountId.value).call,
-      // DEV: this does not cover tx fee, we will sponsor it for a whilegs
-      client.tx.balances.transferKeepAlive(MEMO_BOT, totalPayableDeposit.value).call,
+      // DEV: this does not cover tx fee, we will sponsor it for a while
+      client.tx.balances.transferKeepAlive(MEMO_BOT, totalAmount.value).call,
       // DEV: this is for tracking purposes
       client.tx.system.remarkWithEvent("dotmemo.xyz").call,
     ];

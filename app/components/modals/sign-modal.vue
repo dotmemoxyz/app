@@ -63,8 +63,8 @@
         :secret="props.secret"
         :description="props.description"
         :chain="props.chain"
-        :symbol-value="symbolValue"
-        :dollar-value="dollarValue"
+        :total-deposit="totalDeposit"
+        :total-deposit-usd="dollarValue"
         :price-loading="priceLoading || loadingApi"
         :price-error="priceError"
         :deposit-per-item="depositPerItem"
@@ -149,9 +149,8 @@ const codeWroteDown = ref(false);
 // Chain properties
 const chainRef = computed(() => props.chain);
 const properties = computed(() => chainAssetOf(props.chain));
-const depositPerItem = ref(0);
-const depositForCollection = ref(0);
-const totalPayableDeposit = ref(BigInt(0));
+const depositPerItem = ref(0n);
+const depositForCollection = ref(0n);
 const loadingApi = ref(true);
 
 const { apiInstance } = useApi(chainRef);
@@ -162,12 +161,13 @@ watchEffect(async () => {
   const collectionFee = collectionDeposit(client);
   const itemFee = itemDeposit(client);
   const metadataFee = metadataDeposit(client);
-  const decimals = Number(`1e${properties.value.decimals}`);
-  depositForCollection.value = (collectionFee + metadataFee) / decimals;
-  depositPerItem.value = (itemFee + metadataFee) / decimals;
-  totalPayableDeposit.value = BigInt(itemFee + metadataFee) * BigInt(props.quantity);
+
+  depositForCollection.value = collectionFee + metadataFee;
+  depositPerItem.value = itemFee + metadataFee;
   loadingApi.value = false;
 });
+
+const totalDeposit = computed(() => depositPerItem.value * BigInt(props.quantity) + depositForCollection.value);
 
 // Transaction composables
 const { accountId, isLogIn } = useAuth();
@@ -183,7 +183,7 @@ const {
   toMint,
   imageCid,
   txHash,
-} = useMemoSign(chainRef, apiInstance, totalPayableDeposit, accountId, (err) => emit("error", err));
+} = useMemoSign(chainRef, apiInstance, totalDeposit, accountId, (err) => emit("error", err));
 
 // Handle transaction status
 watch(status, async (status) => {
@@ -223,8 +223,7 @@ watch(status, async (status) => {
 });
 
 // Price
-const totalDeposit = computed(() => depositPerItem.value * props.quantity + depositForCollection.value);
-const { dollarValue, priceError, symbolValue, priceLoading } = usePriceApi(totalDeposit, properties);
+const { dollarValue, priceError, priceLoading } = usePriceApi(totalDeposit, properties);
 
 const canSign = computed(() => isLogIn.value && !priceError.value && !isSigning.value && codeWroteDown.value);
 </script>

@@ -7,7 +7,7 @@ type PriceDTO = {
 
 const logger = createLogger("usePriceAPI");
 
-export const usePriceApi = (totalDeposit: Ref<number>, properties: Ref<AssetItem>) => {
+export const usePriceApi = (totalDeposit: Ref<bigint>, properties: Ref<AssetItem>) => {
   const RUNTIME_CONFIG = useRuntimeConfig();
   const kodapriceApi = $fetch.create({
     baseURL: RUNTIME_CONFIG.public.api.kodaprice,
@@ -56,7 +56,13 @@ export const usePriceApi = (totalDeposit: Ref<number>, properties: Ref<AssetItem
     }
     return emptyPrice;
   };
-  const symbolValue = computed(() => Math.round(totalDeposit.value * 10000) / 10000);
+
+  const symbolValue = computed(() => {
+    const base = 10 ** properties.value.decimals;
+    const amount = Number(totalDeposit.value) / base;
+    return Math.round(amount * 10000) / 10000;
+  });
+
   const priceError = ref<string | null>(null);
   const priceLoading = ref(false);
   const dollarValue = asyncComputed(
