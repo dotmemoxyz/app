@@ -13,7 +13,7 @@ export const toDefaultAddress = (address: string) => {
 export const formatAddress = (address: string, ss58Format: number) => encodeAddress(address, ss58Format);
 
 export const formatAddressByPrefix = (address: string, prefix: Prefix) =>
-  encodeAddress(decodeAddress(address), prefix === "ahp" ? 0 : 2);
+  encodeAddress(decodeAddress(address), ss58Of(prefix));
 
 const accountToAddress = (account: KeyringAccount | string) =>
   typeof account === "string" ? account : account.address;
