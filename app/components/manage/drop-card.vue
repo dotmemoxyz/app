@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-w-[320px] flex-col items-center gap-[32px] rounded-[36px] bg-surface-card p-[24px]">
     <!-- Heading -->
-    <div class="flex w-full flex-col justify-between gap-[16px]">
+    <div v-if="!hideHeading" class="flex w-full flex-col justify-between gap-[16px]">
       <div class="flex w-full items-center justify-between">
         <div class="flex items-center gap-[6px]">
           <template v-if="startsIn">
@@ -21,6 +21,7 @@
       </div>
       <span class="w-full border-b border-border-default" />
     </div>
+
     <!-- Image -->
     <div class="flex flex-col items-center gap-[32px]">
       <div
@@ -32,8 +33,18 @@
       <!-- Title -->
       <b class="text-center text-[24px] leading-[30px]">{{ props.drop.name }}</b>
     </div>
+
     <!-- Info -->
-    <div v-if="ownership === 'created'" class="flex w-full flex-col gap-[24px]">
+    <div v-if="props.actionLabel" class="flex w-full flex-col gap-[24px]">
+      <button
+        class="flex max-h-[45px] w-full cursor-pointer items-center justify-between rounded-xl border border-border-default bg-surface-white px-[14px] py-[16px] hover:opacity-70"
+        @click="$emit('action')"
+      >
+        <p class="text-[14px] font-normal leading-[18px]">{{ props.actionLabel }}</p>
+        <Icon name="mdi:arrow-top-right" class="size-[20px] text-text-primary" />
+      </button>
+    </div>
+    <div v-else-if="ownership === 'created'" class="flex w-full flex-col gap-[24px]">
       <div class="flex flex-col gap-[16px]">
         <div class="flex w-full items-center justify-between">
           <p class="text-[14px] leading-[18px] !text-text-secondary">{{ $t("manage.drop.progress") }}</p>
@@ -81,10 +92,18 @@ import type { Prefix } from "@kodadot1/static";
 import { DateTime, Duration } from "luxon";
 import type { Memo, Ownership } from "~/types/memo";
 import { getFreeMints } from "~/utils/sdk/query";
+
+defineEmits<{
+  action: [];
+}>();
+
 const props = defineProps<{
   drop: Memo;
   ownership: Ownership;
+  actionLabel?: string;
+  hideHeading?: boolean;
 }>();
+
 const { locale } = useI18n();
 
 // Starts in
