@@ -31,9 +31,6 @@ export default defineEventHandler(async (event) => {
 
   if (err) {
     if (err instanceof FetchError) {
-      if (err.statusCode === 404) {
-        return [];
-      }
       if (err.statusCode === 400) {
         throw createError({
           statusCode: 400,
@@ -41,11 +38,7 @@ export default defineEventHandler(async (event) => {
         });
       }
     }
-    console.error("[API::USER_MEMOS]", err);
-    throw createError({
-      statusCode: 500,
-      message: `[API::USER_MEMOS] Failed to fetch user memos: ${err.message || "Unknown error"}`,
-    });
+    console.error(`[API::USER_MEMOS] Failed to fetch user memos via api: ${err.message || "Unknown error"}`, err);
   }
 
   const res: Memo[] = [];
