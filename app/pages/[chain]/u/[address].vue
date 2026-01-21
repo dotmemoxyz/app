@@ -271,11 +271,16 @@ const groupedMemos = computed(() => {
         } else {
           const startStr = gapEnd.toFormat("MMM").toUpperCase();
           const endStr = gapStart.toFormat("MMM").toUpperCase();
-          const yearStr = gapStart.toFormat("yyyy");
+          const startYear = gapEnd.toFormat("yyyy");
+          const endYear = gapStart.toFormat("yyyy");
+          const yearStr = endYear;
 
           groups.push({
             type: "empty",
-            label: `${startStr} - ${endStr} ${yearStr}`,
+            label:
+              startYear !== endYear
+                ? `${startStr} ${startYear} - ${endStr} ${endYear}`
+                : `${startStr} - ${endStr} ${yearStr}`,
             count: gapCount,
             date: gapStart,
           });
