@@ -35,8 +35,10 @@
             >
               <img :src="profile.image" :alt="profile.name || 'Profile'" class="h-full w-full object-cover" />
             </div>
-            <!-- @vue-ignore -->
-            <Identicon v-else :value="address" theme="polkadot" class="rounded-full border border-black" :size="120" />
+            <template v-else>
+              <!-- @vue-ignore -->
+              <Identicon :value="address" theme="polkadot" class="rounded-full border border-black" :size="120" />
+            </template>
 
             <div class="flex flex-col items-center">
               <h1 class="text-[40px] font-bold leading-[48px] text-text-primary">{{ profile?.name || displayName }}</h1>
