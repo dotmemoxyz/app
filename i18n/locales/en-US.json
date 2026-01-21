@@ -348,6 +348,7 @@
       "claimed": "{part}/{total} claimed",
       "manageDrop": "Manage Drop",
       "viewDrop": "View Drop",
+      "viewOnChaotic": "View Memo",
       "expired": "Expired",
       "backToDrops": "Back to Drops",
       "viewClaimPage": "View Claim Page",

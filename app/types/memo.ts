@@ -72,6 +72,14 @@ export type UniqCollection = {
   metadata: string;
   currentOwner: string;
   createdAt: string;
+  meta?: {
+    id: string;
+    name: string;
+    description: string;
+    image: string;
+    animationUrl: string;
+    type: string;
+  };
 };
 
 export type UniqItem = {
