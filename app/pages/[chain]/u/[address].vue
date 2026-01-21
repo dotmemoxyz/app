@@ -203,7 +203,7 @@ async function shareProfile() {
 }
 
 function handleMemoAction(memo: Memo) {
-  window.open(`https://chaotic.art/${memo.chain}/collection/${memo.id}`, "_blank");
+  window.open(`https://chaotic.art/${memo.chain}/collection/${memo.id}`, "_blank", "noopener,noreferrer");
 }
 
 function getSocialIcon(platform: Socials | string): string {
