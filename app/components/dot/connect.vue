@@ -9,10 +9,9 @@
     @click="open"
   >
     <div v-if="accountStore.hasSelectedAccount" class="flex items-center gap-[12px]">
-      <!-- @vue-ignore -->
-      <Identicon
-        :value="accountStore.selected!.address"
-        :theme="'polkadot'"
+      <DotPolkadotIdenticon
+        :address="accountStore.selected!.address"
+        theme="polkadot"
         class="rounded-full border border-black"
         :size="28"
       />
@@ -33,7 +32,6 @@
 import { useModal } from "vue-final-modal";
 import ConnectModal from "~/components/modals/connect-modal.vue";
 import { getSupportedWallets } from "~/utils/wallet";
-import Identicon from "@polkadot/vue-identicon";
 
 const accountStore = useAccountStore();
 

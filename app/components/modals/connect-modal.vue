@@ -75,7 +75,7 @@
             <div class="flex w-full items-center">
               <div class="rounded-full border-2 border-white">
                 <!-- @vue-ignore -->
-                <Identicon :size="52" theme="polkadot" :value="account.address" />
+                <DotPolkadotIdenticon :size="52" theme="polkadot" :address="account.address" />
               </div>
 
               <div class="flex flex-1 flex-col items-start gap-1 px-4 py-3">
@@ -101,7 +101,6 @@
 <script lang="ts" setup>
 import { VueFinalModal } from "vue-final-modal";
 import { useAccountStore } from "~/stores/account";
-import Identicon from "@polkadot/vue-identicon";
 import { getSupportedWallets } from "~/utils/wallet";
 import type { BaseDotsamaWallet, ExtendedDotsamaAccount } from "~/utils/wallet/base_dotsama_wallet";
 

@@ -37,7 +37,12 @@
             </div>
             <template v-else>
               <!-- @vue-ignore -->
-              <Identicon :value="address" theme="polkadot" class="rounded-full border border-black" :size="120" />
+              <DotPolkadotIdenticon
+                :address="address"
+                theme="polkadot"
+                class="rounded-full border border-black"
+                :size="120"
+              />
             </template>
 
             <div class="flex flex-col items-center">
@@ -155,7 +160,6 @@ import type { Memo } from "~/types/memo";
 import { fetchProfileByAddress, Socials, type Profile as _Profile } from "~/services/profile";
 import { addressShortener } from "~/utils/account";
 import type { Prefix } from "@kodadot1/static";
-import Identicon from "@polkadot/vue-identicon";
 
 const route = useRoute();
 const chain = computed(() => route.params.chain as Prefix);
