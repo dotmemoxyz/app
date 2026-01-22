@@ -35,8 +35,15 @@
             >
               <img :src="profile.image" :alt="profile.name || 'Profile'" class="h-full w-full object-cover" />
             </div>
-            <!-- @vue-ignore -->
-            <Identicon v-else :value="address" theme="polkadot" class="rounded-full border border-black" :size="120" />
+            <template v-else>
+              <!-- @vue-ignore -->
+              <DotPolkadotIdenticon
+                :address="address"
+                theme="polkadot"
+                class="rounded-full border border-black"
+                :size="120"
+              />
+            </template>
 
             <div class="flex flex-col items-center">
               <h1 class="text-[40px] font-bold leading-[48px] text-text-primary">{{ profile?.name || displayName }}</h1>
@@ -153,7 +160,6 @@ import type { Memo } from "~/types/memo";
 import { fetchProfileByAddress, Socials, type Profile as _Profile } from "~/services/profile";
 import { addressShortener } from "~/utils/account";
 import type { Prefix } from "@kodadot1/static";
-import Identicon from "@polkadot/vue-identicon";
 
 const route = useRoute();
 const chain = computed(() => route.params.chain as Prefix);

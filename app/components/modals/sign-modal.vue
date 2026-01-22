@@ -21,7 +21,7 @@
 
       <div class="flex items-center gap-3">
         <!-- @vue-ignore -->
-        <Identicon :size="28" theme="polkadot" :value="currentAccount?.address" />
+        <DotPolkadotIdenticon :size="28" theme="polkadot" :address="currentAccount?.address" />
         <p class="text-text-primary">{{ currentAccount?.name }}</p>
       </div>
     </template>
@@ -110,7 +110,6 @@ import { VueFinalModal, useVfm } from "vue-final-modal";
 import { useAccountStore } from "@/stores/account";
 import useAuth from "~/composables/useAuth";
 import { collectionDeposit, itemDeposit, metadataDeposit } from "~/utils/sdk/constants";
-import Identicon from "@polkadot/vue-identicon";
 import type { Prefix } from "@kodadot1/static";
 import { useMemoSign } from "~/composables/useMemoSign";
 import type { CreateMemoDTO } from "~/types/memo";

@@ -1,4 +1,5 @@
-import { $purify as purify, $obtain as obtain } from "@kodadot1/minipfs";
+import { $obtain as obtain } from "@kodadot1/minipfs";
+import { sanitizeIpfsUrl } from "~/utils/ipfs";
 import type { Memo } from "~/types/memo";
 import { FetchError } from "ofetch";
 
@@ -34,12 +35,12 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const image = purify(rawData?.image).at(0);
+  const image = sanitizeIpfsUrl(rawData?.image);
   if (!image) {
     throw new Error("Image not found");
   }
 
-  const meta = await obtain<Metadata>(rawData.mint);
+  const meta = await obtain<Metadata>(sanitizeIpfsUrl(rawData.mint));
   if (!meta) {
     throw new Error("Metadata not found");
   }

@@ -119,7 +119,7 @@
           target="_blank"
         >
           <img
-            :src="$purifyOne(collection.image, 'kodadot')"
+            :src="sanitizeIpfsUrl(collection.image)"
             alt="collection image"
             class="h-full w-full rounded-xl object-cover"
           />
@@ -163,7 +163,7 @@ import createNewIcon from "@/assets/icons/create-new-from-source.svg";
 import communityIcon from "@/assets/icons/community.svg";
 import landingBackground from "@/assets/images/landing-background-2.webp";
 import { getClient } from "@kodadot1/uniquery";
-import { $purifyOne } from "@kodadot1/minipfs";
+
 definePageMeta({
   layout: "landing",
   colorMode: "dark",
