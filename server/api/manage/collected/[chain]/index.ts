@@ -1,4 +1,5 @@
-import { $obtain as obtain, $purify as purify } from "@kodadot1/minipfs";
+import { $obtain as obtain } from "@kodadot1/minipfs";
+import { sanitizeIpfsUrl } from "~/utils/ipfs";
 import type { Memo } from "~/types/memo";
 import { FetchError } from "ofetch";
 import type { Metadata } from "~/services/nftStorage";
@@ -62,7 +63,7 @@ export default defineEventHandler(async (event) => {
 
   const res: Memo[] = [];
   for (const memo of rawData) {
-    const image = purify(memo.image).at(0);
+    const image = sanitizeIpfsUrl(memo.image);
     if (!image) {
       throw createError({
         statusCode: 404,
@@ -70,7 +71,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const meta = await obtain<Metadata>(memo.mint);
+    const meta = await obtain<Metadata>(sanitizeIpfsUrl(memo.mint));
     if (!meta) {
       throw createError({
         statusCode: 404,
