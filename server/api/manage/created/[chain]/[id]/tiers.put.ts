@@ -1,7 +1,11 @@
 import type { TiersData } from "~/types/memo";
 
 type UpdateTiersBody =
-  | { enabled: true; distributionMode: string; tiers: Array<{ name: string; weight: number }> }
+  | {
+      enabled: true;
+      distributionMode: string;
+      tiers: Array<{ name: string; weight: number; image?: string | null }>;
+    }
   | { enabled: false };
 
 export default defineEventHandler(async (event) => {
