@@ -422,9 +422,9 @@ function removeTier(index: number) {
   fileInputs.value.splice(index, 1);
 }
 
-function setFileInputRef(el: Element | null, index: number) {
-  if (el) {
-    fileInputs.value[index] = el as HTMLInputElement;
+function setFileInputRef(el: Element | ComponentPublicInstance | null, index: number) {
+  if (el instanceof HTMLInputElement) {
+    fileInputs.value[index] = el;
   }
 }
 
