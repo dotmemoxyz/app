@@ -461,6 +461,7 @@ function onTierImageChange(event: Event, index: number) {
   if (!file) return;
 
   updateTierImage(index, file);
+  input.value = "";
 }
 
 function onTierDrop(event: DragEvent, index: number) {
