@@ -62,6 +62,7 @@
                   :tabindex="isLocked ? -1 : 0"
                   @click="openFileDialog(index)"
                   @keydown.enter.prevent="openFileDialog(index)"
+                  @keydown.space.prevent="openFileDialog(index)"
                   @dragover.prevent
                   @drop.prevent="onTierDrop($event, index)"
                 >
