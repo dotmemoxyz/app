@@ -534,7 +534,7 @@ async function uploadTierImages() {
     filesToUpload.forEach(({ tier, index }) => {
       const file = tier.imageFile!;
       const imageUrl = `ipfs://${cid}/${encodeURIComponent(file.name)}`;
-      updateTier(index, { image: imageUrl });
+      updateTier(index, { image: imageUrl, imageName: null, imageFile: null });
     });
   } catch (error) {
     console.error("Failed to upload tier images:", error);
