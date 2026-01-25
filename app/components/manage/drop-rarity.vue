@@ -485,14 +485,25 @@ function getTierImageName(tier: LocalRarityTier): string {
   if (tier.imageName) return truncateFilename(tier.imageName);
   if (tier.image?.startsWith("data:")) return t("manage.rarity.uploadImage");
 
+  const getDisplayName = (filename: string): string => {
+    const underscoreIndex = filename.indexOf("_");
+    return underscoreIndex > -1 ? filename.slice(underscoreIndex + 1) : filename;
+  };
+
   if (tier.image) {
     try {
       const url = new URL(tier.image);
       const last = url.pathname.split("/").filter(Boolean).pop();
-      if (last) return truncateFilename(decodeURIComponent(last));
+      if (last) {
+        const decoded = decodeURIComponent(last);
+        return truncateFilename(getDisplayName(decoded));
+      }
     } catch {
       const last = tier.image.split("/").pop();
-      if (last && !last.startsWith("data")) return truncateFilename(last.split("?")[0] as string);
+      if (last && !last.startsWith("data")) {
+        const decoded = decodeURIComponent(last.split("?")[0] as string);
+        return truncateFilename(getDisplayName(decoded));
+      }
     }
   }
 
@@ -524,15 +535,25 @@ async function uploadTierImages() {
   if (filesToUpload.length === 0) return;
 
   try {
-    const files = filesToUpload.map(({ tier }) => tier.imageFile!) as File[];
+    const files = filesToUpload.map(({ tier }) => {
+      const file = tier.imageFile!;
+      const prefix = crypto.randomUUID().split("-")[0] ?? crypto.randomUUID();
+      const renamedFile = new File([file], `${prefix}_${file.name}`, { type: file.type });
+      return { renamed: renamedFile };
+    });
+
+    const firstFile = files[0];
+    if (!firstFile) return;
+
     const cid = await pinDirectory(
       files.length === 1
-        ? [...files, ...files] // hack to force path on cid and be able to display the image name
-        : files,
+        ? [firstFile.renamed, firstFile.renamed] // hack to force path on cid and be able to display the image name
+        : files.map((file) => file.renamed),
     );
 
-    filesToUpload.forEach(({ tier, index }) => {
-      const file = tier.imageFile!;
+    filesToUpload.forEach(({ index }, uploadIndex) => {
+      const file = files[uploadIndex]?.renamed;
+      if (!file) return;
       const imageUrl = `ipfs://${cid}/${encodeURIComponent(file.name)}`;
       updateTier(index, { image: imageUrl, imageName: null, imageFile: null });
     });
