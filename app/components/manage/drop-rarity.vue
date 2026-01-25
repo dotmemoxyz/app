@@ -56,8 +56,12 @@
                 />
 
                 <div
-                  class="bg-surface-default group relative flex w-full items-center gap-3 rounded-xl border border-dashed border-border-default px-3 py-2 transition-colors hover:border-accent-primary hover:bg-accent-primary/5 dark:hover:bg-accent-primary/10"
-                  :class="{ 'cursor-not-allowed opacity-50': isLocked }"
+                  class="group relative flex w-full items-center gap-3 rounded-xl px-3 py-2 transition-colors"
+                  :class="[
+                    isLocked
+                      ? 'cursor-default'
+                      : 'bg-surface-default border border-dashed border-border-default hover:border-accent-primary hover:bg-accent-primary/5 dark:hover:bg-accent-primary/10',
+                  ]"
                   role="button"
                   :tabindex="isLocked ? -1 : 0"
                   @click="openFileDialog(index)"
@@ -95,11 +99,13 @@
                     </div>
                     <div class="flex min-w-0 flex-col">
                       <span class="truncate text-sm font-medium text-text-primary">{{ getTierImageName(tier) }}</span>
-                      <span class="text-xs text-text-secondary">{{ t("manage.rarity.replaceImage") }}</span>
+                      <span v-if="!isLocked" class="text-xs text-text-secondary">{{
+                        t("manage.rarity.replaceImage")
+                      }}</span>
                     </div>
                   </template>
 
-                  <template v-else>
+                  <template v-else-if="!isLocked">
                     <div class="flex flex-1 items-center gap-3">
                       <div
                         class="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-border-default bg-surface-card text-text-secondary"
@@ -110,6 +116,11 @@
                         <span class="text-sm font-medium text-text-primary">{{ t("manage.rarity.uploadImage") }}</span>
                         <span class="text-xs text-text-secondary">{{ t("manage.rarity.dragAndDrop") }}</span>
                       </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="flex flex-1 items-center">
+                      <span class="text-sm text-text-secondary">{{ t("manage.rarity.noImage") }}</span>
                     </div>
                   </template>
                 </div>
