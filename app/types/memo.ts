@@ -110,6 +110,12 @@ export interface MemoDetail extends Memo {
 export interface RarityTier {
   name: string;
   weight: number;
+  image?: string;
+}
+
+export interface LocalRarityTier extends RarityTier {
+  imageName?: string | null;
+  imageFile?: File | null;
 }
 
 /**

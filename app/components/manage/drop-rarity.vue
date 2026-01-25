@@ -47,15 +47,74 @@
               :key="index"
               class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center"
             >
-              <div class="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+              <div class="flex flex-1 flex-col gap-3 sm:grid sm:grid-cols-[1.05fr_1.6fr_auto] sm:items-center sm:gap-3">
                 <dot-text-input
                   v-model="tier.name"
                   :placeholder="t('manage.rarity.tierName')"
                   :disabled="isLocked"
-                  class="flex-1"
+                  class="w-full"
                 />
 
-                <div class="flex items-center gap-2">
+                <div
+                  class="bg-surface-default group relative flex w-full items-center gap-3 rounded-xl border border-dashed border-border-default px-3 py-2 transition-colors hover:border-accent-primary hover:bg-accent-primary/5 dark:hover:bg-accent-primary/10"
+                  :class="{ 'cursor-not-allowed opacity-50': isLocked }"
+                  role="button"
+                  :tabindex="isLocked ? -1 : 0"
+                  @click="openFileDialog(index)"
+                  @keydown.enter.prevent="openFileDialog(index)"
+                  @keydown.space.prevent="openFileDialog(index)"
+                  @dragover.prevent
+                  @drop.prevent="onTierDrop($event, index)"
+                >
+                  <input
+                    :ref="(el) => setFileInputRef(el, index)"
+                    type="file"
+                    accept="image/jpeg, image/png, image/gif, image/tiff, image/webp"
+                    class="sr-only"
+                    :disabled="isLocked"
+                    @change="onTierImageChange($event, index)"
+                  />
+
+                  <template v-if="tier.image">
+                    <div
+                      class="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border border-border-default bg-surface-card"
+                    >
+                      <img
+                        :src="getTierImageUrl(tier)"
+                        :alt="tier.name || 'Tier image'"
+                        class="h-full w-full object-cover"
+                      />
+                      <button
+                        v-if="!isLocked"
+                        type="button"
+                        class="absolute right-1 top-1 flex rounded-full bg-black/60 p-1 text-white transition hover:bg-black"
+                        @click.stop="clearTierImage(index)"
+                      >
+                        <Icon name="mdi:close" class="size-3" />
+                      </button>
+                    </div>
+                    <div class="flex min-w-0 flex-col">
+                      <span class="truncate text-sm font-medium text-text-primary">{{ getTierImageName(tier) }}</span>
+                      <span class="text-xs text-text-secondary">{{ t("manage.rarity.replaceImage") }}</span>
+                    </div>
+                  </template>
+
+                  <template v-else>
+                    <div class="flex flex-1 items-center gap-3">
+                      <div
+                        class="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-border-default bg-surface-card text-text-secondary"
+                      >
+                        <Icon name="mdi:tray-arrow-up" class="size-5" />
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-text-primary">{{ t("manage.rarity.uploadImage") }}</span>
+                        <span class="text-xs text-text-secondary">{{ t("manage.rarity.dragAndDrop") }}</span>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+
+                <div class="flex items-center gap-2 sm:justify-end">
                   <dot-text-input
                     v-model.number="tier.weight"
                     type="number"
@@ -166,7 +225,7 @@
     </div>
 
     <div v-if="!isLocked" class="flex max-w-2xl flex-col gap-2">
-      <div v-if="canSave && tiersEnabled" class="flex items-center justify-between text-sm">
+      <div v-if="canSave && !drop.tiers && tiersEnabled" class="flex items-center justify-between text-sm">
         <div class="flex items-center gap-1.5 text-text-secondary">
           <span>{{ t("manage.rarity.cost") }}</span>
           <dot-tooltip :text="t('manage.rarity.costHint')" position="top" width="w-56">
@@ -201,7 +260,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { DistributionMode, MemoDetail, RarityTier, TiersData } from "~/types/memo";
+import type { DistributionMode, LocalRarityTier, MemoDetail, RarityTier, TiersData } from "~/types/memo";
+import { pinDirectory } from "~/services/nftStorage";
 import { MEMO_BOT } from "~/utils/sdk/constants";
 import { getFreeMints } from "~/utils/sdk/query";
 
@@ -250,7 +310,8 @@ const totalSupply = ref<number | null>(null);
 const attributeDeposit = ref<bigint | null>(null);
 const supplyLoading = ref(true);
 
-const tiers = ref<RarityTier[]>(structuredClone(props.drop.tiers?.tiers ?? DEFAULT_TIERS));
+const tiers = ref<LocalRarityTier[]>(normalizeTiersData(structuredClone(props.drop.tiers?.tiers ?? DEFAULT_TIERS)));
+const fileInputs = ref<HTMLInputElement[]>([]);
 const isLocked = computed(() => props.drop.tiersLocked ?? false);
 const loading = ref(false);
 const saveError = ref<string | null>(null);
@@ -258,7 +319,7 @@ const saveSuccess = ref(false);
 
 const initialEnabled = ref(!!props.drop.tiers);
 const initialDistributionMode = ref(props.drop.tiers?.distributionMode ?? DEFAULT_DISTRIBUTION_MODE);
-const initialTiers = ref(JSON.stringify(props.drop.tiers?.tiers ?? DEFAULT_TIERS));
+const initialTiers = ref(serializeTiers(normalizeTiersData(props.drop.tiers?.tiers ?? DEFAULT_TIERS)));
 
 const totalWeight = computed(() => {
   return tiers.value.reduce((sum, tier) => sum + (tier.weight || 0), 0);
@@ -276,7 +337,7 @@ const totalWeightClass = computed(() => {
 const isDirty = computed(() => {
   if (tiersEnabled.value !== initialEnabled.value) return true;
   if (distributionMode.value !== initialDistributionMode.value) return true;
-  if (JSON.stringify(tiers.value) !== initialTiers.value) return true;
+  if (serializeTiers(tiers.value) !== initialTiers.value) return true;
   return false;
 });
 
@@ -291,6 +352,13 @@ const validationError = computed(() => {
 
   if (tiers.value.some((t) => !t.name.trim())) {
     return t("manage.rarity.errorEmptyName");
+  }
+
+  const hasAnyImage = tiers.value.some((t) => t.image || t.imageFile);
+  const hasMissingImage = tiers.value.some((t) => !(t.image || t.imageFile));
+
+  if (hasAnyImage && hasMissingImage) {
+    return t("manage.rarity.errorMixedImages");
   }
 
   if (distributionMode.value === "percentage") {
@@ -329,12 +397,171 @@ const formattedCost = computed(() => {
   return formatAmount(totalCost.value, props.drop.chain);
 });
 
+function normalizeTiersData(data: RarityTier[]): RarityTier[] {
+  return data.map((tier) => ({
+    ...tier,
+    image: tier.image ?? undefined,
+  }));
+}
+
+function serializeTiers(data: RarityTier[]): string {
+  return JSON.stringify(
+    data.map(({ name, weight, image }) => ({
+      name,
+      weight,
+      image: image ?? undefined,
+    })),
+  );
+}
+
 function addTier() {
-  tiers.value.push({ name: "", weight: 0 });
+  tiers.value.push({ name: "", weight: 0, image: undefined, imageName: null, imageFile: null });
 }
 
 function removeTier(index: number) {
   tiers.value.splice(index, 1);
+  fileInputs.value.splice(index, 1);
+}
+
+function setFileInputRef(el: Element | ComponentPublicInstance | null, index: number) {
+  if (el instanceof HTMLInputElement) {
+    fileInputs.value[index] = el;
+  }
+}
+
+function openFileDialog(index: number) {
+  if (isLocked.value) return;
+  fileInputs.value[index]?.click();
+}
+
+function updateTier(index: number, payload: Partial<LocalRarityTier>) {
+  const existing = tiers.value[index];
+  if (!existing) return;
+
+  tiers.value.splice(index, 1, { ...existing, ...payload });
+}
+
+function updateTierImage(index: number, file: File) {
+  if (isLocked.value || !file.type.startsWith("image/")) return;
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    updateTier(index, {
+      image: String(event.target?.result ?? ""),
+      imageName: file.name,
+      imageFile: file,
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function onTierImageChange(event: Event, index: number) {
+  const input = event.target as HTMLInputElement;
+  const file = input?.files?.[0];
+  if (!file) return;
+
+  updateTierImage(index, file);
+  input.value = "";
+}
+
+function onTierDrop(event: DragEvent, index: number) {
+  if (isLocked.value) return;
+
+  const file = event.dataTransfer?.files?.[0];
+  if (!file) return;
+
+  updateTierImage(index, file);
+}
+
+function clearTierImage(index: number) {
+  updateTier(index, { image: undefined, imageName: null, imageFile: null });
+
+  const input = fileInputs.value[index];
+  if (input) {
+    input.value = "";
+  }
+}
+
+function getTierImageName(tier: LocalRarityTier): string {
+  if (tier.imageName) return truncateFilename(tier.imageName);
+  if (tier.image?.startsWith("data:")) return t("manage.rarity.uploadImage");
+
+  const getDisplayName = (filename: string): string => {
+    const underscoreIndex = filename.indexOf("_");
+    return underscoreIndex > -1 ? filename.slice(underscoreIndex + 1) : filename;
+  };
+
+  if (tier.image) {
+    try {
+      const url = new URL(tier.image);
+      const last = url.pathname.split("/").filter(Boolean).pop();
+      if (last) {
+        const decoded = decodeURIComponent(last);
+        return truncateFilename(getDisplayName(decoded));
+      }
+    } catch {
+      const last = tier.image.split("/").pop();
+      if (last && !last.startsWith("data")) {
+        const decoded = decodeURIComponent(last.split("?")[0] as string);
+        return truncateFilename(getDisplayName(decoded));
+      }
+    }
+  }
+
+  return tier.image ? "" : t("manage.rarity.noImage");
+}
+
+function truncateFilename(name: string, maxLength = 16): string {
+  if (name.length <= maxLength) return name;
+  const extIndex = name.lastIndexOf(".");
+  const ext = extIndex > -1 ? name.slice(extIndex) : "";
+  const base = ext ? name.slice(0, extIndex) : name;
+  const keep = Math.max(6, maxLength - ext.length - 3);
+  return `${base.slice(0, keep)}...${ext}`;
+}
+
+function getTierImageUrl(tier: LocalRarityTier): string {
+  if (tier.image?.startsWith("ipfs:")) {
+    return sanitizeIpfsUrl(tier.image);
+  }
+
+  return tier.image || "";
+}
+
+async function uploadTierImages() {
+  const filesToUpload = tiers.value
+    .map((tier, index) => ({ tier, index }))
+    .filter(({ tier }) => tier.imageFile instanceof File);
+
+  if (filesToUpload.length === 0) return;
+
+  try {
+    const files = filesToUpload.map(({ tier }) => {
+      const file = tier.imageFile!;
+      const prefix = Math.random().toString(16).slice(2, 10);
+      const renamedFile = new File([file], `${prefix}_${file.name}`, { type: file.type });
+      return { renamed: renamedFile };
+    });
+
+    const firstFile = files[0];
+    if (!firstFile) return;
+
+    const cid = await pinDirectory(
+      files.length === 1
+        ? [firstFile.renamed, firstFile.renamed] // hack to force path on cid and be able to display the image name
+        : files.map((file) => file.renamed),
+    );
+
+    filesToUpload.forEach(({ index }, uploadIndex) => {
+      const file = files[uploadIndex]?.renamed;
+      if (!file) return;
+      const imageUrl = `ipfs://${cid}/${encodeURIComponent(file.name)}`;
+      updateTier(index, { image: imageUrl, imageName: null, imageFile: null });
+    });
+  } catch (error) {
+    console.error("Failed to upload tier images:", error);
+    throw new Error(t("manage.rarity.errorUpload"));
+  }
 }
 
 function getBarColor(index: number): string {
@@ -363,6 +590,17 @@ async function signAndSaveTiers() {
   loading.value = true;
   saveError.value = null;
   saveSuccess.value = false;
+
+  if (tiersEnabled.value) {
+    try {
+      await uploadTierImages();
+    } catch (error) {
+      console.error("Failed to upload tier images. Reason: %s", (error as Error).message);
+      saveError.value = t("manage.rarity.errorUpload");
+      loading.value = false;
+      return;
+    }
+  }
 
   try {
     // TODO: add drop.tiers.paid
@@ -408,10 +646,10 @@ function resetDirty() {
 
   if (!tiersEnabled.value) {
     initialDistributionMode.value = DEFAULT_DISTRIBUTION_MODE;
-    initialTiers.value = JSON.stringify(DEFAULT_TIERS);
+    initialTiers.value = serializeTiers(normalizeTiersData(DEFAULT_TIERS));
   } else {
     initialDistributionMode.value = distributionMode.value;
-    initialTiers.value = JSON.stringify(tiers.value);
+    initialTiers.value = serializeTiers(tiers.value);
   }
 }
 
@@ -421,7 +659,11 @@ async function saveTiers() {
       ? {
           enabled: true,
           distributionMode: distributionMode.value,
-          tiers: tiers.value,
+          tiers: tiers.value.map(({ name, weight, image }) => ({
+            name,
+            weight,
+            image,
+          })),
         }
       : { enabled: false };
 
@@ -443,7 +685,8 @@ async function saveTiers() {
 watch(tiersEnabled, (enabled) => {
   if (enabled) {
     distributionMode.value = DEFAULT_DISTRIBUTION_MODE;
-    tiers.value = structuredClone(DEFAULT_TIERS);
+    tiers.value = normalizeTiersData(structuredClone(DEFAULT_TIERS));
+    fileInputs.value = [];
   }
 });
 

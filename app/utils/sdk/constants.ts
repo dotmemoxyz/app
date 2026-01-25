@@ -11,6 +11,6 @@ export const calculateFee = (amount: number, fee: Fee) => {
   return amount * fee;
 };
 
-export const collectionDeposit = (client: ChainClient) => BigInt(client.consts.nfts.collectionDeposit.toString());
-export const itemDeposit = (client: ChainClient) => BigInt(client.consts.nfts.itemDeposit.toString());
-export const metadataDeposit = (client: ChainClient) => BigInt(client.consts.nfts.metadataDepositBase.toString());
+export const collectionDeposit = (client: ChainClient) => client.consts.nfts.collectionDeposit;
+export const itemDeposit = (client: ChainClient) => client.consts.nfts.itemDeposit;
+export const metadataDeposit = (client: ChainClient) => client.consts.nfts.metadataDepositBase;
