@@ -399,7 +399,7 @@ const formattedCost = computed(() => {
 function normalizeTiersData(data: RarityTier[]): RarityTier[] {
   return data.map((tier) => ({
     ...tier,
-    image: tier.image ?? null,
+    image: tier.image ?? undefined,
   }));
 }
 
@@ -408,13 +408,13 @@ function serializeTiers(data: RarityTier[]): string {
     data.map(({ name, weight, image }) => ({
       name,
       weight,
-      image: image ?? null,
+      image: image ?? undefined,
     })),
   );
 }
 
 function addTier() {
-  tiers.value.push({ name: "", weight: 0, image: null, imageName: null, imageFile: null });
+  tiers.value.push({ name: "", weight: 0, image: undefined, imageName: null, imageFile: null });
 }
 
 function removeTier(index: number) {
@@ -472,7 +472,7 @@ function onTierDrop(event: DragEvent, index: number) {
 }
 
 function clearTierImage(index: number) {
-  updateTier(index, { image: null, imageName: null, imageFile: null });
+  updateTier(index, { image: undefined, imageName: null, imageFile: null });
 
   const input = fileInputs.value[index];
   if (input) {
