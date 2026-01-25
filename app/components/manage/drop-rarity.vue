@@ -537,7 +537,7 @@ async function uploadTierImages() {
   try {
     const files = filesToUpload.map(({ tier }) => {
       const file = tier.imageFile!;
-      const prefix = crypto.randomUUID().split("-")[0] ?? crypto.randomUUID();
+      const prefix = Math.random().toString(16).slice(2, 10);
       const renamedFile = new File([file], `${prefix}_${file.name}`, { type: file.type });
       return { renamed: renamedFile };
     });
