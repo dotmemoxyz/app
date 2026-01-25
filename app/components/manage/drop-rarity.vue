@@ -590,13 +590,15 @@ async function signAndSaveTiers() {
   saveError.value = null;
   saveSuccess.value = false;
 
-  try {
-    await uploadTierImages();
-  } catch (error) {
-    console.error("Failed to upload tier images. Reason: %s", (error as Error).message);
-    saveError.value = t("manage.rarity.errorUpload");
-    loading.value = false;
-    return;
+  if (tiersEnabled.value) {
+    try {
+      await uploadTierImages();
+    } catch (error) {
+      console.error("Failed to upload tier images. Reason: %s", (error as Error).message);
+      saveError.value = t("manage.rarity.errorUpload");
+      loading.value = false;
+      return;
+    }
   }
 
   try {
