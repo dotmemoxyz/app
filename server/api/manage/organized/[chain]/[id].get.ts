@@ -1,6 +1,6 @@
 import { $obtain as obtain } from "@kodadot1/minipfs";
 import { sanitizeIpfsUrl } from "~/utils/ipfs";
-import type { MemoDetail } from "~/types/memo";
+import type { MemoWithCode } from "~/types/memo";
 import { FetchError } from "ofetch";
 import type { Metadata } from "~/services/nftStorage";
 
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const [rawData, err] = await $fetch<MemoDetail>(`${RUNTIME_CONFIG.apiUrl}/manage/memos/${chain}/${id}`, {
+  const [rawData, err] = await $fetch<MemoWithCode>(`${RUNTIME_CONFIG.apiUrl}/manage/memos/${chain}/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -81,5 +81,5 @@ export default defineEventHandler(async (event) => {
     ...rawData,
     image,
     description: meta.description,
-  } satisfies MemoDetail;
+  } satisfies MemoWithCode;
 });
