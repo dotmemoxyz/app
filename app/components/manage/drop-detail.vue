@@ -19,7 +19,7 @@
         </div>
         <p class="text-[14px] !text-[#606060]">{{ remainingTime }}</p>
       </span>
-      <span v-if="ownership === 'created'" class="flex items-center gap-4">
+      <span v-if="ownership === 'created' || ownership === 'organized'" class="flex items-center gap-4">
         <a
           class="flex h-fit cursor-pointer select-none items-center gap-2 rounded-xl bg-white p-2 hover:opacity-70"
           :href="`/claim/${props.drop.code}`"
