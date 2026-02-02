@@ -199,14 +199,21 @@ watch(status, async (status) => {
   }
   // Save transaction data
   if (status === TransactionStatus.Finalized && !signError.value && !txError.value) {
+    if (!toMint.value || !imageCid.value) {
+      logger.error("Missing memo data for creation", { toMint: toMint.value, imageCid: imageCid.value });
+      signError.value = "Missing memo data. Please try again.";
+      isSigning.value = false;
+      return;
+    }
+
     let createdCodes: MemoCode[] = [];
     try {
       const payload: CreateMemoDTO = {
         chain: props.chain,
         collection: futureCollection.value,
-        mint: toMint.value!,
+        mint: toMint.value,
         name: props.name,
-        image: imageCid.value!,
+        image: imageCid.value,
         expiresAt: props.endDate.toISOString(),
         createdAt: props.startDate.toISOString(),
         creator: accountId.value!,

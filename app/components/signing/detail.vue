@@ -73,6 +73,7 @@
 
 <script lang="ts" setup>
 import type { Prefix } from "@kodadot1/static";
+import type { SecurityMode } from "~/types/memo";
 
 const props = defineProps<{
   name: string;
@@ -81,7 +82,7 @@ const props = defineProps<{
   endDate: Date;
   quantity: number;
   secret?: string;
-  securityMode?: SecurityMode;
+  securityMode: SecurityMode;
   description?: string;
   chain: Prefix;
   priceLoading: boolean;
