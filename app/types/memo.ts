@@ -2,6 +2,9 @@ import type { Prefix } from "@kodadot1/static";
 
 export type Ownership = "created" | "organized" | "collected";
 
+export const SECURITY_MODES = ["static", "dynamic"] as const;
+export type SecurityMode = (typeof SECURITY_MODES)[number];
+
 export type MemoCustomize = {
   image?: string;
   heading?: string;
@@ -143,7 +146,15 @@ export type CreateMemoDTO = {
   /**
    * Secret of the memo
    */
-  secret: string;
+  secret?: string;
+  /**
+   * Security mode of the memo
+   */
+  securityMode: SecurityMode;
+  /**
+   * Max supply for dynamic security mode
+   */
+  maxSupply: number;
   /**
    * Mint of the memo
    */
@@ -176,4 +187,16 @@ export type CreateMemoDTO = {
    * Creator of the memo
    */
   creator: string;
+};
+
+export type MemoCode = {
+  code: string;
+  role: "view" | "claim";
+};
+
+export type CreateMemoResponse = {
+  success: boolean;
+  message: string;
+  id: string;
+  codes?: MemoCode[];
 };

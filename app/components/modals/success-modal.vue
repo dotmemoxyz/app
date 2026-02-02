@@ -73,17 +73,93 @@
           />
         </svg>
       </a>
-      <button class="inline-flex items-center justify-center" @click="copyLink">
+      <button class="inline-flex items-center justify-center" @click="copyPrimaryCode">
         <icon name="mdi:content-copy" class="text-lg text-black md:text-2xl dark:text-white" />
       </button>
     </div>
 
+    <div v-if="isDynamic" class="flex flex-col gap-3">
+      <div v-if="primaryViewCode" class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-text-primary">{{ t("create.success.viewCode") }}</p>
+          <div class="flex items-center gap-2">
+            <button class="text-xs text-accent-primary hover:underline" @click="copyCode(primaryViewCode, $event)">
+              {{ t("create.success.copyLink") }}
+            </button>
+            <button
+              class="text-xs text-accent-primary hover:underline"
+              @click="generateQR(primaryViewCode, makeFileName('view'))"
+            >
+              {{ t("create.success.downloadShort") }}
+            </button>
+          </div>
+        </div>
+        <p class="text-[11px] text-text-secondary">{{ t("create.success.viewCodeHelper") }}</p>
+        <div class="rounded-lg border border-border-default">
+          <div class="px-3 py-2">
+            <code class="text-sm font-medium text-text-primary">{{ primaryViewCode }}</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2 flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-text-primary">
+            {{ t("create.success.claimCodes") }}
+          </p>
+          <div class="flex items-center gap-2">
+            <button
+              v-if="claimCodes.length"
+              class="text-xs text-accent-primary hover:underline"
+              @click="copyAllClaimLinks($event)"
+            >
+              {{ t("create.success.copyAllLinks") }}
+            </button>
+            <button
+              v-if="shouldCollapseClaimList"
+              class="text-xs text-text-secondary hover:text-text-primary"
+              @click="toggleClaimList"
+            >
+              {{ claimListExpanded ? t("create.success.hideCodes") : t("create.success.showCodes") }}
+            </button>
+          </div>
+        </div>
+        <p class="text-[11px] text-text-secondary">{{ t("create.success.claimCodesHelper") }}</p>
+      </div>
+
+      <div
+        v-if="claimCodes.length && showClaimList"
+        class="max-h-56 overflow-y-auto rounded-lg border border-border-default"
+      >
+        <div
+          v-for="code in claimCodes"
+          :key="code.code"
+          class="flex items-center gap-4 border-b border-border-default px-3 py-2 last:border-b-0"
+        >
+          <code class="text-sm text-text-primary">{{ code.code }}</code>
+        </div>
+      </div>
+      <p v-else-if="!claimCodes.length" class="text-sm text-text-secondary">
+        {{ t("create.success.noCodes") }}
+      </p>
+    </div>
+
     <div class="flex items-center gap-3">
-      <dot-button variant="tertiary" size="medium" @click="generateQR()">
+      <dot-button
+        v-if="!isDynamic"
+        variant="tertiary"
+        size="medium"
+        :disabled="!primaryViewCode"
+        @click="generateQR(primaryViewCode)"
+      >
         <Icon name="mdi:download" class="size-[32px] text-text-primary" />
         {{ t("create.success.qr") }}
       </dot-button>
-      <dot-button variant="primary" size="medium" class="flex-1" @click="claim()">
+      <dot-button v-else variant="tertiary" size="medium" :disabled="!claimCodes.length" @click="downloadAllClaimQrs">
+        <Icon name="mdi:download" class="size-[32px] text-text-primary" />
+        {{ t("create.success.downloadAllQr") }}
+      </dot-button>
+      <dot-button variant="primary" size="medium" class="flex-1" :disabled="!primaryClaimCode" @click="claim()">
         <span class="h-[28px]" />
         {{ t("create.success.claim") }}
       </dot-button>
@@ -94,16 +170,20 @@
 <script setup lang="ts">
 import { useVfm, VueFinalModal } from "vue-final-modal";
 import QRCode from "qrcode";
+import JSZip from "jszip";
+import type { MemoCode, SecurityMode } from "~/types/memo";
 
 const { t } = useI18n();
 
 const props = defineProps<{
   quantity: number;
   name: string;
-  secret: string;
+  secret?: string;
   chain: string;
   image: File;
   tx: string;
+  securityMode: SecurityMode;
+  codes: MemoCode[];
 }>();
 
 const hashLink = computed(() => {
@@ -116,6 +196,17 @@ const hashLink = computed(() => {
 
 const vfm = useVfm();
 const closeModal = () => vfm.close("success-modal");
+const isDynamic = computed(() => props.securityMode === "dynamic");
+const claimCodes = computed(() => props.codes.filter((code) => code.role === "claim"));
+const viewCode = computed(() => props.codes.find((code) => code.role === "view")?.code);
+const primaryViewCode = computed(() => viewCode.value ?? props.secret);
+const primaryClaimCode = computed(() => claimCodes.value[0]?.code ?? props.secret);
+const fileNameBase = computed(() => props.name.replaceAll(" ", "-"));
+const makeFileName = (suffix: string) => `${fileNameBase.value}-${suffix}-qrcode`;
+const claimListExpanded = ref(false);
+const MAX_INLINE_CODES = 10;
+const shouldCollapseClaimList = computed(() => claimCodes.value.length > MAX_INLINE_CODES);
+const showClaimList = computed(() => !shouldCollapseClaimList.value || claimListExpanded.value);
 
 const imagePreviewSrc = ref("");
 
@@ -125,18 +216,18 @@ onMounted(() => {
   reader.readAsDataURL(props.image);
 });
 
-const copyLink = async (ev: MouseEvent) => {
-  await copy(`${location.origin}/claim/${props.secret}`);
-
+const triggerCopyFeedback = (ev?: MouseEvent) => {
   const el = document.createElement("span");
   el.innerText = "✅";
   el.style.fontSize = "32px";
   el.style.position = "fixed";
-  el.style.top = "0px";
-  el.style.left = "0px";
+  el.style.top = "0";
+  el.style.left = "0";
   el.style.zIndex = "9999";
   el.style.pointerEvents = "none";
-  el.style.transform = `translate(${ev.clientX - 10}px, ${ev.clientY - 10}px) scale(0)`;
+  const originX = ev?.clientX ?? window.innerWidth / 2;
+  const originY = ev?.clientY ?? window.innerHeight / 2;
+  el.style.transform = `translate(${originX - 10}px, ${originY - 10}px) scale(0)`;
   el.style.transition = "transform 1s ease, opacity 1.5s ease";
   el.style.opacity = "1";
 
@@ -145,13 +236,66 @@ const copyLink = async (ev: MouseEvent) => {
   setTimeout(() => el.remove(), 1100);
   requestAnimationFrame(() => {
     const offsetX = Math.random() * 20 - 10;
-    el.style.transform = `translate(${ev.clientX - 10 + offsetX * 3}px, ${ev.clientY - 10 - 100}px) scale(1.5)`;
+    el.style.transform = `translate(${originX - 10 + offsetX * 3}px, ${originY - 10 - 100}px) scale(1.5)`;
     el.style.opacity = "0";
   });
 };
 
-const generateQR = async () => {
-  const urlToEncode = `https://app.novawallet.io/open/dapp?url=${window.location.origin}/claim/${props.secret}`;
+const copyWithFeedback = async (text: string | undefined, ev?: MouseEvent) => {
+  if (!text) return;
+  await copy(text);
+  triggerCopyFeedback(ev);
+};
+
+const copyCode = (code: string | undefined, ev?: MouseEvent) => copyWithFeedback(code, ev);
+
+const copyAllClaimLinks = async (ev?: MouseEvent) => {
+  if (!claimCodes.value.length) return;
+  const codes = claimCodes.value.map((code) => code.code);
+  await copyWithFeedback(codes.join(", "), ev);
+};
+
+const copyPrimaryCode = (ev: MouseEvent) => {
+  const code = primaryViewCode.value ?? primaryClaimCode.value;
+  if (!code) return;
+  copyCode(code, ev);
+};
+
+const buildClaimLink = (code: string) => `${location.origin}/claim/${code}`;
+
+const downloadAllClaimQrs = async () => {
+  if (!claimCodes.value.length) return;
+  const zip = new JSZip();
+  const folderName = `${fileNameBase.value}-claim-qr-codes`;
+  const folder = zip.folder(folderName) ?? zip;
+
+  await Promise.all(
+    claimCodes.value.map(async (code, index) => {
+      const urlToEncode = `https://app.novawallet.io/open/dapp?url=${buildClaimLink(code.code)}`;
+      const dataUri = await QRCode.toDataURL(urlToEncode, { margin: 1, scale: 10 });
+      const base64 = dataUri.split(",")[1] ?? "";
+      const fileName = `${fileNameBase.value}-claim-${index + 1}.png`;
+      folder.file(fileName, base64, { base64: true });
+    }),
+  );
+
+  const blob = await zip.generateAsync({ type: "blob" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${folderName}.zip`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+};
+
+const toggleClaimList = () => {
+  claimListExpanded.value = !claimListExpanded.value;
+};
+
+const generateQR = async (code: string | undefined, fileName?: string) => {
+  if (!code) return;
+  const urlToEncode = `https://app.novawallet.io/open/dapp?url=${window.location.origin}/claim/${code}`;
   const qrcodeDataURI = await QRCode.toDataURL(urlToEncode, {
     margin: 1,
     scale: 10,
@@ -159,12 +303,16 @@ const generateQR = async () => {
 
   const link = document.createElement("a");
   link.href = qrcodeDataURI;
-  link.download = `${props.name.replaceAll(" ", "-")}-qrcode`;
+  link.download = fileName ?? `${fileNameBase.value}-qrcode`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
 
 const router = useRouter();
-const claim = () => (router.push(`/claim/${props.secret}`), closeModal());
+const claim = () => {
+  if (!primaryClaimCode.value) return;
+  router.push(`/claim/${primaryClaimCode.value}`);
+  closeModal();
+};
 </script>

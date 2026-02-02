@@ -61,6 +61,7 @@
         :end-date="props.endDate"
         :quantity="props.quantity"
         :secret="props.secret"
+        :security-mode="securityMode"
         :description="props.description"
         :chain="props.chain"
         :total-deposit="totalDeposit"
@@ -70,7 +71,10 @@
         :deposit-per-item="depositPerItem"
         :deposit-for-collection="depositForCollection"
       />
-      <span class="flex w-full items-center justify-between gap-2 rounded-lg border border-black bg-yellow-300 p-4">
+      <span
+        v-if="requiresSecret"
+        class="flex w-full items-center justify-between gap-2 rounded-lg border border-black bg-yellow-300 p-4"
+      >
         <dot-checkbox v-model="codeWroteDown" black />
         <small class="text-sm text-black">{{ $t("create.dialog.rememberCode") }}</small>
       </span>
@@ -112,8 +116,7 @@ import useAuth from "~/composables/useAuth";
 import { collectionDeposit, itemDeposit, metadataDeposit } from "~/utils/sdk/constants";
 import type { Prefix } from "@kodadot1/static";
 import { useMemoSign } from "~/composables/useMemoSign";
-import type { CreateMemoDTO } from "~/types/memo";
-import { DateTime } from "luxon";
+import type { CreateMemoDTO, CreateMemoResponse, MemoCode, SecurityMode } from "~/types/memo";
 
 const { t } = useI18n();
 const logger = createLogger("SignModal");
@@ -124,13 +127,15 @@ const props = defineProps<{
   startDate: Date;
   endDate: Date;
   quantity: number;
-  secret: string;
+  secret?: string;
+  securityMode: SecurityMode;
+  maxSupply: number;
   description?: string;
   chain: Prefix;
 }>();
 
 const emit = defineEmits<{
-  (e: "success", data: { txHash: string }): void;
+  (e: "success", data: { txHash: string; codes: MemoCode[]; securityMode: SecurityMode }): void;
   (e: "error", err: SignError): void;
 }>();
 
@@ -144,6 +149,8 @@ const currentAccount = computed(() => accountStore.selected);
 
 // Remember code check
 const codeWroteDown = ref(false);
+const securityMode = computed(() => props.securityMode);
+const requiresSecret = computed(() => securityMode.value !== "dynamic");
 
 // Chain properties
 const chainRef = computed(() => props.chain);
@@ -192,21 +199,27 @@ watch(status, async (status) => {
   }
   // Save transaction data
   if (status === TransactionStatus.Finalized && !signError.value && !txError.value) {
+    let createdCodes: MemoCode[] = [];
     try {
-      await $fetch("/api/create", {
+      const payload: CreateMemoDTO = {
+        chain: props.chain,
+        collection: futureCollection.value,
+        mint: toMint.value!,
+        name: props.name,
+        image: imageCid.value!,
+        expiresAt: props.endDate.toISOString(),
+        createdAt: props.startDate.toISOString(),
+        creator: accountId.value!,
+        securityMode: securityMode.value,
+        maxSupply: props.maxSupply,
+        ...(securityMode.value === "dynamic" ? {} : { secret: props.secret }),
+      };
+
+      const memoResponse = await $fetch<CreateMemoResponse>("/api/create", {
         method: "POST",
-        body: {
-          secret: props.secret,
-          chain: props.chain,
-          collection: futureCollection.value,
-          mint: toMint.value,
-          name: props.name,
-          image: imageCid.value,
-          expiresAt: DateTime.fromJSDate(props.endDate).toSQL(),
-          createdAt: DateTime.fromJSDate(props.startDate).toSQL(),
-          creator: accountId.value,
-        } as CreateMemoDTO,
+        body: payload,
       });
+      createdCodes = memoResponse?.codes ?? [];
     } catch (error) {
       logger.error(error);
     } finally {
@@ -214,6 +227,8 @@ watch(status, async (status) => {
       if (txHash.value) {
         emit("success", {
           txHash: txHash.value,
+          codes: createdCodes,
+          securityMode: securityMode.value,
         });
       }
       closeModal();
@@ -224,5 +239,7 @@ watch(status, async (status) => {
 // Price
 const { dollarValue, priceError, priceLoading } = usePriceApi(totalDeposit, properties);
 
-const canSign = computed(() => isLogIn.value && !priceError.value && !isSigning.value && codeWroteDown.value);
+const canSign = computed(
+  () => isLogIn.value && !priceError.value && !isSigning.value && (!requiresSecret.value || codeWroteDown.value),
+);
 </script>

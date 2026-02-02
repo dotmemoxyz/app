@@ -1,8 +1,11 @@
 import { FetchError } from "ofetch";
 import * as zod from "zod";
+import { SECURITY_MODES } from "~/types/memo";
 
 const createMemoValidator = zod.object({
-  secret: zod.string(),
+  secret: zod.string().optional(),
+  securityMode: zod.enum(SECURITY_MODES),
+  maxSupply: zod.number().int().positive(),
   mint: zod.string(),
   collection: zod.number(),
   chain: zod.string(),

@@ -41,6 +41,7 @@
     "consola": "^3.4.2",
     "dedot": "^1.0.2",
     "emoji-blast": "^0.10.2",
+    "jszip": "^3.10.1",
     "lint-staged": "^16.1.0",
     "lodash": "^4.17.21",
     "luxon": "^3.6.1",
