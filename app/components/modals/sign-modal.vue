@@ -252,8 +252,8 @@ watch(status, async (status) => {
           codes: createdCodes,
           securityMode: securityMode.value,
         });
+        closeModal();
       }
-      closeModal();
     }
   }
 });
