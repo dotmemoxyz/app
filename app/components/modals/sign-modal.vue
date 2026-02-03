@@ -81,6 +81,9 @@
       <dot-button :disabled="!canSign" variant="primary" size="large" @click="handleSign">
         {{ isSigning ? `${t("common.signing")} (${statusText})` : t("create.dialog.proceed") }}
       </dot-button>
+      <small v-if="requiresSecret && !props.secret" class="text-center text-sm text-red-600">
+        {{ t("create.dialog.missingSecret") }}
+      </small>
       <small v-if="status === TransactionStatus.Cancelled" class="text-center text-sm text-gray-400">
         {{ t("create.dialog.canceled") }}
       </small>
@@ -146,6 +149,7 @@ const currentAccount = computed(() => accountStore.selected);
 const codeWroteDown = ref(false);
 const securityMode = computed(() => props.securityMode);
 const requiresSecret = computed(() => securityMode.value !== "dynamic");
+const hasRequiredSecret = computed(() => !requiresSecret.value || !!props.secret);
 
 // Chain properties
 const chainRef = computed(() => props.chain);
@@ -262,6 +266,11 @@ watch(status, async (status) => {
 const { dollarValue, priceError, priceLoading } = usePriceApi(totalDeposit, properties);
 
 const canSign = computed(
-  () => isLogIn.value && !priceError.value && !isSigning.value && (!requiresSecret.value || codeWroteDown.value),
+  () =>
+    isLogIn.value &&
+    !priceError.value &&
+    !isSigning.value &&
+    (!requiresSecret.value || codeWroteDown.value) &&
+    hasRequiredSecret.value,
 );
 </script>
