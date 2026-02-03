@@ -111,9 +111,9 @@
             <button
               v-if="claimCodes.length"
               class="text-xs text-accent-primary hover:underline"
-              @click="copyAllClaimLinks($event)"
+              @click="copyAllClaimCodes($event)"
             >
-              {{ t("create.success.copyAllLinks") }}
+              {{ t("create.success.copyAllCodes") }}
             </button>
             <button
               v-if="shouldCollapseClaimList"
@@ -254,7 +254,7 @@ const copyWithFeedback = async (text: string | undefined, ev?: MouseEvent) => {
 
 const copyCode = (code: string | undefined, ev?: MouseEvent) => copyWithFeedback(code, ev);
 
-const copyAllClaimLinks = async (ev?: MouseEvent) => {
+const copyAllClaimCodes = async (ev?: MouseEvent) => {
   if (!claimCodes.value.length) return;
   const codes = claimCodes.value.map((code) => code.code);
   await copyWithFeedback(codes.join(", "), ev);
