@@ -175,16 +175,21 @@ import type { MemoCode, SecurityMode } from "~/types/memo";
 
 const { t } = useI18n();
 
-const props = defineProps<{
-  quantity: number;
-  name: string;
-  secret?: string;
-  chain: string;
-  image: File;
-  tx: string;
-  securityMode: SecurityMode;
-  codes: MemoCode[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    quantity: number;
+    name: string;
+    secret?: string;
+    chain: string;
+    image: File;
+    tx: string;
+    securityMode: SecurityMode;
+    codes?: MemoCode[];
+  }>(),
+  {
+    codes: () => [],
+  },
+);
 
 const hashLink = computed(() => {
   if (props.chain === "ahp") {
