@@ -73,7 +73,7 @@
           />
         </svg>
       </a>
-      <button class="inline-flex items-center justify-center" @click="copyPrimaryCode">
+      <button class="inline-flex items-center justify-center" @click="copyLink">
         <icon name="mdi:content-copy" class="text-lg text-black md:text-2xl dark:text-white" />
       </button>
     </div>
@@ -260,13 +260,13 @@ const copyAllClaimCodes = async (ev?: MouseEvent) => {
   await copyWithFeedback(codes.join(", "), ev);
 };
 
-const copyPrimaryCode = (ev: MouseEvent) => {
-  const code = primaryViewCode.value ?? primaryClaimCode.value;
-  if (!code) return;
-  copyCode(code, ev);
-};
-
 const buildClaimLink = (code: string) => `${location.origin}/claim/${code}`;
+
+const copyLink = (ev: MouseEvent) => {
+  const code = primaryViewCode.value;
+  if (!code) return;
+  copyWithFeedback(buildClaimLink(code), ev);
+};
 
 const downloadAllClaimQrs = async () => {
   if (!claimCodes.value.length) return;
