@@ -273,7 +273,7 @@
 <script lang="ts" setup>
 import type { DistributionMode, LocalRarityTier, MemoDetail, RarityTier, TiersData } from "~/types/memo";
 import { pinDirectory } from "~/services/nftStorage";
-import { MEMO_BOT } from "~/utils/sdk/constants";
+import { getMemoBotAddress } from "~/utils/sdk/constants";
 import { getFreeMints } from "~/utils/sdk/query";
 
 const { t } = useI18n();
@@ -593,8 +593,9 @@ async function signAndSaveTiers() {
 
   const client = await apiInstanceByPrefix(props.drop.chain);
 
+  const memoBot = getMemoBotAddress();
   const cb = (dest: string, value: bigint) => client.tx.balances.transferKeepAlive(dest, value);
-  const arg: [string, bigint] = [MEMO_BOT, totalCost.value];
+  const arg: [string, bigint] = [memoBot, totalCost.value];
 
   initTransactionLoader();
 

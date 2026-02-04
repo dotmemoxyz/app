@@ -38,6 +38,7 @@ export default defineNuxtConfig({
     apiUrl: "",
     public: {
       appUrl: "",
+      memoBotAddress: "",
       api: {
         kodaprice: "",
         coingecko: "",
