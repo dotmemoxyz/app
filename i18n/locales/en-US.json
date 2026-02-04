@@ -106,8 +106,12 @@
       "dateHint": "This is the date range when the MEMO will be available for claiming.",
       "quantity": "Quantity",
       "quantityHint": "This is the total number of MEMO pieces that will be available for claiming.",
+      "antiabuse": "Anti-abuse system",
+      "antiabuseHint": "Enabling this allows one-time claim codes to be auto-generated to prevent abuse.",
+      "antiabuseDescription": "When enabled, single-use secret codes are auto-generated.",
       "secret": "Secret code",
-      "secretHint": "This is a secret code that will be used to claim the MEMO. It should be shared with the attendees."
+      "secretHint": "This is a secret code that will be used to claim the MEMO. It should be shared with the attendees.",
+      "antiabuseActive": "Claim codes will be generated after creation."
     },
     "dialog": {
       "confirm": "Confirm creation",
@@ -126,7 +130,8 @@
       "canceled": "Transaction was canceled. Please try again.",
       "settingUp": "Setting up your MEMO",
       "txProgress": "Transaction in progress. (Status: {status})",
-      "rememberCode": "I have written down the MEMO secret code and understand that it is required to claim my MEMO."
+      "rememberCode": "I have written down the MEMO secret code and understand that it is required to claim my MEMO.",
+      "missingSecret": "Missing MEMO secret. Please go back and set one."
     },
     "success": {
       "title": "Purchased",
@@ -135,6 +140,18 @@
       "created1": "Created",
       "created2": "with",
       "created3": "pieces!",
+      "viewCode": "View code",
+      "viewCodeHelper": "Used to share the MEMO, can’t be used to claim.",
+      "claimCodes": "Claim codes",
+      "claimCodesHelper": "One-time claim codes",
+      "copyLink": "Copy",
+      "copyAllCodes": "Copy All",
+      "downloadQr": "Download QR",
+      "downloadAllQr": "Download All QR",
+      "downloadShort": "Download",
+      "showCodes": "Show codes",
+      "hideCodes": "Hide codes",
+      "noCodes": "No codes returned. Please refresh and try again.",
       "qr": "QR Code",
       "claim": "Claim one for you"
     },

@@ -9,6 +9,7 @@ export interface State {
   };
 }
 
+// DEAD CODE
 export const useChainStore = defineStore("chain", {
   state: (): State => ({
     chainProperties: {

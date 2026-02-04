@@ -20,21 +20,23 @@
     <p class="text-right text-sm text-text-primary/70">{{ props.startDate.toISOString().split("T").at(0) }}</p>
     <p class="text-sm text-text-primary">{{ $t("create.dialog.eventEnd") }}</p>
     <p class="text-right text-sm text-text-primary/70">{{ props.endDate.toISOString().split("T").at(0) }}</p>
-    <p class="text-sm text-text-primary">{{ $t("create.dialog.code") }}</p>
-    <span class="flex items-center justify-end gap-2">
-      <p
-        class="text-sm font-bold text-text-primary/70 transition-all"
-        :class="{ '[&:not(:hover)]:blur-sm': !displaySecret }"
-      >
-        {{ props.secret }}
-      </p>
+    <template v-if="!isDynamic">
+      <p class="text-sm text-text-primary">{{ $t("create.dialog.code") }}</p>
+      <span class="flex items-center justify-end gap-2">
+        <p
+          class="text-sm font-bold text-text-primary/70 transition-all"
+          :class="{ '[&:not(:hover)]:blur-sm': !displaySecret }"
+        >
+          {{ props.secret || "-" }}
+        </p>
 
-      <Icon
-        :name="displaySecret ? 'mdi:eye' : 'mdi:eye-off'"
-        class="cursor-pointer text-text-primary/70"
-        @click="displaySecret = !displaySecret"
-      />
-    </span>
+        <Icon
+          :name="displaySecret ? 'mdi:eye' : 'mdi:eye-off'"
+          class="cursor-pointer text-text-primary/70"
+          @click="displaySecret = !displaySecret"
+        />
+      </span>
+    </template>
     <p class="text-sm text-text-primary">{{ $t("create.dialog.amount") }}</p>
     <p class="text-right text-sm font-bold text-text-primary/70">{{ props.quantity }}</p>
   </div>
@@ -71,6 +73,7 @@
 
 <script lang="ts" setup>
 import type { Prefix } from "@kodadot1/static";
+import type { SecurityMode } from "~/types/memo";
 
 const props = defineProps<{
   name: string;
@@ -78,7 +81,8 @@ const props = defineProps<{
   startDate: Date;
   endDate: Date;
   quantity: number;
-  secret: string;
+  secret?: string;
+  securityMode: SecurityMode;
   description?: string;
   chain: Prefix;
   priceLoading: boolean;
@@ -91,6 +95,7 @@ const props = defineProps<{
 
 const showBreakdown = ref(false);
 const displaySecret = ref(false);
+const isDynamic = computed(() => props.securityMode === "dynamic");
 
 // NFT Properties
 const properties = computed(() => chainAssetOf(props.chain));

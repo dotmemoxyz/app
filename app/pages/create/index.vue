@@ -79,7 +79,25 @@
           </dot-button>
         </div>
       </dot-label>
-      <dot-label class="relative" :text="t('create.memo.secret')">
+      <div class="relative flex flex-col gap-2">
+        <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
+          <span>?</span>
+          <span
+            class="pointer-events-none absolute bottom-5 right-5 z-50 mt-2 w-64 rounded-lg bg-accent-primary px-3 py-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 dark:bg-white"
+          >
+            {{ t("create.memo.antiabuseHint") }}
+          </span>
+        </div>
+        <dot-label :text="t('create.memo.antiabuse')">
+          <div class="flex gap-2">
+            <p class="text-xs text-text-secondary">{{ t("create.memo.antiabuseDescription") }}</p>
+            <div class="flex-shrink-0">
+              <dot-switch v-model="antiAbuse" />
+            </div>
+          </div>
+        </dot-label>
+      </div>
+      <dot-label v-if="!antiAbuse" class="relative" :text="t('create.memo.secret')">
         <div class="group absolute right-0 top-0 cursor-default rounded-full bg-accent-primary px-2">
           <span>?</span>
           <span
@@ -94,6 +112,9 @@
           </template>
         </dot-text-input>
       </dot-label>
+      <div v-else class="rounded-lg border border-border-default bg-surface-card px-3 py-2 text-sm text-text-secondary">
+        {{ t("create.memo.antiabuseActive") }}
+      </div>
     </div>
     <dot-button :disabled="!isSubmittable" size="large" submit variant="primary" class="w-full">
       {{ t("common.create") }}
@@ -117,32 +138,63 @@ definePageMeta({
 });
 
 const { t } = useI18n();
+const secretPattern = /^[a-z_.\-\d]+$/;
 const validationSchema = toTypedSchema(
-  zod.object({
-    image: zod.instanceof(File).refine((value) => value.size < 5 * 1024 * 1024, {
-      message: "Image size must be less than 5MB",
+  zod
+    .object({
+      image: zod.instanceof(File).refine((value) => value.size < 5 * 1024 * 1024, {
+        message: "Image size must be less than 5MB",
+      }),
+      name: zod.string({ message: "Name is required" }).min(1, { message: "Name is required" }),
+      description: zod.string().optional(),
+      externalUrl: zod
+        .string()
+        .url({ message: "URL has invalid format" })
+        .optional()
+        .or(zod.literal("").transform(() => undefined)),
+      startDate: zod.date({ message: "Start date is required" }),
+      endDate: zod.date({ message: "End date is required" }),
+      quantity: zod.number({ message: "Quantity is required" }).positive({ message: "Quantity must be positive" }),
+      antiAbuse: zod.boolean().default(false),
+      secret: zod.string().trim().optional(),
+    })
+    .superRefine((data, ctx) => {
+      if (data.antiAbuse) {
+        return;
+      }
+
+      if (!data.secret) {
+        ctx.addIssue({
+          code: zod.ZodIssueCode.custom,
+          message: "Secret is required",
+          path: ["secret"],
+        });
+        return;
+      }
+
+      if (data.secret.length < 5) {
+        ctx.addIssue({
+          code: zod.ZodIssueCode.custom,
+          message: "Must be at least 5 characters",
+          path: ["secret"],
+        });
+      }
+
+      if (!secretPattern.test(data.secret)) {
+        ctx.addIssue({
+          code: zod.ZodIssueCode.custom,
+          message: "Please use only lowercase letters, numbers, and these symbols: '-', '_', or '.'",
+          path: ["secret"],
+        });
+      }
     }),
-    name: zod.string({ message: "Name is required" }).min(1, { message: "Name is required" }),
-    description: zod.string().optional(),
-    externalUrl: zod
-      .string()
-      .url({ message: "URL has invalid format" })
-      .optional()
-      .or(zod.literal("").transform(() => undefined)),
-    startDate: zod.date({ message: "Start date is required" }),
-    endDate: zod.date({ message: "End date is required" }),
-    quantity: zod.number({ message: "Quantity is required" }).positive({ message: "Quantity must be positive" }),
-    secret: zod
-      .string({ message: "Secret is required" })
-      .min(5, { message: "Must be at least 5 characters" })
-      .regex(/^[a-z_.\-\d]+$/, "Please use only lowercase letters, numbers, and these symbols: '-', '_', or '.'"),
-  }),
 );
 
 const { handleSubmit, errors } = useForm({
   validationSchema,
   initialValues: {
     quantity: 1,
+    antiAbuse: false,
   },
 });
 
@@ -156,6 +208,7 @@ const { value: endDate, errorMessage: endDateError } = useField<Date>("endDate")
 const localEndDateError = ref<string>("");
 const { value: quantity, errorMessage: quantityError } = useField<number>("quantity");
 const { value: secret, errorMessage: secretError } = useField<string>("secret");
+const { value: antiAbuse } = useField<boolean>("antiAbuse");
 
 const {
   status,
@@ -171,12 +224,29 @@ const existingCodeError = ref("");
 const checkingCode = ref(false);
 
 watch(secret, () => {
-  checkingCode.value = true;
+  if (!antiAbuse.value && secret.value) {
+    checkingCode.value = true;
+  } else {
+    checkingCode.value = false;
+  }
+});
+
+watch(antiAbuse, (enabled) => {
+  if (enabled) {
+    secret.value = "";
+    existingCodeError.value = "";
+    checkingCode.value = false;
+  }
 });
 
 debouncedWatch(
-  secret,
-  async () => {
+  [secret, antiAbuse],
+  async ([currentSecret, antiAbuseEnabled]) => {
+    if (antiAbuseEnabled || !currentSecret) {
+      existingCodeError.value = "";
+      checkingCode.value = false;
+      return;
+    }
     await refresh();
     if (loadCodeError.value && loadCodeError.value.statusCode !== 404) {
       existingCodeError.value = t("create.existenceError");
@@ -205,65 +275,71 @@ watch([startDate, endDate], ([startDate, endDate]) => {
 
 const logger = createLogger("CreatePage");
 
-const onSubmit = handleSubmit(({ description, endDate, image, quantity, startDate, name, externalUrl, secret }) => {
-  if (localStartDateError.value || localEndDateError.value || existingCodeError.value) {
-    return;
-  }
+const onSubmit = handleSubmit(
+  ({ description, endDate, image, quantity, startDate, name, externalUrl, secret, antiAbuse }) => {
+    if (localStartDateError.value || localEndDateError.value || existingCodeError.value) {
+      return;
+    }
 
-  logger.success({
-    description,
-    endDate,
-    quantity,
-    startDate,
-    image,
-    name,
-    externalUrl,
-  });
-
-  const { open, close: closeSignModal } = useModal({
-    component: SignModal,
-    attrs: {
-      name,
-      startDate,
+    logger.success({
+      description,
       endDate,
       quantity,
+      startDate,
       image,
-      secret,
-      description,
-      chain: preferredChain.value,
-      onError(err) {
-        closeSignModal();
-        const { open: openErrorModal } = useModal({
-          component: SignErrorModal,
-          attrs: {
-            signError: err,
-          },
-        });
+      name,
+      externalUrl,
+    });
 
-        openErrorModal();
+    const { open, close: closeSignModal } = useModal({
+      component: SignModal,
+      attrs: {
+        name,
+        startDate,
+        endDate,
+        quantity,
+        image,
+        secret: antiAbuse ? undefined : secret,
+        securityMode: antiAbuse ? "dynamic" : "static",
+        maxSupply: quantity,
+        description,
+        chain: preferredChain.value,
+        onError(err) {
+          closeSignModal();
+          const { open: openErrorModal } = useModal({
+            component: SignErrorModal,
+            attrs: {
+              signError: err,
+            },
+          });
+
+          openErrorModal();
+        },
+        onSuccess({ txHash, codes, securityMode }) {
+          const { open: openSuccessModal } = useModal({
+            component: SuccessModal,
+            attrs: {
+              chain: preferredChain.value,
+              quantity,
+              name,
+              secret: antiAbuse ? undefined : secret,
+              image,
+              tx: txHash,
+              securityMode,
+              codes,
+            },
+          });
+
+          openSuccessModal();
+        },
       },
-      onSuccess({ txHash }) {
-        const { open: openSuccessModal } = useModal({
-          component: SuccessModal,
-          attrs: {
-            chain: preferredChain.value,
-            quantity,
-            name,
-            secret,
-            image,
-            tx: txHash,
-          },
-        });
+    });
 
-        openSuccessModal();
-      },
-    },
-  });
+    open();
 
-  open();
-
-  return;
-});
+    return;
+  },
+);
 
 const isSubmittable = computed(
   () =>
@@ -271,13 +347,13 @@ const isSubmittable = computed(
     name.value &&
     startDate.value &&
     endDate.value &&
-    secret.value &&
+    (antiAbuse.value || secret.value) &&
     quantity.value &&
-    !checkingCode.value &&
-    !existingCodeError.value &&
+    (antiAbuse.value || !checkingCode.value) &&
+    (antiAbuse.value || !existingCodeError.value) &&
     !localStartDateError.value &&
     !localEndDateError.value &&
-    !Object.keys(errors.value).length,
+    !Object.keys(errors.value).filter((key) => (antiAbuse.value ? key !== "secret" : true)).length,
 );
 
 // Chain list

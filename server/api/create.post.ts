@@ -1,17 +1,30 @@
 import { FetchError } from "ofetch";
 import * as zod from "zod";
+import { SECURITY_MODES } from "~/types/memo";
 
-const createMemoValidator = zod.object({
-  secret: zod.string(),
-  mint: zod.string(),
-  collection: zod.number(),
-  chain: zod.string(),
-  name: zod.string(),
-  image: zod.string(),
-  expiresAt: zod.coerce.date(),
-  createdAt: zod.coerce.date(),
-  creator: zod.string(),
-});
+const createMemoValidator = zod
+  .object({
+    secret: zod.string().optional(),
+    securityMode: zod.enum(SECURITY_MODES),
+    maxSupply: zod.number().int().positive(),
+    mint: zod.string(),
+    collection: zod.number(),
+    chain: zod.string(),
+    name: zod.string(),
+    image: zod.string(),
+    expiresAt: zod.coerce.date(),
+    createdAt: zod.coerce.date(),
+    creator: zod.string(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.securityMode === "static" && !data.secret) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        message: "secret is required for static securityMode",
+        path: ["secret"],
+      });
+    }
+  });
 
 export default defineEventHandler(async (event) => {
   const RUNTIME_CONFIG = useRuntimeConfig();
