@@ -1,7 +1,7 @@
 import type { Prefix } from "@kodadot1/static";
 import { createArgsForNftPallet } from "@/utils/sdk/create";
 import { nextCollectionId } from "~/utils/sdk/query";
-import { MEMO_BOT } from "~/utils/sdk/constants";
+import { getMemoBotAddress } from "~/utils/sdk/constants";
 import { pinFileToIPFS, pinJson, type Metadata } from "~/services/nftStorage";
 import type { ChainClient } from "@/utils/dedot/client";
 
@@ -108,12 +108,13 @@ export const useMemoSign = (
 
     futureCollection.value = nextId;
 
+    const memoBot = getMemoBotAddress();
     const calls = [
       client.tx.nfts.create(...createArgs).call,
       client.tx.nfts.setCollectionMetadata(nextId, toMint.value!).call,
-      client.tx.nfts.setTeam(nextId, MEMO_BOT, MEMO_BOT, accountId.value).call,
+      client.tx.nfts.setTeam(nextId, memoBot, memoBot, accountId.value).call,
       // DEV: this does not cover tx fee, we will sponsor it for a while
-      client.tx.balances.transferKeepAlive(MEMO_BOT, totalAmount.value).call,
+      client.tx.balances.transferKeepAlive(memoBot, totalAmount.value).call,
       // DEV: this is for tracking purposes
       client.tx.system.remarkWithEvent("dotmemo.xyz").call,
     ];
