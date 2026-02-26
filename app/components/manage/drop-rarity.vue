@@ -412,21 +412,30 @@ function normalizeTiersData(data: RarityTier[]): RarityTier[] {
   return data.map((tier) => ({
     ...tier,
     image: tier.image ?? undefined,
+    imageType: tier.imageType ?? undefined,
   }));
 }
 
 function serializeTiers(data: RarityTier[]): string {
   return JSON.stringify(
-    data.map(({ name, weight, image }) => ({
+    data.map(({ name, weight, image, imageType }) => ({
       name,
       weight,
       image: image ?? undefined,
+      imageType: imageType ?? undefined,
     })),
   );
 }
 
 function addTier() {
-  tiers.value.push({ name: "", weight: 0, image: undefined, imageName: null, imageFile: null });
+  tiers.value.push({
+    name: "",
+    weight: 0,
+    image: undefined,
+    imageType: undefined,
+    imageName: null,
+    imageFile: null,
+  });
 }
 
 function removeTier(index: number) {
@@ -459,6 +468,7 @@ function updateTierImage(index: number, file: File) {
   reader.onload = (event) => {
     updateTier(index, {
       image: String(event.target?.result ?? ""),
+      imageType: file.type,
       imageName: file.name,
       imageFile: file,
     });
@@ -485,7 +495,7 @@ function onTierDrop(event: DragEvent, index: number) {
 }
 
 function clearTierImage(index: number) {
-  updateTier(index, { image: undefined, imageName: null, imageFile: null });
+  updateTier(index, { image: undefined, imageType: undefined, imageName: null, imageFile: null });
 
   const input = fileInputs.value[index];
   if (input) {
@@ -671,10 +681,11 @@ async function saveTiers() {
       ? {
           enabled: true,
           distributionMode: distributionMode.value,
-          tiers: tiers.value.map(({ name, weight, image }) => ({
+          tiers: tiers.value.map(({ name, weight, image, imageType }) => ({
             name,
             weight,
             image,
+            imageType,
           })),
         }
       : { enabled: false };
