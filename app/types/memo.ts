@@ -114,6 +114,7 @@ export interface RarityTier {
   name: string;
   weight: number;
   image?: string;
+  imageType?: string;
 }
 
 export interface LocalRarityTier extends RarityTier {

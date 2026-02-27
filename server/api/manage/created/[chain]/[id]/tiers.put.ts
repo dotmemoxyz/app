@@ -4,7 +4,7 @@ type UpdateTiersBody =
   | {
       enabled: true;
       distributionMode: string;
-      tiers: Array<{ name: string; weight: number; image?: string }>;
+      tiers: Array<{ name: string; weight: number; image?: string; imageType?: string }>;
     }
   | { enabled: false };
 
