@@ -39,6 +39,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: err.data?.message || "Invalid or expired verification token" });
   }
 
+  if (err.status === 409) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: err.data?.message || "This email has already claimed this MEMO",
+    });
+  }
+
   console.error("Error verifying email:", err);
   throw createError({ statusCode: 500, statusMessage: "An unknown error has occurred" });
 });
