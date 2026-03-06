@@ -20,7 +20,7 @@ export interface VerifyEmailResponse {
   memoCode: string;
 }
 
-export type EmailClaimStatus = "pending" | "claimed" | "expired";
+export type EmailClaimStatus = "pending" | "processing" | "claimed" | "expired";
 
 export interface EmailClaimDetails {
   email: string;

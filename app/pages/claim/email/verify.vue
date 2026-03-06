@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import { FetchError } from "ofetch";
 import type { VerifyEmailResponse } from "~/types/email-auth";
 
 const route = useRoute();
@@ -49,7 +50,12 @@ onMounted(async () => {
     await router.push(`/claim/email/${response.claimToken}`);
   } catch (err) {
     console.error("Verification failed:", err);
-    verificationError.value = t("claim.verificationExpired");
+    if (err instanceof FetchError) {
+      verificationError.value =
+        (err.data?.statusMessage as string | undefined) || err.data?.message || t("claim.verificationExpired");
+    } else {
+      verificationError.value = t("claim.verificationExpired");
+    }
     isVerifying.value = false;
   }
 });
