@@ -30,9 +30,22 @@
 </template>
 
 <script lang="ts" setup>
-const model = defineModel<string | number | Date>({
+const [model, modelModifiers] = defineModel<string | number | Date>({
   set(val: string | Date | number) {
-    return props.type === "date" ? new Date(val) : val;
+    if (props.type === "date") {
+      return new Date(val);
+    }
+
+    if (props.type === "number" || modelModifiers.number) {
+      if (val === "") {
+        return val;
+      }
+
+      const numericValue = typeof val === "number" ? val : Number.parseFloat(String(val));
+      return Number.isNaN(numericValue) ? val : numericValue;
+    }
+
+    return val;
   },
   get(val: string | Date | number) {
     return val instanceof Date ? val.toISOString().split("T").at(0)! : val;
