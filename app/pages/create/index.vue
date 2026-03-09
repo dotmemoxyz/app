@@ -64,19 +64,42 @@
             {{ t("create.memo.quantityHint") }}
           </span>
         </div>
-        <dot-text-input v-model.number="quantity" type="number" placeholder="0" :error="quantityError" />
+        <dot-text-input
+          v-model.number="quantity"
+          type="number"
+          placeholder="0"
+          :min="MIN_MEMO_SUPPLY"
+          :max="antiAbuse ? MAX_DYNAMIC_MEMO_SUPPLY : undefined"
+          :error="quantityError"
+        />
         <div class="hidden gap-2 md:flex">
-          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 100">
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="adjustQuantity(-100)">
             -100
           </dot-button>
-          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 10"> -10 </dot-button>
-          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity -= 1"> -1 </dot-button>
-          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity = 0">0 </dot-button>
-          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 1"> +1 </dot-button>
-          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 10"> +10 </dot-button>
-          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity += 100">
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="adjustQuantity(-10)">
+            -10
+          </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="adjustQuantity(-1)">
+            -1
+          </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="quantity = MIN_MEMO_SUPPLY">
+            1
+          </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="adjustQuantity(1)">
+            +1
+          </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="adjustQuantity(10)">
+            +10
+          </dot-button>
+          <dot-button class="flex-1" size="small" rounded variant="tertiary" @click="adjustQuantity(100)">
             +100
           </dot-button>
+        </div>
+        <div
+          v-if="isDynamicSupplyAtCap"
+          class="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm leading-6 text-yellow-900 dark:border-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
+        >
+          {{ t("create.memo.quantityCapNotice", { max: MAX_DYNAMIC_MEMO_SUPPLY }) }}
         </div>
       </dot-label>
       <div class="relative flex flex-col gap-2">
@@ -128,6 +151,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useModal } from "vue-final-modal";
 import * as zod from "zod";
 import type { Option } from "~/types/components";
+import { MAX_DYNAMIC_MEMO_SUPPLY } from "~/types/memo";
 import SuccessModal from "~/components/modals/success-modal.vue";
 import SignModal from "~/components/modals/sign-modal.vue";
 import { debouncedWatch } from "@vueuse/core";
@@ -139,6 +163,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const secretPattern = /^[a-z_.\-\d]+$/;
+const MIN_MEMO_SUPPLY = 1;
 const validationSchema = toTypedSchema(
   zod
     .object({
@@ -154,7 +179,10 @@ const validationSchema = toTypedSchema(
         .or(zod.literal("").transform(() => undefined)),
       startDate: zod.date({ message: "Start date is required" }),
       endDate: zod.date({ message: "End date is required" }),
-      quantity: zod.number({ message: "Quantity is required" }).positive({ message: "Quantity must be positive" }),
+      quantity: zod
+        .number({ message: "Quantity is required" })
+        .int({ message: "Quantity must be a whole number" })
+        .min(MIN_MEMO_SUPPLY, { message: "Quantity must be at least 1" }),
       antiAbuse: zod.boolean().default(false),
       secret: zod.string().trim().optional(),
     })
@@ -223,6 +251,11 @@ const {
 const existingCodeError = ref("");
 const checkingCode = ref(false);
 
+const clampQuantity = (value: number) =>
+  antiAbuse.value
+    ? Math.min(MAX_DYNAMIC_MEMO_SUPPLY, Math.max(MIN_MEMO_SUPPLY, value))
+    : Math.max(MIN_MEMO_SUPPLY, value);
+
 watch(secret, () => {
   if (!antiAbuse.value && secret.value) {
     checkingCode.value = true;
@@ -236,6 +269,18 @@ watch(antiAbuse, (enabled) => {
     secret.value = "";
     existingCodeError.value = "";
     checkingCode.value = false;
+    quantity.value = clampQuantity(quantity.value ?? MIN_MEMO_SUPPLY);
+  }
+});
+
+watch(quantity, (value) => {
+  if (value === undefined || value === null) {
+    return;
+  }
+
+  const clampedValue = clampQuantity(value);
+  if (clampedValue !== value) {
+    quantity.value = clampedValue;
   }
 });
 
@@ -274,6 +319,12 @@ watch([startDate, endDate], ([startDate, endDate]) => {
 });
 
 const logger = createLogger("CreatePage");
+const isDynamicSupplyAtCap = computed(() => antiAbuse.value && quantity.value === MAX_DYNAMIC_MEMO_SUPPLY);
+
+const adjustQuantity = (delta: number) => {
+  const nextValue = (quantity.value ?? MIN_MEMO_SUPPLY) + delta;
+  quantity.value = clampQuantity(nextValue);
+};
 
 const onSubmit = handleSubmit(
   ({ description, endDate, image, quantity, startDate, name, externalUrl, secret, antiAbuse }) => {

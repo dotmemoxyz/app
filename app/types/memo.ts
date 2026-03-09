@@ -5,6 +5,7 @@ export type Ownership = "created" | "organized" | "collected";
 export const SECURITY_MODES = ["static", "dynamic"] as const;
 export type SecurityMode = (typeof SECURITY_MODES)[number];
 
+export const MAX_DYNAMIC_MEMO_SUPPLY = 1000;
 export type MemoCustomize = {
   image?: string;
   heading?: string;

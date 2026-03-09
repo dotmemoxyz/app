@@ -11,6 +11,8 @@
         :type="props.type ?? 'text'"
         :class="inputClasses"
         :maxlength="limit"
+        :min="min"
+        :max="max"
         :disabled="disabled"
         :readonly="readonly"
         class="text-text-color min-w-0 flex-1 cursor-pointer appearance-none bg-transparent py-3 placeholder:text-text-placeholder focus:outline-none focus:ring-0"
@@ -28,9 +30,22 @@
 </template>
 
 <script lang="ts" setup>
-const model = defineModel<string | number | Date>({
+const [model, modelModifiers] = defineModel<string | number | Date>({
   set(val: string | Date | number) {
-    return props.type === "date" ? new Date(val) : val;
+    if (props.type === "date") {
+      return new Date(val);
+    }
+
+    if (props.type === "number" || modelModifiers.number) {
+      if (val === "") {
+        return val;
+      }
+
+      const numericValue = typeof val === "number" ? val : Number.parseFloat(String(val));
+      return Number.isNaN(numericValue) ? val : numericValue;
+    }
+
+    return val;
   },
   get(val: string | Date | number) {
     return val instanceof Date ? val.toISOString().split("T").at(0)! : val;
@@ -42,6 +57,8 @@ const props = defineProps<{
   error?: string;
   type?: string;
   limit?: number;
+  min?: number | string;
+  max?: number | string;
   disabled?: boolean;
   readonly?: boolean;
 }>();
