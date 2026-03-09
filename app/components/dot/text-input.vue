@@ -11,6 +11,8 @@
         :type="props.type ?? 'text'"
         :class="inputClasses"
         :maxlength="limit"
+        :min="min"
+        :max="max"
         :disabled="disabled"
         :readonly="readonly"
         class="text-text-color min-w-0 flex-1 cursor-pointer appearance-none bg-transparent py-3 placeholder:text-text-placeholder focus:outline-none focus:ring-0"
@@ -42,6 +44,8 @@ const props = defineProps<{
   error?: string;
   type?: string;
   limit?: number;
+  min?: number | string;
+  max?: number | string;
   disabled?: boolean;
   readonly?: boolean;
 }>();

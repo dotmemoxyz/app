@@ -1,6 +1,6 @@
 import { FetchError } from "ofetch";
 import * as zod from "zod";
-import { SECURITY_MODES } from "~/types/memo";
+import { SECURITY_MODES, MAX_DYNAMIC_MEMO_SUPPLY } from "~/types/memo";
 
 const createMemoValidator = zod
   .object({
@@ -17,6 +17,14 @@ const createMemoValidator = zod
     creator: zod.string(),
   })
   .superRefine((data, ctx) => {
+    if (data.securityMode === "dynamic" && data.maxSupply > MAX_DYNAMIC_MEMO_SUPPLY) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        message: `maxSupply cannot exceed ${MAX_DYNAMIC_MEMO_SUPPLY} for dynamic security mode`,
+        path: ["maxSupply"],
+      });
+    }
+
     if (data.securityMode === "static" && !data.secret) {
       ctx.addIssue({
         code: zod.ZodIssueCode.custom,
