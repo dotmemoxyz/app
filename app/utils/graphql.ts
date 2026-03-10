@@ -16,7 +16,7 @@ const GRAPHQL_ENDPOINTS: Record<SupportedGraphqlPrefix, string> = {
   ahp: "https://chaotic-ahp.stellate.sh/",
 };
 
-export function getGraphqlEndpoint(prefix: Prefix): string {
+function getGraphqlEndpoint(prefix: Prefix): string {
   if (prefix in GRAPHQL_ENDPOINTS) {
     return GRAPHQL_ENDPOINTS[prefix as SupportedGraphqlPrefix];
   }
@@ -24,7 +24,7 @@ export function getGraphqlEndpoint(prefix: Prefix): string {
   throw new Error(`Unsupported GraphQL prefix: ${prefix}`);
 }
 
-export function fetchGraphql<T>(graphQuery: GraphQuery, prefix: Prefix): Promise<GraphResponse<T>> {
+export function fetchGraphql<T>(graphQuery: GraphQuery, prefix: SupportedGraphqlPrefix): Promise<GraphResponse<T>> {
   return $fetch<GraphResponse<T>>(getGraphqlEndpoint(prefix), {
     method: "POST",
     body: graphQuery,
