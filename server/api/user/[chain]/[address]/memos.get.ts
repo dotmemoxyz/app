@@ -6,6 +6,7 @@ import type { Prefix } from "@kodadot1/static";
 import { FetchError } from "ofetch";
 import type { Metadata } from "~/services/nftStorage";
 import { toDefaultAddress } from "~/utils/account";
+import { fetchGraphql } from "~/utils/graphql";
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
@@ -97,7 +98,7 @@ export default defineEventHandler(async (event) => {
             `,
       variables: { address },
     };
-    const collectionsResult = await indexerClient.fetch<{ collections: UniqCollection[] }>(customQuery);
+    const collectionsResult = await fetchGraphql<{ collections: UniqCollection[] }>(customQuery, chain as Prefix);
 
     if (collectionsResult?.data?.collections) {
       const existingIds = new Set(res.map((memo) => memo.id));

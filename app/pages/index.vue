@@ -163,6 +163,7 @@ import createNewIcon from "@/assets/icons/create-new-from-source.svg";
 import communityIcon from "@/assets/icons/community.svg";
 import landingBackground from "@/assets/images/landing-background-2.webp";
 import { getClient } from "@kodadot1/uniquery";
+import { fetchGraphql } from "~/utils/graphql";
 
 definePageMeta({
   layout: "landing",
@@ -189,7 +190,7 @@ const collections = ref<Collection[]>([]);
 const client = getClient(prefix.value);
 const ids = computed(() => (prefix.value === "ahp" ? ["107", "13", "163", "171"] : ["67", "167", "287", "477"]));
 const query = client.collectionByIdIn(ids.value);
-const result = await client.fetch<{ collections: Collection[] }>(query).catch((e) => {
+const result = await fetchGraphql<{ collections: Collection[] }>(query, prefix.value).catch((e) => {
   console.error("Error while fetching collections", e);
   return null;
 });

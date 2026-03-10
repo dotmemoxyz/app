@@ -45,6 +45,7 @@ import { getClient } from "@kodadot1/uniquery";
 import type { Memo, Ownership } from "~/types/memo";
 import type { TimeRange, FunnelStep } from "~/types/analytics";
 import type { ClaimItem } from "../analytics/types";
+import { fetchGraphql } from "~/utils/graphql";
 
 const props = defineProps<{
   drop: Memo;
@@ -94,7 +95,7 @@ const { data: dropsData, pending: dropsPending } = useAsyncData(
       limit: PAGE_SIZE,
       fields: ["id", "createdAt", "currentOwner", "image", "issuer", "metadata", "name", "blockNumber"],
     });
-    return client.fetch<{ items: ClaimItem[] }>(query);
+    return fetchGraphql<{ items: ClaimItem[] }>(query, props.drop.chain);
   },
   {
     transform: ({ data }) => data.items,
@@ -109,7 +110,7 @@ const { data: dropCount, pending: countPending } = useAsyncData(
   () => {
     const client = getClient(props.drop.chain);
     const query = client.itemCountByCollectionId(props.drop.id);
-    return client.fetch<{ itemCount: { totalCount: number } }>(query);
+    return fetchGraphql<{ itemCount: { totalCount: number } }>(query, props.drop.chain);
   },
   {
     transform: ({ data }) => data.itemCount.totalCount,

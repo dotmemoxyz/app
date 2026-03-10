@@ -120,6 +120,7 @@ import type { MemoDetail, Ownership, UniqCollection } from "~/types/memo";
 import { emojiBlast } from "emoji-blast";
 import { getClient } from "@kodadot1/uniquery";
 import { useClipboard } from "@vueuse/core";
+import { fetchGraphql } from "~/utils/graphql";
 
 const clipboard = useClipboard();
 
@@ -167,7 +168,7 @@ const { data: owner } = useAsyncData(
   "owner",
   async () => {
     const query = client.value.collectionById(props.drop.id, ["currentOwner"]);
-    return client.value.fetch<QueryCollectionsResponse>(query);
+    return fetchGraphql<QueryCollectionsResponse>(query, props.drop.chain);
   },
   {
     transform: ({ data }) => data.collection.currentOwner,

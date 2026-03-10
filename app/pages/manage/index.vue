@@ -91,6 +91,7 @@ import { getClient } from "@kodadot1/uniquery";
 import type { Option } from "~/types/components";
 import { asyncComputed } from "@vueuse/core";
 import { DateTime } from "luxon";
+import { fetchGraphql } from "~/utils/graphql";
 
 definePageMeta({
   middleware: "auth",
@@ -217,7 +218,7 @@ const totalClaims = asyncComputed(async () => {
   let claims = 0;
   for (const drop of drops) {
     const query = client.value.itemCountByCollectionId(drop.id);
-    const { data } = await client.value.fetch<QueryCountResponse>(query);
+    const { data } = await fetchGraphql<QueryCountResponse>(query, chain.value);
     claims += data.itemCount.totalCount;
   }
   return claims;
