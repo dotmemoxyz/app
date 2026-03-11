@@ -48,7 +48,16 @@
         <tbody>
           <tr v-for="item in claims" :key="item.id">
             <td>#{{ item.id.split("-").at(1) }}</td>
-            <td>{{ shortenAddress(item.currentOwner) }}</td>
+            <td>
+              <NuxtLink
+                :to="getProfileLink(item.currentOwner)"
+                class="inline-flex items-center gap-1 text-text-primary hover:underline"
+                :title="item.currentOwner"
+              >
+                {{ shortenAddress(item.currentOwner) }}
+                <Icon name="mdi:arrow-top-right" class="size-[14px]" />
+              </NuxtLink>
+            </td>
             <td class="hidden sm:table-cell">{{ formatTime(item.createdAt) }}</td>
             <td>
               <a
@@ -87,6 +96,7 @@ import type { Prefix } from "@kodadot1/static";
 import { DateTime, Duration } from "luxon";
 import type { ClaimItem } from "./types";
 import type { Ownership } from "~/types/memo";
+import { formatAddressByPrefix } from "~/utils/account";
 
 const props = defineProps<{
   claims: ClaimItem[];
@@ -110,6 +120,8 @@ const shortenAddress = (address: string): string => {
   if (address.length <= 12) return address;
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
+
+const getProfileLink = (address: string): string => `/${props.chain}/u/${formatAddressByPrefix(address, props.chain)}`;
 
 const formatTime = (dateRaw: string): string => {
   const date = DateTime.fromISO(dateRaw);
