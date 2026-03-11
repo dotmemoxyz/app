@@ -81,7 +81,7 @@ export default defineNuxtConfig({
       globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
       runtimeCaching: [
         {
-          urlPattern: /^https:\/\/ahk\.gql\.api\.kodadot.xyz\/.*/i,
+          urlPattern: /^https:\/\/chaotic-ah[kp]\.stellate\.sh\/.*/i,
           handler: "CacheFirst",
         },
       ],
