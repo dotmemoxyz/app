@@ -166,16 +166,30 @@ const ownershipMemos = computed(() => {
   }
 });
 
+function isDropActive(drop: { createdAt: string; expiresAt: string }, now: DateTime) {
+  const createdAt = DateTime.fromISO(drop.createdAt);
+  const expiresAt = DateTime.fromISO(drop.expiresAt);
+
+  return createdAt < now && expiresAt > now;
+}
+
 const filteredDrops = computed(() => {
   const drops = ownershipMemos.value;
+
   if (!drops) {
     return [];
   }
-  if (filter.value === "all") {
-    return drops;
-  }
+
   const now = DateTime.now();
-  return drops.filter((drop) => {
+  const sortedDrops = [...drops].sort(
+    (left, right) => Number(isDropActive(right, now)) - Number(isDropActive(left, now)),
+  );
+
+  if (filter.value === "all") {
+    return sortedDrops;
+  }
+
+  return sortedDrops.filter((drop) => {
     const createdAt = DateTime.fromISO(drop.createdAt);
     const expiredAt = DateTime.fromISO(drop.expiresAt);
     if (filter.value === "active") {
