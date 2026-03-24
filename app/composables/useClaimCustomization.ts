@@ -6,10 +6,11 @@ interface ClaimData {
 
 export const useClaimCustomization = (data: Ref<ClaimData | null>) => {
   const colorMode = useColorMode();
+  const defaultAccentColor = "#55F39A";
 
   const accentColor = computed(() => {
     const color = data.value?.customize?.accentColor;
-    return color || "rgb(85, 243, 154)";
+    return color || defaultAccentColor;
   });
 
   watch(
