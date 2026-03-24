@@ -28,7 +28,7 @@
         :style="`view-transition-name: drop-${props.drop.id}`"
         class="aspect-square max-h-[210px] min-h-[210px] min-w-[210px] max-w-[210px] overflow-hidden rounded-full border-[6px] border-surface-white bg-surface-white"
       >
-        <img :src="props.drop.image" class="h-full rounded-full" />
+        <img :src="imageSrc" class="h-full rounded-full" />
       </div>
       <!-- Title -->
       <b class="text-center text-[24px] leading-[30px]">{{ props.drop.name }}</b>
@@ -105,6 +105,8 @@ const props = defineProps<{
 }>();
 
 const { locale } = useI18n();
+
+const imageSrc = computed(() => props.drop.customize?.image || props.drop.image);
 
 // Starts in
 const startsIn = computed<string | null>(() => {

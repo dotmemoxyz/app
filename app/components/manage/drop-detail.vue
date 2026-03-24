@@ -5,7 +5,7 @@
       :style="`view-transition-name: drop-${props.drop.id}`"
       class="size-[165px] min-h-[165px] min-w-[165px] overflow-hidden rounded-full border-[6px] border-white bg-white"
     >
-      <img :src="props.drop.image" class="h-full rounded-full" />
+      <img :src="imageSrc" class="h-full rounded-full" />
     </div>
     <!-- Info -->
     <div v-if="ownership === 'created' || ownership === 'organized'" class="flex flex-1 flex-col justify-between py-4">
@@ -128,13 +128,17 @@ const props = defineProps<{
   drop: MemoDetail;
   ownership: Ownership;
 }>();
+
 const { locale } = useI18n();
+
 // Check if drop is expired
 const isExpired = computed<boolean>(() => {
   const date = DateTime.fromISO(props.drop.expiresAt);
   const now = DateTime.now();
   return date.diff(now, ["seconds"]).as("seconds") < 0;
 });
+
+const imageSrc = computed(() => props.drop.customize.image || props.drop.image);
 
 const remainingTime = computed<string>(() => {
   if (isExpired.value) {

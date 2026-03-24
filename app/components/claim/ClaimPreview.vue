@@ -1,5 +1,5 @@
 <template>
-  <image-preview :src="image" />
+  <image-preview :src="customization?.image || image" />
 
   <div class="flex flex-col items-center gap-[24px]">
     <h1 v-if="name" class="text-[31px] font-medium text-text-primary">
@@ -17,19 +17,12 @@
 </template>
 
 <script setup lang="ts">
-interface Customization {
-  heading?: string;
-  subheading?: string;
-  claimText?: string;
-  telegram?: string;
-  instagram?: string;
-  website?: string;
-}
+import type { MemoCustomize } from "~/types/memo";
 
 defineProps<{
   image?: string;
   name?: string;
   description?: string;
-  customization?: Customization;
+  customization?: MemoCustomize;
 }>();
 </script>

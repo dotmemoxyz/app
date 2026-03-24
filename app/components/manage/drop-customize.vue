@@ -29,6 +29,15 @@
             {{ $t("manage.customize.customPreviewImageHint") }}
           </p>
         </div>
+        <div v-if="isCustomPreview" class="flex flex-col gap-2">
+          <dot-image-input v-model="customImageFile" :preview-src="uploaderPreviewSrc" />
+          <p v-if="imageError" class="text-sm font-normal !text-red-500">
+            {{ imageError }}
+          </p>
+          <p class="text-sm font-normal !text-text-secondary">
+            {{ $t("manage.customize.customPreviewImageRequirements") }}
+          </p>
+        </div>
       </div>
       <!-- Text content -->
       <div class="flex flex-col gap-[42px]">
@@ -136,6 +145,9 @@
           {{ buttonLabel }}
         </dot-button>
         <p v-if="updateError" class="text-center text-sm !text-red-500">{{ updateError }}</p>
+        <p v-else-if="submitImageError" class="text-center text-sm !text-yellow-500">
+          {{ submitImageError }}
+        </p>
         <p v-else-if="!meta.valid" class="text-center text-sm !text-yellow-500">
           {{ $t("manage.customize.validationRequired") }}
         </p>
@@ -159,6 +171,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useForm, useField } from "vee-validate";
 import * as zod from "zod";
 import type { Memo, MemoCustomize } from "~/types/memo";
+import { readFileAsDataUrl } from "~/utils/file";
 import { normalizeUrl } from "~/utils/web";
 
 const props = defineProps<{
@@ -247,8 +260,7 @@ const { errors, meta } = useForm({
   },
 });
 
-const isCustomPreview = ref(false);
-const { value: image } = useField<string | undefined>("image");
+const { value: image, errorMessage: imageError, setErrors: setImageErrors } = useField<string | undefined>("image");
 const { value: heading } = useField<string>("heading");
 const { value: subheading } = useField<string>("subheading");
 const { value: claimText } = useField<string>("claimText");
@@ -258,6 +270,22 @@ const { value: twitter } = useField<string>("twitter");
 const { value: website } = useField<string>("website");
 const { value: darkMode } = useField<boolean>("darkMode");
 const { value: accentColor } = useField<string>("accentColor");
+const customImageFile = ref<File>();
+const isCustomPreview = ref(Boolean(image.value));
+const attemptedSubmit = ref(false);
+const uploaderPreviewSrc = ref<string | undefined>(image.value);
+
+const MAX_CUSTOM_IMAGE_SIZE_BYTES = 1024 * 1024;
+const requiredImageError = computed(() => {
+  if (attemptedSubmit.value && isCustomPreview.value && !image.value) {
+    return t("manage.customize.customPreviewImageRequired");
+  }
+
+  return null;
+});
+const submitImageError = computed(() => {
+  return requiredImageError.value;
+});
 
 const editedData = computed<Memo>(() => {
   return {
@@ -277,35 +305,45 @@ const editedData = computed<Memo>(() => {
   };
 });
 
+const buttonLabel = computed(() => {
+  if (loading.value) {
+    return t("common.saving");
+  }
+  return t("common.saveChanges");
+});
+
 const loading = ref(false);
 const updateError = ref<string | null>(null);
 
 const save = async () => {
-  if (!meta.value.valid) {
+  attemptedSubmit.value = true;
+
+  if (!meta.value.valid || imageError.value || requiredImageError.value) {
     return;
   }
-
-  const body: MemoCustomize = {
-    image: image.value || undefined,
-    heading: heading.value || undefined,
-    subheading: subheading.value || undefined,
-    claimText: claimText.value || undefined,
-    telegram: parseUsername(telegram.value) || undefined,
-    instagram: parseUsername(instagram.value) || undefined,
-    twitter: parseUsername(twitter.value) || undefined,
-    website: normalizeUrl(website.value) || undefined,
-    darkMode: darkMode.value,
-    accentColor: accentColor.value || undefined,
-  };
 
   updateError.value = null;
   loading.value = true;
 
   try {
+    const body: MemoCustomize = {
+      image: isCustomPreview.value ? image.value || undefined : undefined,
+      heading: heading.value || undefined,
+      subheading: subheading.value || undefined,
+      claimText: claimText.value || undefined,
+      telegram: parseUsername(telegram.value) || undefined,
+      instagram: parseUsername(instagram.value) || undefined,
+      twitter: parseUsername(twitter.value) || undefined,
+      website: normalizeUrl(website.value) || undefined,
+      darkMode: darkMode.value,
+      accentColor: accentColor.value || undefined,
+    };
+
     await $fetch(`/api/manage/created/${props.drop.chain}/${props.drop.id}/customization`, {
       method: "PUT",
       body,
     });
+    attemptedSubmit.value = false;
   } catch (error) {
     console.error("Error updating drop customization:", error);
     updateError.value = "Failed to save changes. Please try again.";
@@ -314,10 +352,43 @@ const save = async () => {
   }
 };
 
-const buttonLabel = computed(() => {
-  if (loading.value) {
-    return t("common.saving");
+watch(isCustomPreview, (enabled) => {
+  if (enabled) {
+    setImageErrors([]);
+    return;
   }
-  return t("common.saveChanges");
+
+  uploaderPreviewSrc.value = undefined;
+  image.value = undefined;
+  customImageFile.value = undefined;
+  setImageErrors([]);
+  attemptedSubmit.value = false;
+});
+
+watch(customImageFile, async (file) => {
+  if (!file) {
+    return;
+  }
+
+  attemptedSubmit.value = false;
+  setImageErrors([]);
+  uploaderPreviewSrc.value = undefined;
+
+  if (file.size > MAX_CUSTOM_IMAGE_SIZE_BYTES) {
+    setImageErrors(t("manage.customize.customPreviewImageTooLarge"));
+    customImageFile.value = undefined;
+    return;
+  }
+
+  try {
+    const nextImage = await readFileAsDataUrl(file);
+    image.value = nextImage;
+    uploaderPreviewSrc.value = nextImage;
+    setImageErrors([]);
+    isCustomPreview.value = true;
+  } catch (error) {
+    console.error("Failed to read custom image:", error);
+    setImageErrors(t("manage.customize.customPreviewImageProcessingFailed"));
+  }
 });
 </script>
