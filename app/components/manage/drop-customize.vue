@@ -29,6 +29,9 @@
             {{ $t("manage.customize.customPreviewImageHint") }}
           </p>
         </div>
+        <div v-if="isCustomPreview" class="flex flex-col gap-3">
+          <dot-image-input v-model="customImageFile" />
+        </div>
       </div>
       <!-- Text content -->
       <div class="flex flex-col gap-[42px]">
@@ -136,6 +139,9 @@
           {{ buttonLabel }}
         </dot-button>
         <p v-if="updateError" class="text-center text-sm !text-red-500">{{ updateError }}</p>
+        <p v-else-if="submitImageError" class="text-center text-sm !text-yellow-500">
+          {{ submitImageError }}
+        </p>
         <p v-else-if="!meta.valid" class="text-center text-sm !text-yellow-500">
           {{ $t("manage.customize.validationRequired") }}
         </p>
@@ -159,6 +165,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useForm, useField } from "vee-validate";
 import * as zod from "zod";
 import type { Memo, MemoCustomize } from "~/types/memo";
+import { readFileAsDataUrl } from "~/utils/file";
 import { normalizeUrl } from "~/utils/web";
 
 const props = defineProps<{
@@ -247,7 +254,6 @@ const { errors, meta } = useForm({
   },
 });
 
-const isCustomPreview = ref(false);
 const { value: image } = useField<string | undefined>("image");
 const { value: heading } = useField<string>("heading");
 const { value: subheading } = useField<string>("subheading");
@@ -258,6 +264,30 @@ const { value: twitter } = useField<string>("twitter");
 const { value: website } = useField<string>("website");
 const { value: darkMode } = useField<boolean>("darkMode");
 const { value: accentColor } = useField<string>("accentColor");
+const customImageFile = ref<File>();
+const imageUploadError = ref<string | null>(null);
+const isCustomPreview = ref(Boolean(image.value));
+const attemptedSubmit = ref(false);
+
+const MAX_CUSTOM_IMAGE_SIZE_BYTES = 1024 * 1024;
+const customImageRequirementError = computed(() => {
+  if (isCustomPreview.value && !image.value) {
+    return t("manage.customize.customPreviewImageRequired");
+  }
+
+  return null;
+});
+const submitImageError = computed(() => {
+  if (imageUploadError.value) {
+    return imageUploadError.value;
+  }
+
+  if (attemptedSubmit.value) {
+    return customImageRequirementError.value;
+  }
+
+  return null;
+});
 
 const editedData = computed<Memo>(() => {
   return {
@@ -277,35 +307,45 @@ const editedData = computed<Memo>(() => {
   };
 });
 
+const buttonLabel = computed(() => {
+  if (loading.value) {
+    return t("common.saving");
+  }
+  return t("common.saveChanges");
+});
+
 const loading = ref(false);
 const updateError = ref<string | null>(null);
 
 const save = async () => {
-  if (!meta.value.valid) {
+  attemptedSubmit.value = true;
+
+  if (!meta.value.valid || imageUploadError.value || customImageRequirementError.value) {
     return;
   }
-
-  const body: MemoCustomize = {
-    image: image.value || undefined,
-    heading: heading.value || undefined,
-    subheading: subheading.value || undefined,
-    claimText: claimText.value || undefined,
-    telegram: parseUsername(telegram.value) || undefined,
-    instagram: parseUsername(instagram.value) || undefined,
-    twitter: parseUsername(twitter.value) || undefined,
-    website: normalizeUrl(website.value) || undefined,
-    darkMode: darkMode.value,
-    accentColor: accentColor.value || undefined,
-  };
 
   updateError.value = null;
   loading.value = true;
 
   try {
+    const body: MemoCustomize = {
+      image: isCustomPreview.value ? image.value || undefined : undefined,
+      heading: heading.value || undefined,
+      subheading: subheading.value || undefined,
+      claimText: claimText.value || undefined,
+      telegram: parseUsername(telegram.value) || undefined,
+      instagram: parseUsername(instagram.value) || undefined,
+      twitter: parseUsername(twitter.value) || undefined,
+      website: normalizeUrl(website.value) || undefined,
+      darkMode: darkMode.value,
+      accentColor: accentColor.value || undefined,
+    };
+
     await $fetch(`/api/manage/created/${props.drop.chain}/${props.drop.id}/customization`, {
       method: "PUT",
       body,
     });
+    attemptedSubmit.value = false;
   } catch (error) {
     console.error("Error updating drop customization:", error);
     updateError.value = "Failed to save changes. Please try again.";
@@ -314,10 +354,38 @@ const save = async () => {
   }
 };
 
-const buttonLabel = computed(() => {
-  if (loading.value) {
-    return t("common.saving");
+watch(isCustomPreview, (enabled) => {
+  if (enabled) {
+    imageUploadError.value = null;
+    return;
   }
-  return t("common.saveChanges");
+
+  image.value = undefined;
+  customImageFile.value = undefined;
+  imageUploadError.value = null;
+  attemptedSubmit.value = false;
+});
+
+watch(customImageFile, async (file) => {
+  imageUploadError.value = null;
+  attemptedSubmit.value = false;
+
+  if (!file) {
+    return;
+  }
+
+  if (file.size > MAX_CUSTOM_IMAGE_SIZE_BYTES) {
+    imageUploadError.value = "Custom image must be smaller than 1MB.";
+    customImageFile.value = undefined;
+    return;
+  }
+
+  try {
+    image.value = await readFileAsDataUrl(file);
+    isCustomPreview.value = true;
+  } catch (error) {
+    console.error("Failed to read custom image:", error);
+    imageUploadError.value = "Failed to process the selected image.";
+  }
 });
 </script>
