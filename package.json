@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
+    "cf-typegen": "wrangler types",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -69,6 +70,7 @@
     "@types/lodash": "^4.17.14",
     "@types/luxon": "^3.6.2",
     "@types/qrcode": "^1.5.5",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "wrangler": "^4.76.0"
   }
 }
