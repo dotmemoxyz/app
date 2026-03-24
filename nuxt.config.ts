@@ -120,9 +120,6 @@ export default defineNuxtConfig({
       Unbounded: true,
     },
   },
-  nitro: {
-    preset: "cloudflare_module",
-  },
   routeRules: {
     "/create": { ssr: false },
   },
