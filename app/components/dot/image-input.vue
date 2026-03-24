@@ -40,17 +40,28 @@
 </template>
 
 <script lang="ts" setup>
+import { readFileAsDataUrl } from "~/utils/file";
+
 const imageInputId = useId();
 const model = defineModel<File>();
 const { t } = useI18n();
 
-defineProps<{
+const props = defineProps<{
   error?: string;
+  previewSrc?: string;
 }>();
 
 const previewImageSrc = ref("");
 
-function previewImage(event: Event) {
+watch(
+  () => props.previewSrc,
+  (src) => {
+    previewImageSrc.value = src ?? "";
+  },
+  { immediate: true },
+);
+
+async function previewImage(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input?.files?.[0];
 
@@ -60,10 +71,10 @@ function previewImage(event: Event) {
 
   model.value = file;
 
-  const fileReader = new FileReader();
-  fileReader.onload = (e) => {
-    previewImageSrc.value = String(e.target?.result) || "";
-  };
-  fileReader.readAsDataURL(file);
+  if (props.previewSrc !== undefined) {
+    return;
+  }
+
+  previewImageSrc.value = await readFileAsDataUrl(file);
 }
 </script>

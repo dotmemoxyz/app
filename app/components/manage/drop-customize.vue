@@ -29,8 +29,14 @@
             {{ $t("manage.customize.customPreviewImageHint") }}
           </p>
         </div>
-        <div v-if="isCustomPreview" class="flex flex-col gap-3">
-          <dot-image-input v-model="customImageFile" />
+        <div v-if="isCustomPreview" class="flex flex-col gap-2">
+          <dot-image-input v-model="customImageFile" :preview-src="uploaderPreviewSrc" />
+          <p v-if="imageError" class="text-sm font-normal !text-red-500">
+            {{ imageError }}
+          </p>
+          <p class="text-sm font-normal !text-text-secondary">
+            {{ $t("manage.customize.customPreviewImageRequirements") }}
+          </p>
         </div>
       </div>
       <!-- Text content -->
@@ -254,7 +260,7 @@ const { errors, meta } = useForm({
   },
 });
 
-const { value: image } = useField<string | undefined>("image");
+const { value: image, errorMessage: imageError, setErrors: setImageErrors } = useField<string | undefined>("image");
 const { value: heading } = useField<string>("heading");
 const { value: subheading } = useField<string>("subheading");
 const { value: claimText } = useField<string>("claimText");
@@ -265,28 +271,20 @@ const { value: website } = useField<string>("website");
 const { value: darkMode } = useField<boolean>("darkMode");
 const { value: accentColor } = useField<string>("accentColor");
 const customImageFile = ref<File>();
-const imageUploadError = ref<string | null>(null);
 const isCustomPreview = ref(Boolean(image.value));
 const attemptedSubmit = ref(false);
+const uploaderPreviewSrc = ref<string | undefined>(image.value);
 
 const MAX_CUSTOM_IMAGE_SIZE_BYTES = 1024 * 1024;
-const customImageRequirementError = computed(() => {
-  if (isCustomPreview.value && !image.value) {
+const requiredImageError = computed(() => {
+  if (attemptedSubmit.value && isCustomPreview.value && !image.value) {
     return t("manage.customize.customPreviewImageRequired");
   }
 
   return null;
 });
 const submitImageError = computed(() => {
-  if (imageUploadError.value) {
-    return imageUploadError.value;
-  }
-
-  if (attemptedSubmit.value) {
-    return customImageRequirementError.value;
-  }
-
-  return null;
+  return requiredImageError.value;
 });
 
 const editedData = computed<Memo>(() => {
@@ -320,7 +318,7 @@ const updateError = ref<string | null>(null);
 const save = async () => {
   attemptedSubmit.value = true;
 
-  if (!meta.value.valid || imageUploadError.value || customImageRequirementError.value) {
+  if (!meta.value.valid || imageError.value || requiredImageError.value) {
     return;
   }
 
@@ -356,36 +354,41 @@ const save = async () => {
 
 watch(isCustomPreview, (enabled) => {
   if (enabled) {
-    imageUploadError.value = null;
+    setImageErrors([]);
     return;
   }
 
+  uploaderPreviewSrc.value = undefined;
   image.value = undefined;
   customImageFile.value = undefined;
-  imageUploadError.value = null;
+  setImageErrors([]);
   attemptedSubmit.value = false;
 });
 
 watch(customImageFile, async (file) => {
-  imageUploadError.value = null;
-  attemptedSubmit.value = false;
-
   if (!file) {
     return;
   }
 
+  attemptedSubmit.value = false;
+  setImageErrors([]);
+  uploaderPreviewSrc.value = undefined;
+
   if (file.size > MAX_CUSTOM_IMAGE_SIZE_BYTES) {
-    imageUploadError.value = "Custom image must be smaller than 1MB.";
+    setImageErrors(t("manage.customize.customPreviewImageTooLarge"));
     customImageFile.value = undefined;
     return;
   }
 
   try {
-    image.value = await readFileAsDataUrl(file);
+    const nextImage = await readFileAsDataUrl(file);
+    image.value = nextImage;
+    uploaderPreviewSrc.value = nextImage;
+    setImageErrors([]);
     isCustomPreview.value = true;
   } catch (error) {
     console.error("Failed to read custom image:", error);
-    imageUploadError.value = "Failed to process the selected image.";
+    setImageErrors(t("manage.customize.customPreviewImageProcessingFailed"));
   }
 });
 </script>
