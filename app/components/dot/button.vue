@@ -76,8 +76,12 @@ const btnClasses = computed(() => {
 
 const forceColorText = computed(() => {
   if (props.forceColor) {
-    const contrast = chroma.contrast(props.forceColor, "white");
-    return contrast > 4.5 ? "white" : "black";
+    try {
+      const contrast = chroma.contrast(props.forceColor, "white");
+      return contrast > 4.5 ? "white" : "black";
+    } catch {
+      return undefined;
+    }
   }
   return undefined;
 });
