@@ -5,6 +5,15 @@
   "account_id": "07869336453739b140a6039709ff02af",
   "compatibility_date": "2024-09-20",
   "compatibility_flags": ["nodejs_compat", "no_nodejs_compat_v2"],
+  "keep_vars": true,
+  "vars": {
+    "NUXT_PUBLIC_APP_URL": "https://alpha.dotmemo.xyz",
+    "NUXT_PUBLIC_API_KODAPRICE": "https://price.chaotic.art",
+    "NUXT_PUBLIC_API_COINGECKO": "https://api.coingecko.com/api/v3",
+    "NUXT_PUBLIC_CHAIN": "ahp",
+    "NUXT_PUBLIC_MEMO_BOT_ADDRESS": "E6eji2dKDtQ6irDmf6kbfEV1c7ZiRyMhFx6iyEijGXzcqWW",
+    "NUXT_API_URL": "https://api.dotmemo.xyz",
+  },
   "assets": {
     "binding": "ASSETS",
     "directory": ".output/public",
