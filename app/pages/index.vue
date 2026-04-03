@@ -115,7 +115,7 @@
           v-for="collection in collections"
           :key="collection.id"
           class="relative aspect-square w-full overflow-hidden rounded-xl bg-stone-300"
-          :href="kodaUrl(collection.id)"
+          :href="collectionUrl(collection.id)"
           target="_blank"
         >
           <img
@@ -197,7 +197,7 @@ const result = await fetchGraphql<{ collections: Collection[] }>(query, prefix.v
 
 collections.value = result?.data?.collections ?? [];
 
-const kodaUrl = (id: string) => `https://kodadot.xyz/${prefix.value}/collection/${id}`;
+const collectionUrl = (id: string) => `https://chaotic.art/${prefix.value}/collection/${id}`;
 
 const networkStatus = ref(true);
 onMounted(() => {
