@@ -6,7 +6,7 @@ export const SECURITY_MODES = ["static", "dynamic"] as const;
 export type SecurityMode = (typeof SECURITY_MODES)[number];
 
 export const MAX_DYNAMIC_MEMO_SUPPLY = 1000;
-export type MemoCustomize = {
+export type MemoClaimPageCustomize = {
   image?: string;
   heading?: string;
   subheading?: string;
@@ -17,6 +17,18 @@ export type MemoCustomize = {
   website?: string;
   darkMode?: boolean;
   accentColor?: string;
+};
+
+export type MemoSuccessModalCustomize = {
+  image?: string;
+  title?: string;
+  description?: string;
+  shareHeading?: string;
+  primaryCtaLabel?: string;
+};
+
+export type MemoCustomize = MemoClaimPageCustomize & {
+  success?: MemoSuccessModalCustomize;
 };
 
 export type Memo = {
