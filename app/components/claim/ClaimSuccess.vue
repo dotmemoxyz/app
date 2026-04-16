@@ -58,12 +58,10 @@ const props = withDefaults(
     chain: string;
     sn: string | undefined;
     memoName?: string;
-    shareMessage?: string;
     customization?: MemoCustomize;
     previewMode?: boolean;
   }>(),
   {
-    shareMessage: SHARE_MESSAGE,
     memoName: "",
     customization: undefined,
     previewMode: false,
@@ -82,7 +80,7 @@ const handleShareOnTelegram = () => {
     return;
   }
 
-  shareOnTelegram(props.shareMessage, url.value);
+  shareOnTelegram(SHARE_MESSAGE, url.value);
 };
 
 const handleShareOnX = () => {
@@ -90,6 +88,6 @@ const handleShareOnX = () => {
     return;
   }
 
-  shareOnX(props.shareMessage, url.value);
+  shareOnX(SHARE_MESSAGE, url.value);
 };
 </script>
