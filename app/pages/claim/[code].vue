@@ -26,6 +26,7 @@
         :telegram="data.customize?.telegram"
         :instagram="data.customize?.instagram"
         :website="data.customize?.website"
+        :twitter="data.customize?.twitter"
       />
 
       <!-- Interaction Section -->
@@ -70,7 +71,13 @@
           <ClaimChainBadge v-if="data.chain && !allClaimed" :chain="data.chain" />
         </template>
 
-        <ClaimSuccess :sn="claimedItemId" :collection="data.id" :chain="data.chain" :memo-name="data?.name" />
+        <ClaimSuccess
+          :sn="claimedItemId"
+          :collection="data.id"
+          :chain="data.chain"
+          :memo-name="data?.name"
+          :customization="data.customize"
+        />
       </div>
     </template>
   </ClaimLayout>
@@ -250,6 +257,18 @@ const { open } = useModal({
   },
 });
 
+const { arm: armSuccessModal, disarm: disarmSuccessModal } = useClaimSuccessModal(claimedItemId, () =>
+  data.value
+    ? {
+        collection: data.value.id,
+        chain: data.value.chain,
+        memoName: data.value.name,
+        memoImage: data.value.image,
+        customization: data.value.customize,
+      }
+    : undefined,
+);
+
 const claim = async () => {
   if (!address.value) return;
   if (!canClaim.value) return;
@@ -260,6 +279,7 @@ const claim = async () => {
   try {
     claimFailed.value = false;
     isClaiming.value = true;
+    armSuccessModal();
 
     const response = await $fetch("/api/claim", {
       method: "POST",
@@ -274,6 +294,7 @@ const claim = async () => {
     console.error("Claim failed:", error);
     claimFailed.value = true;
     isClaiming.value = false;
+    disarmSuccessModal();
     if (error instanceof FetchError && error.status === 409) {
       alreadyCollected.value = true;
       return;

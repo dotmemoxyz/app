@@ -44,6 +44,7 @@
         :telegram="data.customize?.telegram"
         :instagram="data.customize?.instagram"
         :website="data.customize?.website"
+        :twitter="data.customize?.twitter"
       />
 
       <div class="flex w-full flex-col space-y-[16px] self-stretch">
@@ -87,6 +88,7 @@
           :collection="data.collectionId"
           :chain="data.chain"
           :memo-name="data.memoName"
+          :customization="data.customize"
         />
       </div>
     </template>
@@ -131,12 +133,25 @@ const reservationExpiresAt = computed(() => {
   return DateTime.fromISO(data.value.expiresAt).toLocaleString(DateTime.DATETIME_MED);
 });
 
+const { arm: armSuccessModal, disarm: disarmSuccessModal } = useClaimSuccessModal(claimedItemId, () =>
+  data.value
+    ? {
+        collection: data.value.collectionId,
+        chain: data.value.chain,
+        memoName: data.value.memoName,
+        memoImage: data.value.memoImage,
+        customization: data.value.customize,
+      }
+    : undefined,
+);
+
 const finalizeClaim = async () => {
   if (!address.value || !canClaim.value) return;
 
   try {
     claimFailed.value = false;
     isClaiming.value = true;
+    armSuccessModal();
 
     const response = await $fetch<FinalizeClaimResponse>(`/api/email-claim/${token.value}/finalize`, {
       method: "POST",
@@ -148,6 +163,7 @@ const finalizeClaim = async () => {
     console.error("Claim failed:", err);
     claimFailed.value = true;
     isClaiming.value = false;
+    disarmSuccessModal();
     if (err instanceof FetchError && err.status === 409) {
       alreadyCollected.value = true;
     }
