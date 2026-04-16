@@ -1,6 +1,15 @@
 <template>
-  <div class="grid grid-cols-1 gap-x-8 md:grid-cols-3">
-    <div class="flex w-full flex-col justify-center gap-8 md:w-auto">
+  <ManageDropCustomizeLayout
+    :button-label="buttonLabel"
+    :disabled="loading || !meta.valid || !!imageError || !!submitImageError"
+    :is-valid="meta.valid"
+    :update-error="updateError"
+    :submit-image-error="submitImageError"
+    :preview-title="$t('manage.customize.success.preview')"
+    :preview-hint="$t('manage.customize.success.previewHint')"
+    @save="save"
+  >
+    <template #form>
       <div class="flex flex-col gap-4">
         <h2 class="text-xl font-medium">{{ $t("manage.customize.success.imageTitle") }}</h2>
 
@@ -85,29 +94,9 @@
           </p>
         </div>
       </div>
+    </template>
 
-      <div class="flex w-full flex-col items-center gap-2">
-        <dot-button :disabled="loading || !meta.valid" class="w-full" @click="save">
-          {{ buttonLabel }}
-        </dot-button>
-        <p v-if="updateError" class="text-center text-sm !text-red-500">{{ updateError }}</p>
-        <p v-else-if="submitImageError" class="text-center text-sm !text-yellow-500">
-          {{ submitImageError }}
-        </p>
-        <p v-else-if="!meta.valid" class="text-center text-sm !text-yellow-500">
-          {{ $t("manage.customize.validationRequired") }}
-        </p>
-      </div>
-    </div>
-
-    <div class="col-span-2 flex flex-col gap-8">
-      <div class="flex flex-col items-center gap-4">
-        <div class="flex w-[450px] justify-between">
-          <h2 class="text-xl font-medium">{{ $t("manage.customize.success.preview") }}</h2>
-          <p class="text-base font-normal !text-text-secondary">{{ $t("manage.customize.success.previewHint") }}</p>
-        </div>
-      </div>
-
+    <template #preview>
       <div class="flex justify-center rounded-[32px] bg-black/5 p-8">
         <div class="w-full max-w-xl rounded-[28px] border border-border-default bg-surface-white p-6 shadow-2xl">
           <ClaimSuccessModalContent
@@ -121,8 +110,8 @@
           />
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </ManageDropCustomizeLayout>
 </template>
 
 <script lang="ts" setup>
