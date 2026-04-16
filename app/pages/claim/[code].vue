@@ -84,7 +84,6 @@
 </template>
 <script setup lang="ts">
 import QRScannerModal from "~/components/modals/qr-scanner-modal.vue";
-import ClaimSuccessModal from "~/components/modals/claim-success-modal.vue";
 import { DateTime } from "luxon";
 import { useModal } from "vue-final-modal";
 import { FetchError } from "ofetch";
@@ -258,33 +257,17 @@ const { open } = useModal({
   },
 });
 
-const successModalState = reactive({
-  shouldOpen: false,
-  hasOpened: false,
-});
-
-watch(claimedItemId, (itemId) => {
-  if (!itemId || !data.value || !successModalState.shouldOpen || successModalState.hasOpened) {
-    return;
-  }
-
-  successModalState.hasOpened = true;
-  successModalState.shouldOpen = false;
-
-  const { open: openSuccessModal } = useModal({
-    component: ClaimSuccessModal,
-    attrs: {
-      sn: itemId,
-      collection: data.value.id,
-      chain: data.value.chain,
-      memoName: data.value.name,
-      memoImage: data.value.image,
-      customization: data.value.customize,
-    },
-  });
-
-  openSuccessModal();
-});
+const { arm: armSuccessModal, disarm: disarmSuccessModal } = useClaimSuccessModal(claimedItemId, () =>
+  data.value
+    ? {
+        collection: data.value.id,
+        chain: data.value.chain,
+        memoName: data.value.name,
+        memoImage: data.value.image,
+        customization: data.value.customize,
+      }
+    : undefined,
+);
 
 const claim = async () => {
   if (!address.value) return;
@@ -296,8 +279,7 @@ const claim = async () => {
   try {
     claimFailed.value = false;
     isClaiming.value = true;
-    successModalState.shouldOpen = true;
-    successModalState.hasOpened = false;
+    armSuccessModal();
 
     const response = await $fetch("/api/claim", {
       method: "POST",
@@ -312,7 +294,7 @@ const claim = async () => {
     console.error("Claim failed:", error);
     claimFailed.value = true;
     isClaiming.value = false;
-    successModalState.shouldOpen = false;
+    disarmSuccessModal();
     if (error instanceof FetchError && error.status === 409) {
       alreadyCollected.value = true;
       return;

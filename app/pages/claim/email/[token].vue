@@ -98,10 +98,8 @@
 <script setup lang="ts">
 import { FetchError } from "ofetch";
 import type { Prefix } from "@kodadot1/static";
-import { useModal } from "vue-final-modal";
 import type { FinalizeClaimResponse } from "~/types/email-auth";
 import { DateTime } from "luxon";
-import ClaimSuccessModal from "~/components/modals/claim-success-modal.vue";
 import { formatTimeRemaining } from "~/utils/time";
 
 const route = useRoute();
@@ -135,33 +133,17 @@ const reservationExpiresAt = computed(() => {
   return DateTime.fromISO(data.value.expiresAt).toLocaleString(DateTime.DATETIME_MED);
 });
 
-const successModalState = reactive({
-  shouldOpen: false,
-  hasOpened: false,
-});
-
-watch(claimedItemId, (itemId) => {
-  if (!itemId || !data.value || !successModalState.shouldOpen || successModalState.hasOpened) {
-    return;
-  }
-
-  successModalState.hasOpened = true;
-  successModalState.shouldOpen = false;
-
-  const { open: openSuccessModal } = useModal({
-    component: ClaimSuccessModal,
-    attrs: {
-      sn: itemId,
-      collection: data.value.collectionId,
-      chain: data.value.chain,
-      memoName: data.value.memoName,
-      memoImage: data.value.memoImage,
-      customization: data.value.customize,
-    },
-  });
-
-  openSuccessModal();
-});
+const { arm: armSuccessModal, disarm: disarmSuccessModal } = useClaimSuccessModal(claimedItemId, () =>
+  data.value
+    ? {
+        collection: data.value.collectionId,
+        chain: data.value.chain,
+        memoName: data.value.memoName,
+        memoImage: data.value.memoImage,
+        customization: data.value.customize,
+      }
+    : undefined,
+);
 
 const finalizeClaim = async () => {
   if (!address.value || !canClaim.value) return;
@@ -169,8 +151,7 @@ const finalizeClaim = async () => {
   try {
     claimFailed.value = false;
     isClaiming.value = true;
-    successModalState.shouldOpen = true;
-    successModalState.hasOpened = false;
+    armSuccessModal();
 
     const response = await $fetch<FinalizeClaimResponse>(`/api/email-claim/${token.value}/finalize`, {
       method: "POST",
@@ -182,7 +163,7 @@ const finalizeClaim = async () => {
     console.error("Claim failed:", err);
     claimFailed.value = true;
     isClaiming.value = false;
-    successModalState.shouldOpen = false;
+    disarmSuccessModal();
     if (err instanceof FetchError && err.status === 409) {
       alreadyCollected.value = true;
     }
