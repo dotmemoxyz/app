@@ -5,7 +5,7 @@
     overlay-transition="vfm-fade"
     content-transition="vfm-fade"
   >
-    <button type="button" class="absolute right-4 top-4" @click="closeModal">
+    <button type="button" class="absolute right-4 top-4" :aria-label="$t('common.close')" @click="closeModal">
       <Icon name="mdi:close" size="24" class="text-text-primary" />
     </button>
 

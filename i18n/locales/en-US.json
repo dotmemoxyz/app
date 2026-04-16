@@ -30,7 +30,8 @@
     "saving": "Saving...",
     "sending": "Sending...",
     "checking": "Checking...",
-    "remove": "Remove"
+    "remove": "Remove",
+    "close": "Close"
   },
   "landing": {
     "quote1": "Your memories,",

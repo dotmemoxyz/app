@@ -315,15 +315,15 @@ const {
 
 const buildClaimPageCustomize = (): MemoClaimPageCustomize => ({
   image: isCustomPreview.value ? image.value || undefined : undefined,
-  heading: heading.value || undefined,
-  subheading: subheading.value || undefined,
-  claimText: claimText.value || undefined,
-  telegram: parseUsername(telegram.value) || undefined,
-  instagram: parseUsername(instagram.value) || undefined,
-  twitter: parseUsername(twitter.value) || undefined,
+  heading: heading.value?.trim() || undefined,
+  subheading: subheading.value?.trim() || undefined,
+  claimText: claimText.value?.trim() || undefined,
+  telegram: normalizeHandle(telegram.value) || undefined,
+  instagram: normalizeHandle(instagram.value) || undefined,
+  twitter: normalizeHandle(twitter.value) || undefined,
   website: normalizeUrl(website.value) || undefined,
   darkMode: darkMode.value,
-  accentColor: accentColor.value || undefined,
+  accentColor: accentColor.value?.trim() || undefined,
 });
 
 const editedData = computed<Memo>(() => {

@@ -213,10 +213,10 @@ const previewItemId = "123";
 
 const buildSuccessCustomize = (): MemoSuccessModalCustomize => ({
   image: isCustomImage.value ? image.value || undefined : undefined,
-  title: title.value || undefined,
-  description: description.value || undefined,
-  shareHeading: shareHeading.value || undefined,
-  primaryCtaLabel: primaryCtaLabel.value || undefined,
+  title: title.value?.trim() || undefined,
+  description: description.value?.trim() || undefined,
+  shareHeading: shareHeading.value?.trim() || undefined,
+  primaryCtaLabel: primaryCtaLabel.value?.trim() || undefined,
 });
 
 const editedCustomization = computed<MemoCustomize>(() => {
