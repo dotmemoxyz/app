@@ -106,7 +106,7 @@ const props = defineProps<{
 
 const { locale } = useI18n();
 
-const imageSrc = computed(() => props.drop.customize?.image || props.drop.image);
+const imageSrc = computed(() => props.drop.image);
 
 // Starts in
 const startsIn = computed<string | null>(() => {

@@ -138,7 +138,7 @@ const isExpired = computed<boolean>(() => {
   return date.diff(now, ["seconds"]).as("seconds") < 0;
 });
 
-const imageSrc = computed(() => props.drop.customize.image || props.drop.image);
+const imageSrc = computed(() => props.drop.image);
 
 const remainingTime = computed<string>(() => {
   if (isExpired.value) {
