@@ -129,16 +129,21 @@ const trendChartData = computed(() => ({
 
 const hourlyChartData = computed(() => {
   const hours = Array.from({ length: 24 }, (_, i) => i);
-  const claimsByHour = hours.map((hour) => {
-    const found = props.distributionData.find((d) => d.hour === hour);
-    return found?.claims ?? 0;
+  const claimsByLocalHour = Array.from({ length: 24 }, () => 0);
+  const timezoneOffsetMinutes = new Date().getTimezoneOffset();
+
+  props.distributionData.forEach(({ hour, claims }) => {
+    const localMinutes = (hour * 60 - timezoneOffsetMinutes + 24 * 60) % (24 * 60);
+    const localHour = Math.floor(localMinutes / 60);
+    claimsByLocalHour[localHour] = (claimsByLocalHour[localHour] ?? 0) + claims;
   });
+
   return {
     labels: hours.map((h) => h.toString().padStart(2, "0")),
     datasets: [
       {
         label: "Claims",
-        data: claimsByHour,
+        data: claimsByLocalHour,
         backgroundColor: chartGreen,
         borderRadius: 3,
         barThickness: 16,
