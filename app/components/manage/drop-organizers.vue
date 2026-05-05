@@ -38,8 +38,8 @@
         class="group flex items-center justify-between rounded-xl border border-border-default bg-surface-card px-4 py-3"
       >
         <div class="flex flex-col gap-1">
-          <span class="font-mono text-sm text-text-primary" :title="organizer.address">
-            {{ shortenAddress(organizer.address) }}
+          <span class="font-mono text-sm text-text-primary" :title="displayAddress(organizer.address)">
+            {{ displayAddressShortener(organizer.address) }}
           </span>
           <span class="text-xs text-text-secondary">
             {{ t("manage.organizers.addedOn", { date: formatDate(organizer.createdAt) }) }}
@@ -154,11 +154,6 @@ const removeOrganizer = async (address: string) => {
   } finally {
     removingAddress.value = null;
   }
-};
-
-const shortenAddress = (address: string): string => {
-  if (address.length <= 12) return address;
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
 const formatDate = (dateString: string): string => {

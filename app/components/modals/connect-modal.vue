@@ -81,7 +81,7 @@
               <div class="flex flex-1 flex-col items-start gap-1 px-4 py-3">
                 <h2 class="font-bold">{{ account.name }}</h2>
                 <p class="text-xs">
-                  {{ addressShortener(account.address, 7, -7) }}
+                  {{ displayAddressShortener(account.address, 7, -7) }}
                 </p>
               </div>
             </div>
