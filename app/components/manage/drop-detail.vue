@@ -45,7 +45,7 @@
         <p class="text-[14px] !text-[#606060]">
           by:
           <span class="cursor-copy border-b border-dotted border-black" @click="owner ? clipboard.copy(owner) : null">
-            {{ owner ? addressShortener(owner) : "" }}
+            {{ owner ? displayAddressShortener(owner) : "" }}
           </span>
         </p>
         <span class="hidden items-center gap-2 md:flex">

@@ -47,7 +47,7 @@
 
             <div class="flex flex-col items-center">
               <h1 class="text-[40px] font-bold leading-[48px] text-text-primary">{{ profile?.name || displayName }}</h1>
-              <p class="font-mono text-[16px] text-text-secondary">{{ address }}</p>
+              <p class="font-mono text-[16px] text-text-secondary">{{ displayAddressValue }}</p>
             </div>
 
             <div v-if="profile?.socials && profile.socials.length > 0" class="flex items-center gap-[12px]">
@@ -158,7 +158,6 @@ import { DateTime } from "luxon";
 import ManageDropCard from "~/components/manage/drop-card.vue";
 import type { Memo } from "~/types/memo";
 import { fetchProfileByAddress, Socials, type Profile as _Profile } from "~/services/profile";
-import { addressShortener } from "~/utils/account";
 import type { Prefix } from "@kodadot1/static";
 
 const route = useRoute();
@@ -183,7 +182,10 @@ const { data: memosData, pending: memosPending } = useAsyncData(
 const memos = computed(() => memosData.value || []);
 const profileUrl = computed(() => `${requestURL.origin}${route.fullPath}`);
 
-const displayName = computed(() => (profile.value?.name ? profile.value.name : addressShortener(address.value, 6, -4)));
+const displayAddressValue = computed(() => displayAddress(address.value));
+const displayName = computed(() =>
+  profile.value?.name ? profile.value.name : displayAddressShortener(address.value, 6, -4),
+);
 
 async function shareProfile() {
   if (!import.meta.client) return;

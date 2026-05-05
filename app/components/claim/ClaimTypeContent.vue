@@ -77,7 +77,7 @@
 
         <dot-text-input
           v-if="usePreviousAddress"
-          :model-value="previousWalletAddress"
+          :model-value="previousWalletDisplayAddress"
           :placeholder="t('common.address')"
           disabled
           class="opacity-60"
@@ -114,9 +114,14 @@ const usePreviousAddress = defineModel<boolean>("usePreviousAddress", { default:
 
 const emailFormRef = ref<HTMLFormElement | null>(null);
 
+const previousWalletDisplayAddress = computed(() => {
+  if (!props.previousWalletAddress) return "";
+  return displayAddress(props.previousWalletAddress);
+});
+
 const truncatedAddress = computed(() => {
   if (!props.previousWalletAddress) return "";
-  return addressShortener(props.previousWalletAddress, 6, -6);
+  return displayAddressShortener(props.previousWalletAddress, 6, -6);
 });
 
 const validateEmail = () => {

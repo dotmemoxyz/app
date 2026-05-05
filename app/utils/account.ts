@@ -32,11 +32,24 @@ export const isValidSubstrateAddress = (address: string): boolean => {
   try {
     encodeAddress(decodeAddress(address));
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 };
 
 export const addressShortener = (address: string, startOffset = 6, endOffset = -4): string => {
   return `${address.slice(0, startOffset)}...${address.slice(endOffset)}`;
+};
+
+export const displayAddress = (address: string): string => {
+  if (!address) return "";
+  try {
+    return encodeAddress(decodeAddress(address), 0);
+  } catch {
+    return address;
+  }
+};
+
+export const displayAddressShortener = (address: string, startOffset = 6, endOffset = -4): string => {
+  return addressShortener(displayAddress(address), startOffset, endOffset);
 };

@@ -49,11 +49,11 @@ export const useAccountStore = defineStore("account", {
     hasSelectedAccount: (state) => !!state.selected,
     shortAddress: (state) => {
       if (!state.selected) return "";
-      return addressShortener(state.selected.address);
+      return displayAddressShortener(state.selected.address);
     },
     midAddress: (state) => {
       if (!state.selected) return "";
-      return addressShortener(state.selected.address, 8);
+      return displayAddressShortener(state.selected.address, 8);
     },
     accountName: (state) => {
       if (!state.selected) return "";
