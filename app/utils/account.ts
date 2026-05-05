@@ -51,5 +51,7 @@ export const displayAddress = (address: string): string => {
 };
 
 export const displayAddressShortener = (address: string, startOffset = 6, endOffset = -4): string => {
-  return addressShortener(displayAddress(address), startOffset, endOffset);
+  const displayedAddress = displayAddress(address);
+  if (!displayedAddress) return "";
+  return addressShortener(displayedAddress, startOffset, endOffset);
 };
