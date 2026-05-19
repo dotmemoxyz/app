@@ -34,7 +34,6 @@ export const useAccountStore = defineStore("account", {
       if (import.meta.client) {
         const accountTokenCookie = useCookie("account-token");
         accountTokenCookie.value = null;
-        localStorage.removeItem("account-token");
       }
     },
     disconnect() {

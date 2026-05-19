@@ -93,22 +93,6 @@ onMounted(async () => {
     }
   }
 
-  const token = localStorage.getItem("account-token");
-  if (token) {
-    const { verifyToken } = useAuth();
-    try {
-      const res = await verifyToken();
-      if (!res) {
-        logger.warn("Token verification failed, token is invalid or expired");
-        localStorage.removeItem("account-token");
-      } else {
-        accountStore.setToken(token);
-      }
-    } catch (e) {
-      logger.error("Token verification failed", e);
-      localStorage.removeItem("account-token");
-    }
-  }
   accountStore.setLoaded();
 });
 </script>
