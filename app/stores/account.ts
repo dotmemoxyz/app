@@ -25,11 +25,16 @@ export const useAccountStore = defineStore("account", {
     selectAccount(account: ExtendedDotsamaAccount) {
       this.selected = account;
     },
-    setToken(token: string) {
+    setToken(token: string | null) {
       this.token = token;
     },
     clearToken() {
       this.token = null;
+
+      if (import.meta.client) {
+        const accountTokenCookie = useCookie("account-token");
+        accountTokenCookie.value = null;
+      }
     },
     disconnect() {
       this.selected = null;

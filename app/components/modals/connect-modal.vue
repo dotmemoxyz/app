@@ -137,10 +137,17 @@ const selectedAccount = ref<ExtendedDotsamaAccount | null>(null);
 
 const saveAndClose = () => {
   if (selectedAccount.value && selectedWallet.value) {
+    const previousAccount = accountStore.selected;
+    const isChangingAccount = previousAccount?.address !== selectedAccount.value.address;
+
     accountStore.selectAccount(selectedAccount.value);
     localStorage.setItem("account-address", selectedAccount.value.address);
     localStorage.setItem("account-wallet", selectedWallet.value.name);
-    accountStore.clearToken();
+
+    if (isChangingAccount) {
+      accountStore.clearToken();
+    }
+
     emit("connect");
   }
 };
