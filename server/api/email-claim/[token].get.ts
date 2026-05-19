@@ -1,5 +1,6 @@
 import { FetchError } from "ofetch";
 import type { EmailClaimDetails } from "~/types/email-auth";
+import { sanitizeIpfsUrl } from "~/utils/ipfs";
 
 const RUNTIME_CONFIG = useRuntimeConfig();
 
@@ -17,7 +18,10 @@ export default defineEventHandler(async (event) => {
     .catch((r) => [null, r] as const);
 
   if (!err) {
-    return data;
+    return {
+      ...data,
+      memoImage: sanitizeIpfsUrl(data.memoImage),
+    };
   }
 
   if (!(err instanceof FetchError)) {
