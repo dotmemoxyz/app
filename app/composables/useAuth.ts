@@ -59,12 +59,7 @@ export default function () {
   };
 
   const logout = () => {
-    // Clear token from store
-    accountStore.setToken("");
-
-    // Clear token from cookie
-    const accountTokenCookie = useCookie("account-token");
-    accountTokenCookie.value = null;
+    accountStore.clearToken();
   };
 
   return {
